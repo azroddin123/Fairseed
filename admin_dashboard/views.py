@@ -6,10 +6,10 @@ from fairseed.GM import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
+from django.db.models import Sum
 
 class PagesAPi(APIView):
     def get(self, request, pk=None):
-        # Retrieve a single record or a list of 
         try : 
             if pk:
                 data = Pages.objects.get(pk=pk)
@@ -47,7 +47,6 @@ class PagesAPi(APIView):
             return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, pk):
         try : 
@@ -88,3 +87,6 @@ class LandingPageApi(GenericMethodsMixin,APIView):
 #     model = Pages
 #     serializer_class = PageSerializer
 #     lookup_field = "id"
+
+
+

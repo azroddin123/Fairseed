@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     
     'accounts',
     'admin_dashboard',
+    'donor',
+    'campaign',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders'
