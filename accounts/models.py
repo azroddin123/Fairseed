@@ -45,14 +45,14 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 
-ROLE_CHOICES = [
-    (
-        "normal" ,"Normal",
-        "campaign_approver" , "Campaign_Approver",
-        "campaign_manager", "Campaign_Manager"
-        "admin","Admin"
-    )
-]
+# ROLE_CHOICES = [
+#     (
+#         "normal" ,"Normal",
+#         "campaign_approver" , "Campaign_Approver",
+#         "campaign_manager", "Campaign_Manager"
+#         "admin","Admin"
+#     )
+# ]
 
 # class UserRole(models.Model):
 #     user       = models.ForeignKey(User,on_delete=models.CASCADE)

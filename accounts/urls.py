@@ -8,4 +8,6 @@ urlpatterns = [
     path('register/nt/',RegisterUserApi.as_view()),
     path('user/nt/',UserApi.as_view()),
     path('change_password',ChangePasswordApi.as_view())
+    # email verification apiview
+    
 ]

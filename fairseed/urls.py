@@ -24,10 +24,23 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Apps URLs
     path('accounts/',include('accounts.urls')),
     path('admin-dashboard/',include('admin_dashboard.urls')),
+    path('campaign/',include('campaign.urls')),
+    path('donor/',include('donor.urls')),
+    path('payment_gateway/',include('payment_gateway.urls')),
 
+
+    # Token URLs
     path('api-auth/', include('rest_framework.urls')),
     path('api/token/',TokenObtainPairView.as_view(),name="token_obtain_pair"),
     path('api/token/refresh/',TokenRefreshView.as_view(),name="token_refresh")
 ]
+
+from django.contrib import admin
+
+admin.site.site_header = 'FairSeed'                    # default: "Django Administration"
+admin.site.index_title = 'FairSeed Admin Panel'                 # default: "Site administration"
+admin.site.site_title = 'Fairseed' #

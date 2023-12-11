@@ -33,4 +33,4 @@ class ChangePasswordApi(APIView):
             serializer.save()
             return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+

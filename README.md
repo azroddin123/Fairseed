@@ -58,7 +58,12 @@ python manage.py runserver
 
 
 
+<!--
+For Rest-API refrence go to the admin dashboard app 
+see the pages API
 
+
+ -->
 
 
 

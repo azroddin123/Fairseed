@@ -5,8 +5,7 @@ class PGSetting(models.Model):
     currency_symobl   = models.CharField(max_length=10)
     fee_for_donaion   = models.IntegerField()
     cuurency_position = models.CharField(max_length=124)
-    decimal_format    = models.DecimalField() 
-
+    decimal_format    = models.DecimalField(max_digits=5,decimal_places=2) 
 
 class PayPal(models.Model):
     percentage_fee   = models.CharField(max_length=124)
@@ -14,7 +13,6 @@ class PayPal(models.Model):
     paypal_account   = models.CharField(max_length=124)
     paypal_sandbox   = models.BooleanField(default=False)
     status           = models.BooleanField(default=False)
-
 
 class Stripe(models.Model):
     fee_percent       = models.IntegerField()
