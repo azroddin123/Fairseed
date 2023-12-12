@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 from .models import User
+from rest_framework import serializers
 
 class UserSerializer(ModelSerializer):
     class Meta :
@@ -60,3 +61,9 @@ class ChangePasswordSerializer(serializers.Serializer):
             user.set_password(self.validated_data["new_password"])
             user.save()
         return user
+
+
+class IDSerializer(serializers.Serializer):
+    id1 = serializers.IntegerField()
+    id2 = serializers.IntegerField()
+    id3 = serializers.IntegerField()

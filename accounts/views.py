@@ -34,3 +34,18 @@ class ChangePasswordApi(APIView):
             return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class PassIdApi(APIView):
+    def get(self,request,id1,id2,id3):
+        print(id1,id2,id3)
+        
+        id_data = {
+            "id1" : id1,
+            "id2" : id2,
+            "id3" : id3
+        }
+
+        serializers = IDSerializer(data=id_data)
+        if serializers.is_valid() :
+            return Response(data=serializers.data,status=status.HTTP_200_OK)
+        return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)

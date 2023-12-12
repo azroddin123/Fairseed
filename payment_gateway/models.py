@@ -48,5 +48,3 @@ class QRTransfer(models.Model):
     QR_Path         = models.ImageField(upload_to="static/media_files/",blank=True,null=True)
     status          = models.BooleanField(default=False)
 
-
-    
