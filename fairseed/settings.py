@@ -71,7 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'fairseed.middlewares.CustomAuthentication'
+    # 'fairseed.middlewares.CustomAuthentication'
 ]
 ROOT_URLCONF = 'fairseed.urls'
 TEMPLATES = [
