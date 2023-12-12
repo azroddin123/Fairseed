@@ -25,6 +25,9 @@ urlpatterns = [
 
     # Add landing Page API
     path('landing-page',LandingPageApi.as_view()),
-    path('landing-page/<int:pk>',LandingPageApi.as_view())
+    path('landing-page/<int:pk>',LandingPageApi.as_view()),
 
+    # logical API 
+
+ 
 ]

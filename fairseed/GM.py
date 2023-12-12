@@ -7,6 +7,7 @@ from django.db.models import Q
 
 class GenericMethods:
     def getall(Model, ModelSerializer):
+        print("Azhar")
         try:
             return Response({"error" : False,"Data":
                 ModelSerializer(Model.objects.all(), many=True).data},
@@ -76,9 +77,10 @@ class GenericMethodsMixin:
     def get_query(self):
         return self.get_query
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, pk=None, *args, **kwargs):
         filter = {self.lookup: pk}
-        if pk == 0:
+        if pk == 0 or pk == None:
+            
             try:
                 return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
                     status=status.HTTP_200_OK,
@@ -118,24 +120,41 @@ class GenericMethodsMixin:
 
     def put(self, request, pk, *args, **kwargs):
         filter = {self.lookup: pk}
-        object1 = self.model.objects.get(**filter)
-        serializer = self.serializer(object1, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_202_ACCEPTED)
-        return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, *args, **kwargs):
-        data = self.model.objects.get(pk=pk)
-        if data:
-            data.delete()
-            return Response(
-                {"error" : False, "data": "Record Deleted Successfully"},
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        return Response(
+        try : 
+            object1 = self.model.objects.get(**filter)
+            serializer = self.serializer(object1, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_202_ACCEPTED)
+            return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except self.model.DoesNotExist:
+                  return Response(
             { "error" : True,
                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
             },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+            status=status.HTTP_400_BAD_REQUEST,)
+
+    def delete(self, request, pk, *args, **kwargs):
+        try : 
+            data = self.model.objects.get(pk=pk)
+            if data:
+                data.delete()
+                return Response(
+                    {"error" : False, "data": "Record Deleted Successfully"},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+            return Response(
+                { "error" : True,
+                    "message": str(self.model._meta).split(".")[1] + " object does not exists"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        except self.model.DoesNotExist:
+                  return Response(
+            {   "error" : True,
+                "message": str(self.model._meta).split(".")[1] + " object does not exists"
+            },
+            status=status.HTTP_400_BAD_REQUEST,)
+
+

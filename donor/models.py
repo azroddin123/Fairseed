@@ -19,20 +19,19 @@ class Donor(models.Model):
     city          = models.CharField(max_length=124)
     country       = models.CharField(max_length=124)
     mobile        = models.CharField(max_length=124)
-    pancard       = models.CharField(max_length=124)
+    pancard       = models.CharField(max_length=124,blank=True,null=True)
     comment       = models.TextField()
     payment_type  = models.CharField(max_length=124)
-    is_anonymous  = models.CharField(max_length=124)
+    is_anonymous  = models.BooleanField(default=False)
     status        = models.BooleanField(default=True)
 
 
-class BankTransfer(models.Model):
+class BankTransaction(models.Model):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE)
     transaction_id   = models.CharField(max_length=124)
     bank_name        = models.CharField(max_length=124)
     transaction_date = models.DateField()
-    other_details    = models.TextField()
-
+    other_details    = models.CharField(max_length=124,blank=True,null=True)
 
 class UpiTransaction(models.Model):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE) 

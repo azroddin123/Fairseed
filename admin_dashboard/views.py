@@ -65,7 +65,7 @@ class GeneralSettingApi(GenericMethodsMixin,APIView):
 
 class KeywordSApi(GenericMethodsMixin,APIView):
     model = Keyword
-    serializer_class = Keyword
+    serializer_class = KeywordSerializer
     lookup_field = "id"
 
 class LimitApi(GenericMethodsMixin,APIView):

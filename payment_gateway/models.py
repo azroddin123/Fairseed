@@ -2,10 +2,11 @@ from django.db import models
 
 class PGSetting(models.Model):
     currency_code     = models.CharField(max_length=50)
-    currency_symobl   = models.CharField(max_length=10)
-    fee_for_donaion   = models.IntegerField()
-    cuurency_position = models.CharField(max_length=124)
-    decimal_format    = models.DecimalField(max_digits=5,decimal_places=2) 
+    currency_symbol   = models.CharField(max_length=10)
+    fee_for_donation   = models.IntegerField()
+    currency_position = models.CharField(max_length=124)
+    # What will be the decimal format of the number 
+    decimal_format    = models.CharField(max_length=124) 
 
 class PayPal(models.Model):
     percentage_fee   = models.CharField(max_length=124)
@@ -28,8 +29,8 @@ class BankTransfer(models.Model) :
 
 
 class RazorPay(models.Model):
-    razorpay_key    = models.BooleanField(max_length=154)
-    razorpay_secret = models.BooleanField(max_length=154)
+    razorpay_key    = models.CharField(max_length=154)
+    razorpay_secret = models.CharField(max_length=154)
     status          = models.BooleanField(default=False)
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
@@ -45,6 +46,6 @@ class PhonePay(models.Model):
 
 class QRTransfer(models.Model):
     fee_percent     = models.IntegerField()
-    QR_Path         = models.ImageField(upload_to="static/media_files/",blank=True,null=True)
+    qr_path         = models.ImageField(upload_to="static/media_files/",blank=True,null=True)
     status          = models.BooleanField(default=False)
 

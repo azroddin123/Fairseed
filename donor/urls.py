@@ -7,8 +7,8 @@ urlpatterns = [
     path('donor-details/<int:pk>',DonorApi.as_view()),
 
 
-    path('bank-details',BankTransferApi.as_view()),
-    path('bank-details/<int:pk>',BankTransferApi.as_view()),
+    path('bank-transaction',BankTransactionApi.as_view()),
+    path('bank-transaction/<int:pk>',BankTransactionApi.as_view()),
 
 
     path('upi-transaction',UpiTransactionApi.as_view()),

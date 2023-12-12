@@ -7,9 +7,9 @@ class DonorSerializer(ModelSerializer):
         model = Donor
         fields = "__all__"
 
-class BankTansferSerializer(ModelSerializer):
+class BankTransactionSerializer(ModelSerializer):
     class Meta :
-        model = BankTransfer
+        model = BankTransaction
         fields = "__all__"
 
 class UpiSerializers(ModelSerializer):

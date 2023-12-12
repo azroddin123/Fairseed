@@ -13,5 +13,8 @@ urlpatterns = [
     path('bank-details/<int:pk>',BBDApi.as_view()),
 
     path('kyc-details',KycApi.as_view()),
-    path('kyc-details/<int:pk>',KycApi.as_view())
+    path('kyc-details/<int:pk>',KycApi.as_view()),
+
+    path('dashboard-api',DashboardApi.as_view()),
+    path('campaign-filter',CampaignFilterApi.as_view())
 ]

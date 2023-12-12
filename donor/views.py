@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .serializers import * 
 from .models import (
     Donor,
-    BankTransfer,
+    BankTransaction,
     UpiTransaction
 )
 from rest_framework.views import APIView
@@ -17,9 +17,9 @@ class DonorApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
 
-class BankTransferApi(GenericMethodsMixin,APIView):
-    model = BankTransfer
-    serializer_class =BankTansferSerializer
+class BankTransactionApi(GenericMethodsMixin,APIView):
+    model = BankTransaction
+    serializer_class =BankTransactionSerializer
     lookup_field = "id"
 
 class UpiTransactionApi(GenericMethodsMixin,APIView):

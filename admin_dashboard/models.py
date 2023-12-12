@@ -23,7 +23,7 @@ class GeneralSetting(models.Model):
 
 class Keyword(models.Model):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50,unique=True)
 
 class Limit(models.Model):
     num_campaigns           = models.PositiveIntegerField()
@@ -36,6 +36,7 @@ class Limit(models.Model):
 
 
 class SocialProfile(models.Model):
+    # Shall I related it to the the admin model
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
