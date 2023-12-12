@@ -8,15 +8,10 @@ class GSSerializer(ModelSerializer):
         model = GeneralSetting
         exclude = ("new_registration","auto_approve","email_verification","facebook_login","google_login")
 
-
-
-
-
 class KeywordSerializer(ModelSerializer):
     class Meta :
         model = Keyword
         fields = "__all__"
-
 
 class LimitSerializer(ModelSerializer):
     class Meta :
@@ -33,7 +28,6 @@ class LandingPageSerializer(ModelSerializer):
     class Meta :
         model = LandingPage
         fields = "__all__"
-
 
 class PageSerializer(ModelSerializer):
     class Meta :

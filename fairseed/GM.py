@@ -45,9 +45,7 @@ class GenericMethods:
             return Response(data=serializer.errors, status=status.HTTP_200_OK)
 
     def put(Model, ModelSerializer, data, id):
-        print("Data",data)
         classroom = Model.objects.get(id=id)
-        print(type(data['profile']))
         serializer = ModelSerializer(classroom, data=data)
         if serializer.is_valid():
             serializer.save()
@@ -107,16 +105,16 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, pk=None,*args, **kwargs):
         # if request.data['created_by'] : request.data['created_by'] = request.user.id
-        serializer = self.serializer(data=request.data)
-        print(request.data)
-        if serializer.is_valid():
-            serializer.save()
-            data = serializer.data
-            return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if pk==0 or pk == None :
+            serializer = self.serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                data = serializer.data
+                return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
         filter = {self.lookup: pk}

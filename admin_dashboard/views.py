@@ -6,7 +6,57 @@ from fairseed.GM import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
+from django.db.models import Sum
 
+class PagesAPi(APIView):
+    def get(self, request, pk=None):
+        try : 
+            if pk:
+                data = Pages.objects.get(pk=pk)
+                serializer = PageSerializer(data)
+            else:
+                data = Pages.objects.all()
+                serializer = PageSerializer(data, many=True)
+                return Response(serializer.data,status=status.HTTP_200_OK)
+        except Pages.DoesNotExist:
+            return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request,pk=None):
+        try : 
+            if pk==None or pk == 0 :
+                serializer = PageSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
+
+    def put(self, request, pk):
+        try : 
+            data = Pages.objects.get(pk=pk)
+            serializer = PageSerializer(data, data=request.data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Pages.DoesNotExist:
+            return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try : 
+            data = Pages.objects.get(pk=pk)
+            data.delete()
+            return Response({"SUCCESS" : "Record Deleted Successfully"},status=status.HTTP_204_NO_CONTENT)
+        except Pages.DoesNotExist:
+            return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GeneralSettingApi(GenericMethodsMixin,APIView):
     model = GeneralSetting
@@ -33,7 +83,10 @@ class LandingPageApi(GenericMethodsMixin,APIView):
     serializer_class = LandingPageSerializer
     lookup_field = "id"
 
-class PagesApi(GenericMethodsMixin,APIView):
-    model = Pages
-    serializer_class = PageSerializer
-    lookup_field = "id"
+# class PagesApi(GenericMethodsMixin,APIView):
+#     model = Pages
+#     serializer_class = PageSerializer
+#     lookup_field = "id"
+
+
+

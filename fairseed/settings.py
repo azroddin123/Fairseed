@@ -14,7 +14,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+ADMIN_SITE_TITLE = 'FairSeed Admin Panel'
+ADMIN_SITE_HEADER = 'FairSeed Admin'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -42,6 +43,9 @@ INSTALLED_APPS = [
     
     'accounts',
     'admin_dashboard',
+    'donor',
+    'campaign',
+    'payment_gateway',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders'

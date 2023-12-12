@@ -7,12 +7,12 @@ urlpatterns = [
     path('gs/<int:pk>',GeneralSettingApi.as_view()),
 
     # add pages in the project 
-    path('pages',PagesApi.as_view()),
-    path('pages/<int:pk>',PagesApi.as_view()),
+    path('pages',PagesAPi.as_view()),
+    path('pages/<int:pk>',PagesAPi.as_view()),
 
     # add Keywords API
     path('keyword',KeywordSApi.as_view()),
-    path('keyword/<int:pk>',PagesApi.as_view()),
+    path('keyword/<int:pk>',KeywordSApi.as_view()),
 
     # add limit data 
     path('limit',LimitApi.as_view()),

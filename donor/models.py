@@ -1,5 +1,6 @@
 from django.db import models
 from campaign.models import Campaign
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 
@@ -12,6 +13,8 @@ class Donor(models.Model):
     campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE),
     donation_type = models.CharField(max_length=124)
     full_name     = models.CharField(max_length=124)
+    amount        = models.PositiveIntegerField(validators=[MinValueValidator(50, message="Value must be greater than or equal to 50"),
+                    MaxValueValidator(100000, message="Value must be less than or equal to 100")])
     email         = models.CharField(max_length=124)
     city          = models.CharField(max_length=124)
     country       = models.CharField(max_length=124)
