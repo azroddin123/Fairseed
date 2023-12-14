@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
-from portals.choices import USER_TYPES,ROLE_CHOICES
+from portals.choices import UserChoices,RoleChoices
+from portals.models import BaseModel
 import uuid
 # Create your models here.
+class UserRole(BaseModel):
+    role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
 
 
 class User(AbstractBaseUser):
@@ -14,15 +17,17 @@ class User(AbstractBaseUser):
         unique=True,
     )
     is_admin         = models.BooleanField(default=False)
-    username         = models.CharField(max_length = 50 ,blank=True , null=True)
-    mobile_number    = models.CharField(max_length=20)
-    city             = models.CharField(max_length = 50 ,blank=True , null=True)
+    username         = models.CharField(max_length = 50)
+    mobile_number    = models.CharField(max_length=20,unique=True)
+    city             = models.CharField(max_length = 50 ,blank=True, null=True)
     country          = models.CharField(max_length=50, blank=True, null=True)
-    user_type        = models.CharField(choices=USER_TYPES,max_length=23)
+    user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
     privacy_policy   = models.BooleanField(default=False)
 
     created_at       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_at       = models.DateTimeField(auto_now=True)
+
+    user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     
     objects    = UserManager()
     
@@ -46,7 +51,3 @@ class User(AbstractBaseUser):
 
 
 
-
-class UserRole(models.Model):
-    user       = models.ForeignKey(User,on_delete=models.CASCADE)
-    role_name  = models.CharField(choices=ROLE_CHOICES,max_length=25,default="normal")

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DonorConfig(AppConfig):
+class PaymentGatewayConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'donor'
+    name = 'payment_gateways'

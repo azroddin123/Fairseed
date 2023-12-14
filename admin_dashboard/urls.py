@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import * 
-from campaign.views import CampaignAdminApi
+from campaigns.views import CampaignAdminApi
 urlpatterns = [
     # add general setting in the project 
     path('gs',GeneralSettingApi.as_view()),

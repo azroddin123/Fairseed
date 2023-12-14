@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Sum
-from donor.models import Donor
+from donors.models import Donor
 from .serializers import * 
 from .models import (
     Campaign,

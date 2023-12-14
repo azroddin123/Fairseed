@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 # Create your models here.
 from portals.models import BaseModel
-from portals.choices import RAISE_CHOICES,ZAKAT_CHOICES,CAMPAIGN_CHOICES
+from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 
 
 
@@ -15,15 +15,15 @@ class CampaignCatagory(BaseModel):
 class Campaign(BaseModel):
     catagory        = models.ForeignKey(CampaignCatagory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
-    rasing_for      = models.CharField(choices=RAISE_CHOICES,max_length=124)
+    rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
-    goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 0"),
-                    MaxValueValidator(1000, message="Value must be less than or equal to 100")])
+    goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 100"),
+                    MaxValueValidator(1000000, message="Value must be less than or equal to 1000000")])
     fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
-                    MaxValueValidator(10000, message="Value must be less than or equal to 100")])
+                    MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
     location        = models.CharField(max_length=124)
-    zakat_eligible  = models.CharField(choices=ZAKAT_CHOICES,max_length=124)
-    status          = models.CharField(choices=CAMPAIGN_CHOICES,max_length=124,default="pending")
+    zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
+    status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     start_date      = models.DateField(null=True,blank=True)
     end_date        = models.DateField(null=True,blank=True)
     description     = models.TextField()

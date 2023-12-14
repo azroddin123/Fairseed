@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import User
+from .models import User,UserRole
 from rest_framework import serializers
+from django.db import models
+
 
 class UserSerializer(ModelSerializer):
     class Meta :
@@ -12,12 +14,9 @@ class UserSerializer(ModelSerializer):
         user = User(**self.validated_data)
         password = self.validated_data["password"]
         user.set_password(password)
-        print("in save")
         user.save()
-        print("user saved")
         return user
     
-
 class UserSerializer1(ModelSerializer):
     class Meta :
         model = User
@@ -69,3 +68,7 @@ class UserAdminSerializer(ModelSerializer):
         fields = ('username','email','mobile_number')
 
 
+class UserRoleSerializer(ModelSerializer):
+    class Meta :
+        model = User 
+        fields = "__all__"

@@ -1,13 +1,13 @@
 from django.db import models
-from campaign.models import Campaign
+from campaigns.models import Campaign
 from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel
-from portals.choices import DONATION_CHOICES,PAYMENT_CHOICES
+from portals.choices import DonationChoices,PaymentChoices
 # Create your models here.
 
 class Donor(BaseModel):
     campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE),
-    donation_type = models.CharField(choices=DONATION_CHOICES,max_length=124)
+    donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)
     full_name     = models.CharField(max_length=124)
     amount        = models.PositiveIntegerField(validators=[MinValueValidator(50, message="Value must be greater than or equal to 50"),
                     MaxValueValidator(100000, message="Value must be less than or equal to 100")])
@@ -17,7 +17,7 @@ class Donor(BaseModel):
     mobile        = models.CharField(max_length=124)
     pancard       = models.CharField(max_length=124,blank=True,null=True)
     comment       = models.TextField()
-    payment_type  = models.CharField(choices=PAYMENT_CHOICES,max_length=124)
+    payment_type  = models.CharField(choices=PaymentChoices.choices,max_length=124)
     is_anonymous  = models.BooleanField(default=False)
     status        = models.BooleanField(default=True)
 

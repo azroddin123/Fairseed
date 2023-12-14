@@ -1,9 +1,18 @@
 # Accouns folder choices 
+# Make all choices CapitAL 
+from .constants import * 
+from django.db import models 
 
-USER_TYPES = [
-    ('as INDIVIDUAL', 'Indiviudal'),
-    ('as NGO', 'NGO'),
-]
+class UserChoices(models.TextChoices):
+    INDIVIDUAL = INDIVIDUAL,INDIVIDUAL 
+    NGO        = NGO,NGO
+
+
+class RoleChoices(models.TextChoices):
+    NORMAL            = NORMAL,NORMAL
+    CAMPAIGN_APPROVER = CAMPAIGN_APPROVER,CAMPAIGN_APPROVER
+    CAMPAIGN_MANAGER  = CAMPAIGN_MANAGER,CAMPAIGN_MANAGER
+    ADMIN             = ADMIN ,ADMIN 
 
 
 ROLE_CHOICES = [
@@ -16,23 +25,30 @@ ROLE_CHOICES = [
 
 # Campaign Choices 
 
-ZAKAT_CHOICES = [
-    ('yes', 'yes'),
-    ('no', 'no'),
-]
 
-RAISE_CHOICES = [
-    ('self','self'),
-    ('others','others')
-]
+class ZakatChoices(models.TextChoices):
+    YES = YES,YES
+    NO  = NO,NO
 
 
-CAMPAIGN_CHOICES = [
-    ('pending',"pending"),
-    ('active',"active"),
-    ("completed" ,"completed"),
-    ("rejected" , "completed")
-]
+class RaiseChoices(models.TextChoices):
+    SELF  = SELF,SELF
+    OTHER =  OTHER,OTHER
+
+
+class CampaignChoices(models.TextChoices):
+    PENDING    = PENDING,PENDING
+    ACTIVE     = ACTIVE,ACTIVE
+    COMPLETED  = COMPLETED,COMPLETED
+    REJECTED   = REJECTED,REJECTED
+
+
+class CourseChoices(models.TextChoices):
+    UNDERGRADUATE = UNDERGRADUATE,UNDERGRADUATE
+    POSTGRADUATE = POSTGRADUATE,POSTGRADUATE
+    DOCTORATE,DOCTORATE,DOCTORATE
+
+
 
 COURSE_CHOICES  = [
     ("undergraduate","undergraduate"),
@@ -41,19 +57,19 @@ COURSE_CHOICES  = [
 ]
 # Donor 
 
+class DonationChoices(models.TextChoices):
+    GENERAL_DONATION = GENERAL_DONATION,GENERAL_DONATION
+    ZAKAT = ZAKAT,ZAKAT
+    INTEREST_OFFLOADING = INTEREST_OFFLOADING,INTEREST_OFFLOADING
+
+
 DONATION_CHOICES  = [
     ("genral_donation","general_donation"),
     ("zakat","zakat"),
     ("interest_offloading","interest_offloading")
 ]
 
-PAYMENT_CHOICES = [
-    ("bank_transfer" ,"bank_transfer"),
-    ("upi/credit_card/" ,"upi")
-]
 
-
-# DONATION_CHOICES = [
-#     ("bank_transfer" ,"bank_transfer"),
-#     ("upi/credit_card/" ,"upi")
-# ]
+class PaymentChoices(models.TextChoices):
+    BANK_TRANSFER = BANK_TRANSFER,BANK_TRANSFER
+    UPI = UPI,UPI
