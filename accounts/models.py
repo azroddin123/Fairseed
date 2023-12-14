@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
+from portals.choices import USER_TYPES,ROLE_CHOICES
+import uuid
 # Create your models here.
-USER_TYPES = [
-    ('as INDIVIDUAL', 'Indiviudal'),
-    ('as NGO', 'NGO'),
-]
+
 
 class User(AbstractBaseUser):
-    email    = models.EmailField(
+    id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
+    email      = models.EmailField(
         verbose_name='email address',
         max_length=255,
         unique=True,
@@ -45,15 +45,8 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 
-# ROLE_CHOICES = [
-#     (
-#         "normal" ,"Normal",
-#         "campaign_approver" , "Campaign_Approver",
-#         "campaign_manager", "Campaign_Manager"
-#         "admin","Admin"
-#     )
-# ]
 
-# class UserRole(models.Model):
-#     user       = models.ForeignKey(User,on_delete=models.CASCADE)
-#     role_name  = models.CharField(choices=ROLE_CHOICES,max_length=25,default="normal")
+
+class UserRole(models.Model):
+    user       = models.ForeignKey(User,on_delete=models.CASCADE)
+    role_name  = models.CharField(choices=ROLE_CHOICES,max_length=25,default="normal")

@@ -40,12 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    # Apps
     'accounts',
+    
     'admin_dashboard',
     'donor',
     'campaign',
     'payment_gateway',
+    'portals',
+    # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders'

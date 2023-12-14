@@ -1,6 +1,59 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from django.core.exceptions import ValidationError
+from itertools import chain
+from django.db.models import Q
+
+
+class GenericMethods:
+    def getall(Model, ModelSerializer):
+        print("Azhar")
+        try:
+            return Response({"error" : False,"Data":
+                ModelSerializer(Model.objects.all(), many=True).data},
+                status=status.HTTP_200_OK,
+                success=True,
+                
+            )
+        except:
+            return Response(
+                data={
+                    "Error": str(Model._meta).split(".")[1] + " object does not exists"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def getone(Model, ModelSerializer, pk):
+        try:
+            return Response({"error" : False,"data" : 
+                ModelSerializer(Model.objects.get(id=pk)).data},
+                status=status.HTTP_200_OK,
+            )
+        except Model.DoesNotExist:
+            return Response(
+                data={
+                    "Error": str(Model._meta).split(".")[1] + " object does not exists"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def post(ModelSerializer, data):
+        serializer = ModelSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_200_OK)
+
+    def put(Model, ModelSerializer, data, id):
+        classroom = Model.objects.get(id=id)
+        serializer = ModelSerializer(classroom, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GenericMethodsMixin:
     def __init__(self) -> None:
@@ -25,9 +78,9 @@ class GenericMethodsMixin:
     def get_query(self):
         return self.get_query
 
-    def get(self, request, uuid=None, *args, **kwargs):
-        filter = {self.lookup: uuid}
-        if uuid == 0 or uuid == None:
+    def get(self, request, pk=None, *args, **kwargs):
+        filter = {self.lookup: pk}
+        if pk == str(0) or pk == None:
             
             try:
                 return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
@@ -44,7 +97,7 @@ class GenericMethodsMixin:
         else:
             try:
                 return Response({"error":False,"data" : 
-                    self.serializer(self.model.objects.get(uuid=uuid)).data},
+                    self.serializer(self.model.objects.get(pk=pk)).data},
                     status=status.HTTP_200_OK,
                 )
             except self.model.DoesNotExist:
@@ -55,9 +108,11 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    def post(self, request, uuid=None,*args, **kwargs):
+    def post(self, request, pk=None,*args, **kwargs):
         # if request.data['created_by'] : request.data['created_by'] = request.user.id
-        if uuid==0 or uuid == None :
+        print("Outside Api")
+        if pk == str(0) or pk == None :
+            print("in api")
             serializer = self.serializer(data=request.data)
             if serializer.is_valid():
                 print("serializer data ")
@@ -67,9 +122,8 @@ class GenericMethodsMixin:
             else:
                 return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, uuid, *args, **kwargs):
-        print("In request data" ,)
-        filter = {self.lookup: uuid}
+    def put(self, request, pk, *args, **kwargs):
+        filter = {self.lookup: pk}
         try : 
             object1 = self.model.objects.get(**filter)
             serializer = self.serializer(object1, data=request.data, partial=True)
@@ -84,9 +138,9 @@ class GenericMethodsMixin:
             },
             status=status.HTTP_400_BAD_REQUEST,)
 
-    def delete(self, request, uuid, *args, **kwargs):
+    def delete(self, request, pk, *args, **kwargs):
         try : 
-            data = self.model.objects.get(uuid=uuid)
+            data = self.model.objects.get(pk=pk)
             if data:
                 data.delete()
                 return Response(
@@ -106,59 +160,13 @@ class GenericMethodsMixin:
                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
             },
             status=status.HTTP_400_BAD_REQUEST,)
+        
+        except ValidationError as e:
+                # Handle the specific error, e.g., display a custom error message
+                return Response({
+                    "error" : True,
+                    "message" : str(e) 
+                },status=status.HTTP_400_BAD_REQUEST)
 
-
-
-# from itertools import chain
-# from django.db.models import Q
-
-
-# class GenericMethods:
-#     def getall(Model, ModelSerializer):
-#         print("Azhar")
-#         try:
-#             return Response({"error" : False,"Data":
-#                 ModelSerializer(Model.objects.all(), many=True).data},
-#                 status=status.HTTP_200_OK,
-#                 success=True,
-                
-#             )
-#         except:
-#             return Response(
-#                 data={
-#                     "Error": str(Model._meta).split(".")[1] + " object does not exists"
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-#     def getone(Model, ModelSerializer, pk):
-#         try:
-#             return Response({"error" : False,"data" : 
-#                 ModelSerializer(Model.objects.get(id=pk)).data},
-#                 status=status.HTTP_200_OK,
-#             )
-#         except Model.DoesNotExist:
-#             return Response(
-#                 data={
-#                     "Error": str(Model._meta).split(".")[1] + " object does not exists"
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-#     def post(ModelSerializer, data):
-#         serializer = ModelSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-#         else:
-#             return Response(data=serializer.errors, status=status.HTTP_200_OK)
-
-#     def put(Model, ModelSerializer, data, id):
-#         classroom = Model.objects.get(id=id)
-#         serializer = ModelSerializer(classroom, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
-#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

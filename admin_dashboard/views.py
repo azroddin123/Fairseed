@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from fairseed.GM import GenericMethodsMixin
+from fairseed.GM1 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
@@ -78,7 +78,7 @@ class SocialProfileApi(GenericMethodsMixin,APIView):
     serializer_class = SocialProfileSerializer
     lookup_field = "id"
 
-class LandingPageApi(GenericMethodsMixin,APIView):
+class LandingPageSettingApi(GenericMethodsMixin,APIView):
     model = LandingPage
     serializer_class = LandingPageSerializer
     lookup_field = "id"

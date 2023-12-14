@@ -3,8 +3,9 @@ from django.db import models
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from portals.models import BaseModel
 
-class GeneralSetting(models.Model):
+class GeneralSetting(BaseModel):
     namesite           = models.CharField(max_length=32)
     welcome_text       = models.CharField(max_length=32)
     welcome_subtitle   = models.CharField(max_length=32)
@@ -21,11 +22,11 @@ class GeneralSetting(models.Model):
     google_login       = models.BooleanField(default=False)
 
 
-class Keyword(models.Model):
+class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=50,unique=True)
 
-class Limit(models.Model):
+class Limit(BaseModel):
     num_campaigns           = models.PositiveIntegerField()
     file_size               = models.PositiveIntegerField()
     campaign_min_amount     = models.PositiveIntegerField()
@@ -35,14 +36,14 @@ class Limit(models.Model):
     max_donation_amount     = models.PositiveIntegerField()
 
 
-class SocialProfile(models.Model):
+class SocialProfile(BaseModel):
     # Shall I related it to the the admin model
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
 
 
-class LandingPage(models.Model):
+class LandingPage(BaseModel):
     logo              = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     logo_footer       = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     favicon           = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
@@ -53,7 +54,7 @@ class LandingPage(models.Model):
     default_link_color= models.CharField(max_length=45)
 
 
-class Pages(models.Model):
+class Pages(BaseModel):
     title       = models.CharField(max_length=50)
     slug        = models.CharField(max_length=124)
     show_navbar = models.BooleanField(default=False)

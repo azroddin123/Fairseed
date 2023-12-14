@@ -4,13 +4,13 @@ from donor.models import Donor
 from .serializers import * 
 from .models import (
     Campaign,
-    CampaignCatagories,
+    CampaignCatagory,
     BenificiaryBankDetails,
     KycDetails
 )
 from rest_framework.views import APIView
-
-from fairseed.GM import GenericMethodsMixin
+import uuid
+from fairseed.GM1 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -21,7 +21,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 class  CampaignCatagoryApi(GenericMethodsMixin,APIView):
-    model = CampaignCatagories
+    model = CampaignCatagory
     serializer_class = CampaignCatagorySerializer
     lookup_field = "id"
 
@@ -35,6 +35,11 @@ class KycApi(GenericMethodsMixin,APIView):
     serializer_class = KycDetailSerializer
     lookup_field = "id"
 
+class CampaignAdminApi(GenericMethodsMixin,APIView):
+    model = Campaign
+    serializer_class = CampaignAdminSerializer
+    lookup_field  = "id"
+
 
 class DashboardApi(APIView):
     def get(self,request,*args, **kwargs) :
@@ -45,9 +50,7 @@ class DashboardApi(APIView):
         "successfull_campaign" : Campaign.objects.filter(is_successfull=True).count(),
         "student_benifited" : Campaign.objects.filter(is_successfull=True).count()
         }
-
         print(data)
-        
         serializer = DashboardSerializer(data=data)
         if serializer.is_valid():
             return Response(data=serializer.data,status=status.HTTP_200_OK)
@@ -59,13 +62,32 @@ class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
             catagory = request.GET.get('name')
-            campain_id=CampaignCatagories.objects.get(name=catagory)
-            print("1===================>")
+            campain_id=CampaignCatagory.objects.get(name=catagory)
             campaing_data = Campaign.objects.filter(catagory=campain_id)
-            print("campaign data",campaing_data)
-    
             serializer = CampaignSerializer1(campaing_data,many=True)
             return Response({"error": False, "data" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
-            return Response({"error" : str(e) },status=status.HTTP_200_OK)
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
+# getting some issues in this api
+class CampaignByCatagoryApi(APIView):
+    def get(self,pk,request,*args, **kwargs):
+        try :
+            data = CampaignCatagory.objects.get(id=pk)
+            serializer = CampaignByCatagorySerializer(data)
+            return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
+class ReportedCauseApi(APIView):
+    def get(self,request,*args, **kwargs) :
+        try :
+            data = Campaign.objects.filter(is_reported=True)
+            serializer = CampaignSerializer1(data,many=True)
+            return Response({"error": False, "data" : serializer.data },status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    

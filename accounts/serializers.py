@@ -63,7 +63,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         return user
 
 
-class IDSerializer(serializers.Serializer):
-    id1 = serializers.IntegerField()
-    id2 = serializers.IntegerField()
-    id3 = serializers.IntegerField()
+class UserAdminSerializer(ModelSerializer):
+    class Meta :
+        model = User
+        fields = ('username','email','mobile_number')
+
+

@@ -1,11 +1,12 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+from accounts.serializers import UserAdminSerializer
 
 from .models import * 
 
 class CampaignCatagorySerializer(ModelSerializer):
     class Meta:
-        model = CampaignCatagories
+        model = CampaignCatagory
         fields = "__all__"
 
 class CampaignSerializer(ModelSerializer):
@@ -36,3 +37,17 @@ class DashboardSerializer(serializers.Serializer):
     donor_count    = serializers.IntegerField()
     successfull_campaign = serializers.IntegerField()
     student_benifited  = serializers.IntegerField()
+
+
+class CampaignByCatagorySerializer(ModelSerializer):
+    campaign = CampaignSerializer1(source="campaign_set",many=True)
+    class Meta :
+        model = CampaignCatagory
+        fields = "__all__"
+
+
+class CampaignAdminSerializer(ModelSerializer):
+    user = UserAdminSerializer()
+    class Meta :
+        model = Campaign
+        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user')
