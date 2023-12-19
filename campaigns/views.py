@@ -41,6 +41,12 @@ class CampaignAdminApi(GenericMethodsMixin,APIView):
     lookup_field  = "id"
 
 
+class DocumentApi(GenericMethodsMixin,APIView):
+    model = Documents
+    serializer_class = DocumentSerializer
+    lookup_field = "id"
+    
+
 class DashboardApi(APIView):
     def get(self,request,*args, **kwargs) :
         data = {

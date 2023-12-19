@@ -15,6 +15,9 @@ urlpatterns = [
     path('kyc-details',KycApi.as_view()),
     path('kyc-details/<str:pk>',KycApi.as_view()),
 
+    path('documents',DocumentApi.as_view()),
+    path('documents/<str:pk>',DocumentApi.as_view()),
+
 
     path('dashboard-api',DashboardApi.as_view()),
     path('campaign-filter',CampaignFilterApi.as_view()),

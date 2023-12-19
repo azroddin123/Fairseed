@@ -51,3 +51,9 @@ class CampaignAdminSerializer(ModelSerializer):
     class Meta :
         model = Campaign
         fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user')
+
+
+class DocumentSerializer(ModelSerializer):
+    class Meta :
+        model = Documents
+        fields = "__all__"

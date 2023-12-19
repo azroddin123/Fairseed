@@ -29,18 +29,13 @@ class Campaign(BaseModel):
     description     = models.TextField()
     summary         = models.TextField()
 
+    
     is_successfull  = models.BooleanField(default=False)
- 
     is_featured    = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
-    
-    is_scholarship  = models.BooleanField(default=False)
-    course          = models.CharField(max_length=50,blank=True,null=True)
+
 
 # want to combine these two models 
-
-   
-
 class BenificiaryBankDetails(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')
     account_holder_name = models.CharField(max_length=124)
@@ -50,6 +45,7 @@ class BenificiaryBankDetails(BaseModel):
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
    
+
 class KycDetails(BaseModel):
     campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')
     pan_card           = models.CharField(max_length=10)
@@ -62,7 +58,10 @@ class KycDetails(BaseModel):
 
 
 
-
+class Documents(BaseModel):
+    campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
+    doc_name = models.CharField(max_length=124)
+    doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
 
 
 
