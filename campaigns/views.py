@@ -5,8 +5,7 @@ from .serializers import *
 from .models import (
     Campaign,
     CampaignCatagory,
-    BenificiaryBankDetails,
-    KycDetails
+    CampaignKycBenificiary,
 )
 from rest_framework.views import APIView
 import uuid
@@ -25,15 +24,15 @@ class  CampaignCatagoryApi(GenericMethodsMixin,APIView):
     serializer_class = CampaignCatagorySerializer
     lookup_field = "id"
 
-class BBDApi(GenericMethodsMixin,APIView):
-    model = BenificiaryBankDetails
-    serializer_class = BBDetailSerailizer
+class CKBApi(GenericMethodsMixin,APIView):
+    model = CampaignKycBenificiary
+    serializer_class = CKBSerializer
     lookup_field = "id"
 
-class KycApi(GenericMethodsMixin,APIView):
-    model = KycDetails
-    serializer_class = KycDetailSerializer
-    lookup_field = "id"
+# class KycApi(GenericMethodsMixin,APIView):
+#     model = KycDetails
+#     serializer_class = KycDetailSerializer
+#     lookup_field = "id"
 
 class CampaignAdminApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -45,7 +44,7 @@ class DocumentApi(GenericMethodsMixin,APIView):
     model = Documents
     serializer_class = DocumentSerializer
     lookup_field = "id"
-    
+
 
 class DashboardApi(APIView):
     def get(self,request,*args, **kwargs) :

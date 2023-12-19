@@ -19,16 +19,22 @@ class CampaignSerializer1(ModelSerializer):
         model = Campaign
         exclude = ["is_successfull","status","is_featured","is_reported","is_scholarship","course"]
 
-class BBDetailSerailizer(ModelSerializer):
-    class Meta :
-        model = BenificiaryBankDetails
+
+class CKBSerializer(ModelSerializer):
+    class meta :
+        model = CampaignKycBenificiary
         fields = "__all__"
+
+# class BBDetailSerailizer(ModelSerializer):
+#     class Meta :
+#         model = BenificiaryBankDetails
+#         fields = "__all__"
     
 
-class KycDetailSerializer(ModelSerializer):
-    class Meta :
-        model = KycDetails
-        fields = "__all__"
+# class KycDetailSerializer(ModelSerializer):
+#     class Meta :
+#         model = KycDetails
+#         fields = "__all__"
 
 
 class DashboardSerializer(serializers.Serializer):
@@ -57,3 +63,4 @@ class DocumentSerializer(ModelSerializer):
     class Meta :
         model = Documents
         fields = "__all__"
+

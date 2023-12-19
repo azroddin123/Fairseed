@@ -28,15 +28,13 @@ class Campaign(BaseModel):
     end_date        = models.DateField(null=True,blank=True)
     description     = models.TextField()
     summary         = models.TextField()
-
-    
+   
     is_successfull  = models.BooleanField(default=False)
     is_featured    = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
 
-
 # want to combine these two models 
-class BenificiaryBankDetails(BaseModel):
+class CampaignKycBenificiary(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')
     account_holder_name = models.CharField(max_length=124)
     account_number      = models.PositiveIntegerField()
@@ -44,19 +42,23 @@ class BenificiaryBankDetails(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-   
-
-class KycDetails(BaseModel):
-    campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')
-    pan_card           = models.CharField(max_length=10)
-    pan_card_image     = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    adhar_card         = models.CharField(max_length=16)
-    adhar_card_image   = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    other_details      = models.CharField(max_length=100,blank=True,null=True)
-    is_verified        = models.BooleanField(default=False)
+    
+    pan_card            = models.CharField(max_length=10)
+    pan_card_image      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    adhar_card          = models.CharField(max_length=16)
+    adhar_card_image    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    other_details       = models.CharField(max_length=100,blank=True,null=True)
+    is_verified         = models.BooleanField(default=False)
 
 
-
+# class KycDetails(BaseModel):
+#     campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')
+#     pan_card           = models.CharField(max_length=10)
+#     pan_card_image     = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+#     adhar_card         = models.CharField(max_length=16)
+#     adhar_card_image   = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+#     other_details      = models.CharField(max_length=100,blank=True,null=True)
+#     is_verified        = models.BooleanField(default=False)
 
 class Documents(BaseModel):
     campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")

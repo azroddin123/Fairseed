@@ -9,11 +9,11 @@ urlpatterns = [
     path('campaign-catagory',CampaignCatagoryApi.as_view()),
     path('campaign-catagory/<str:pk>',CampaignCatagoryApi.as_view()),
 
-    path('bank-details',BBDApi.as_view()),
-    path('bank-details/<str:pk>',BBDApi.as_view()),
+    path('campaign-details',CKBApi.as_view()),
+    path('campaign-details/<str:pk>',CKBApi.as_view()),
 
-    path('kyc-details',KycApi.as_view()),
-    path('kyc-details/<str:pk>',KycApi.as_view()),
+    # path('kyc-details',KycApi.as_view()),
+    # path('kyc-details/<str:pk>',KycApi.as_view()),
 
     path('documents',DocumentApi.as_view()),
     path('documents/<str:pk>',DocumentApi.as_view()),
