@@ -22,7 +22,7 @@ class User(AbstractBaseUser):
     city             = models.CharField(max_length = 50 ,blank=True, null=True)
     country          = models.CharField(max_length=50, blank=True, null=True)
     user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
-    privacy_policy   = models.BooleanField(default=False)
+    accepted_policy  = models.BooleanField(default=False)
 
     created_at       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_at       = models.DateTimeField(auto_now=True)
