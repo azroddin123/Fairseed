@@ -9,6 +9,7 @@ from .models import (
 )
 from rest_framework.views import APIView
 from fairseed.GM1 import GenericMethodsMixin
+from rest_framework import status
 from rest_framework.response import Response
 
 
@@ -16,6 +17,29 @@ class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
     lookup_field = "id"
+
+    def post(self,request,pk=None,*args, **kwargs):
+        if pk == str(0) or pk == None :
+            print("in api")
+            amount = request.data["amount"]
+            obj = Campaign.objects.get(pk=request.data["campaign"])
+            required_amount = obj.goal_amount - obj.fund_raised
+            if amount > required_amount :
+                return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
+            # obj.fund_raised 
+            serializer = DonorSerializer(data=request.data)
+            # here i have to update the campaign model also 
+
+            if serializer.is_valid():
+               
+                obj.fund_raised = obj.fund_raised + request.data["amount"]
+                obj.save()
+                serializer.save()
+                return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        pass
 
 class BankTransactionApi(GenericMethodsMixin,APIView):
     model = BankTransaction
@@ -28,31 +52,3 @@ class UpiTransactionApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-# from django.db.models import Count
-# from django.utils import timezone
-
-# current_date = timezone.now()
-
-# # Calculate the date 8 weeks ago
-# eight_weeks_ago = current_date - timezone.timedelta(weeks=8)
-
-# # Query to get cumulative donation counts by week number for SQLite
-# weekly_donation_counts = Donor.objects.filter(
-#     created_at__gte=eight_weeks_ago,
-#     created_at__lt=current_date
-# ).extra({
-#     'week': "strftime('%%W', created_at)",
-# }).values('week').annotate(week_count=Count('id')).order_by('week')
-
-# # Calculate cumulative counts
-# cumulative_count = 0
-# cumulative_counts = []
-
-# for week_count in weekly_donation_counts:
-#     cumulative_count += week_count['week_count']
-#     cumulative_counts.append({
-#         'week': week_count['week'],
-#         'cumulative_count': cumulative_count,
-#     })
-
-# print("Cumulative Donation Counts:", cumulative_counts)

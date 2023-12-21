@@ -96,16 +96,14 @@ class ReportedCauseApi(APIView):
 
 
 
-class CampaignDetailsApi(APIView):
+class CampaignDetailsApi(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignSerializer
     lookup_field  = "id"
 
     def get(self,request,pk=None,*args, **kwargs):
-        # try :
-            print(type(pk),"pk is a valid id")
+        try :
             if pk == None or pk == str(0) :
-                print("111111111111")
                 try : 
                     data = Campaign.objects.all()
                     serializer = CampaignAdminSerializer(data,many=True)
@@ -116,6 +114,20 @@ class CampaignDetailsApi(APIView):
                 data = Campaign.objects.get(pk=pk)
                 serializer = CampaignDetailSerializer(data)
                 return Response(data=serializer.data,status=status.HTTP_200_OK)
-        # except :
-        #         return Response(status=status.HTTP_400_BAD_REQUEST)
+        except :
+                return Response(status=status.HTTP_400_BAD_REQUEST)
     
+
+
+
+
+def update_campaign_fund():
+   campaigns = Campaign.objects.filter(status=CampaignChoices.PENDING)
+   for campaign in campaigns:
+        print(campaign)
+        total_donation = Donor.objects.filter(campaign=campaign).aggregate(total_amount=models.Sum('amount'))['total_amount']
+        campaign.fund_raised = total_donation if total_donation else 0
+        # campaign.save()
+        
+
+update_campaign_fund()

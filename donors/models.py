@@ -20,6 +20,7 @@ class Donor(BaseModel):
     payment_type  = models.CharField(choices=PaymentChoices.choices,max_length=124)
     is_anonymous  = models.BooleanField(default=False)
     status        = models.BooleanField(default=True)
+    is_approved   = models.BooleanField(default=False)
 
 
 class BankTransaction(BaseModel):

@@ -8,7 +8,7 @@ from django.db import models
 class UserSerializer(ModelSerializer):
     class Meta :
         model = User
-        exclude = ("last_login","created_at","updated_at","is_admin")
+        exclude = ("last_login","created_on","updated_on","is_admin")
 
     def save(self):
         user = User(**self.validated_data)
@@ -20,7 +20,7 @@ class UserSerializer(ModelSerializer):
 class UserSerializer1(ModelSerializer):
     class Meta :
         model = User
-        exclude = ("last_login","created_at","updated_at","is_admin","password")
+        exclude = ("last_login","created_on","updated_on","is_admin","password")
 
 
 class ChangePasswordSerializer(serializers.Serializer):
