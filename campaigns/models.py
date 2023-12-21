@@ -13,7 +13,7 @@ class CampaignCatagory(BaseModel):
     status = models.BooleanField(default=False)
 
 class Campaign(BaseModel):
-    catagory        = models.ForeignKey(CampaignCatagory,on_delete=models.CASCADE)
+    catagory        = models.ForeignKey(CampaignCatagory,on_delete=models.CASCADE,)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)

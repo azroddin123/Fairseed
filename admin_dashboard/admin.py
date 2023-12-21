@@ -22,6 +22,7 @@ class LandingPageAdmin(admin.ModelAdmin):
 class PageAdmin(admin.ModelAdmin):
     list_display = ('title','slug','show_navbar','show_page','content')
 
+
 admin.site.register(GeneralSetting,GSAdmin)
 admin.site.register(Keyword,KeywordAdmin)
 admin.site.register(Limit,LimitAdmin)

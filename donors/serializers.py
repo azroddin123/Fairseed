@@ -7,6 +7,12 @@ class DonorSerializer(ModelSerializer):
         model = Donor
         fields = "__all__"
 
+class DonorSerializer1(ModelSerializer):
+    class Meta :
+        model = Donor
+        fields = ('is_anonymous','full_name','amount')
+
+
 class BankTransactionSerializer(ModelSerializer):
     class Meta :
         model = BankTransaction

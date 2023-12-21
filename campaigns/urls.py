@@ -3,8 +3,8 @@ from .views import *
 
 urlpatterns = [
 
-    path('cause',CampaignApi.as_view()),
-    path('cause/<str:pk>',CampaignApi.as_view()),
+    path('cause',CampaignDetailsApi.as_view()),
+    path('cause/<str:pk>',CampaignDetailsApi.as_view()),
     
     path('campaign-catagory',CampaignCatagoryApi.as_view()),
     path('campaign-catagory/<str:pk>',CampaignCatagoryApi.as_view()),

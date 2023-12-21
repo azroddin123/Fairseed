@@ -24,8 +24,8 @@ class User(AbstractBaseUser):
     user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
     accepted_policy  = models.BooleanField(default=False)
 
-    created_at       = models.DateTimeField(auto_now_add=True,editable=False)
-    updated_at       = models.DateTimeField(auto_now=True)
+    created_on      = models.DateTimeField(auto_now_add=True,editable=False)
+    updated_on      = models.DateTimeField(auto_now=True)
 
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     

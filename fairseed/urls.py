@@ -39,7 +39,6 @@ urlpatterns = [
 ]
 
 from django.contrib import admin
-
-admin.site.site_header = 'FairSeed'                    # default: "Django Administration"
-admin.site.index_title = 'FairSeed Admin Panel'                 # default: "Site administration"
-admin.site.site_title = 'Fairseed' #
+admin.site.site_header  = 'FairSeed'                             # default: "Django Administration"
+admin.site.index_title  = 'FairSeed Admin Panel'                 # default: "Site administration"
+admin.site.site_title   = 'Fairseed'                              # default : "django admin panel site title"

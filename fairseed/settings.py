@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*",]
+CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -61,6 +62,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
 from datetime import timedelta
 
 SIMPLE_JWT = {

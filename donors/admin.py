@@ -12,6 +12,7 @@ class BTAdmin(admin.ModelAdmin):
 
 class UTAdmin(admin.ModelAdmin):
     list_display = ['donor','payment_id','order_id','signature']
+    
 admin.site.register(Donor,DonorAdmin)
 admin.site.register(BankTransaction,BTAdmin)
 admin.site.register(UpiTransaction)

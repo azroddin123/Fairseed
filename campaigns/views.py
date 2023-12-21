@@ -95,4 +95,27 @@ class ReportedCauseApi(APIView):
 
 
 
+
+class CampaignDetailsApi(APIView):
+    model = Campaign
+    serializer_class = CampaignSerializer
+    lookup_field  = "id"
+
+    def get(self,request,pk=None,*args, **kwargs):
+        # try :
+            print(type(pk),"pk is a valid id")
+            if pk == None or pk == str(0) :
+                print("111111111111")
+                try : 
+                    data = Campaign.objects.all()
+                    serializer = CampaignAdminSerializer(data,many=True)
+                    return Response(data=serializer.data,status=status.HTTP_200_OK)
+                except Campaign.DoesNotExist:
+                    return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
+            else :
+                data = Campaign.objects.get(pk=pk)
+                serializer = CampaignDetailSerializer(data)
+                return Response(data=serializer.data,status=status.HTTP_200_OK)
+        # except :
+        #         return Response(status=status.HTTP_400_BAD_REQUEST)
     

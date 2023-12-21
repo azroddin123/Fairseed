@@ -5,7 +5,7 @@ from .models import User,UserRole
 
 
 class UserAdmin(admin.ModelAdmin) :
-    list_display = ['id','username','email','mobile_number','city','country','user_type','accepted_policy','created_at','updated_at']
+    list_display = ['id','username','email','mobile_number','city','country','user_type','accepted_policy','created_on','updated_on']
 
 class UserRoleAdmin(admin.ModelAdmin) :
     list_display = ['id','role_name']
