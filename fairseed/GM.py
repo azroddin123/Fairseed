@@ -98,7 +98,7 @@ class GenericMethodsMixin:
                     status=status.HTTP_200_OK,
                 )
             except self.model.DoesNotExist:
-                  return Response(
+                return Response(
             { "error" : True,
                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
             },

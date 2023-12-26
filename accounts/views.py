@@ -6,6 +6,7 @@ from fairseed.GM import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
+from django.shortcuts import get_object_or_404
 
 class UserApi(GenericMethodsMixin,APIView):
     model = User
@@ -21,7 +22,7 @@ class RegisterUserApi(APIView):
                 return Response({"message" : "User Created Succefully"},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
-             raise ValidationError({
+            raise ValidationError({
                 "status_code" : status.HTTP_400_BAD_REQUEST,
                 "message" :  e
             })
@@ -49,3 +50,20 @@ class PassIdApi(APIView):
         if serializers.is_valid() :
             return Response(data=serializers.data,status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+
+################### MY CODE ########################
+    
+
+class RegisterAPI(APIView):
+    def get(self, request):
+        user = User.objects.all()
+        serializer = UserSerializer1(user, many=True)
+        return Response(serializer.data)
+
+class RegisterAPI(APIView):
+    def get(self, request, pk):
+        user = get_object_or_404(User,pk=pk)
+        serializer = UserSerializer1(user)
+        return Response(serializer.data)
+    

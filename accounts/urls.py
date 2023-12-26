@@ -10,5 +10,10 @@ urlpatterns = [
     path('change_password',ChangePasswordApi.as_view()),
     path('test/<int:id1>/<int:id2>/<int:id3>/', PassIdApi.as_view()),
     # email verification apiview
+
+    ##################################################
+
+    path('register1/',RegisterAPI.as_view()),
+    path('register1/<int:pk>/',RegisterAPI.as_view()),
     
 ]

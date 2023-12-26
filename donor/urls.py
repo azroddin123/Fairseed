@@ -12,7 +12,10 @@ urlpatterns = [
 
 
     path('upi-transaction',UpiTransactionApi.as_view()),
-    path('upi-transaction/<int:pk>',UpiTransactionApi.as_view())
+    path('upi-transaction/<int:pk>',UpiTransactionApi.as_view()),
+
+    path('donordetail/',DonorDetailApi.as_view()),
+    path('donordetail/<int:pk>',DonorDetailApi.as_view())
 
 
 ]
