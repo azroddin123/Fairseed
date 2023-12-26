@@ -1,6 +1,8 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
 from campaign.models import Campaign
-from django.core.validators import MinValueValidator, MaxValueValidator
+
 # Create your models here.
 
 
@@ -25,7 +27,9 @@ class Donor(models.Model):
     is_anonymous  = models.CharField(max_length=124)
     status        = models.BooleanField(default=True)
 
-
+    def __str__(self):
+        return self.full_name
+    
 class BankTransfer(models.Model):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE)
     transaction_id   = models.CharField(max_length=124)

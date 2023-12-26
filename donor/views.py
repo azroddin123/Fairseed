@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Sum
 
 # Create your views here.
 from .serializers import * 
@@ -10,7 +11,7 @@ from .models import (
 from rest_framework.views import APIView
 from fairseed.GM import GenericMethodsMixin
 from rest_framework.response import Response
-
+from rest_framework.decorators import action
 
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
@@ -26,5 +27,6 @@ class UpiTransactionApi(GenericMethodsMixin,APIView):
     model = UpiTransaction
     serializer_class = UpiSerializers
     lookup_field = "id"
+
 
 

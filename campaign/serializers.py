@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import * 
+from .models import *
 
 class CampaignCatagorySerializer(ModelSerializer):
     class Meta:

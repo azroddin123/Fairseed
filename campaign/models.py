@@ -1,12 +1,18 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from accounts.models import User
+
 # Create your models here.
 
 
 class CampaignCatagories(models.Model):
     name   = models.CharField(max_length=50)
     status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 ZAKAT_CHOICES = [
@@ -26,8 +32,7 @@ class Campaign(models.Model):
     title           = models.CharField(max_length=50)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 0"),
                     MaxValueValidator(1000, message="Value must be less than or equal to 100")])
-    fund_raised     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 0"),
-                    MaxValueValidator(10000, message="Value must be less than or equal to 100")])
+    fund_raised     = models.PositiveIntegerField(default = 0, null = True)
     location        = models.CharField(max_length=124)
     zakat_eligible  = models.CharField(choices=ZAKAT_CHOICES,max_length=124)
     description     = models.TextField()
@@ -36,8 +41,23 @@ class Campaign(models.Model):
     is_features     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
     is_scholarship  = models.BooleanField(default=False)
+    is_successful   = models.BooleanField(default=False)
     course          = models.CharField(max_length=50,blank=True,null=True)
+    end_date = models.DateField(null=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
+    def post_save(self, *args, **kwargs):
+        super.save(*args, **kwargs)
+        if self.fund_raised==self.goal_amount:
+            self.is_successful = True
+            self.save()
+
+@receiver(post_save, sender=Campaign)
+def update_cam_status(sender, instance, **kwargs):
+    if instance.fund_raised == instance.goal_amount:
+        Campaign.objects.filter(pk=instance.pk).update(is_successful=True)
 
 class BenificiaryBankDetails(models.Model):
     Campaign            = models.ForeignKey(Campaign,on_delete=models.CASCADE)
@@ -58,7 +78,8 @@ class KycDetails(models.Model):
     isVerified    = models.BooleanField(default=False)
 
 
-
+def __str__(self):
+    return self.title
 
 
 

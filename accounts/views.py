@@ -1,16 +1,32 @@
 from django.shortcuts import render
 from .serializers import *
 from .models import *
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from fairseed.GM import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
 
-class UserApi(GenericMethodsMixin,APIView):
+########################################################################
+class RegisterApi(APIView):
+    def get(self, request):
+        u1 = User.objects.all()
+        serializers = UserSerializer1(u1, many = True)
+        return Response(serializers.data)
+########################################################################
+class UserApi(GenericMethodsMixin, APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer1(user)
+        return Response(serializer.data)
+
+    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
