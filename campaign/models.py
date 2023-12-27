@@ -48,17 +48,6 @@ class Campaign(models.Model):
     def __str__(self):
         return self.title
 
-    def post_save(self, *args, **kwargs):
-        super.save(*args, **kwargs)
-        if self.fund_raised==self.goal_amount:
-            self.is_successful = True
-            self.save()
-
-@receiver(post_save, sender=Campaign)
-def update_cam_status(sender, instance, **kwargs):
-    if instance.fund_raised == instance.goal_amount:
-        Campaign.objects.filter(pk=instance.pk).update(is_successful=True)
-
 class BenificiaryBankDetails(models.Model):
     Campaign            = models.ForeignKey(Campaign,on_delete=models.CASCADE)
     account_holder_name = models.CharField(max_length=124)

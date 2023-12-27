@@ -12,6 +12,7 @@ from fairseed.GM import GenericMethodsMixin
 from .models import (BenificiaryBankDetails, Campaign, CampaignCatagories,
                      KycDetails)
 from .serializers import *
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -22,7 +23,6 @@ class CardAPIView(APIView):
         c1=Campaign.objects.all()
         
         # c1= get_object_or_404(Campaign, pk=pk)
-        
         campaigns = Campaign.objects.annotate(cause_fund_raised=F('fund_raised'))
         
         #Calculating how much fund has been generated out of fund raised for this specific campaign
@@ -35,21 +35,31 @@ class CardAPIView(APIView):
         serializers = CampaignSerializer(c1, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 
-class SuccessAPI(APIView):
-        def get(self, request):
-            success_count = Campaign.objects.filter(is_successful=True).count()
-            return Response({'Succcessful_campaign_count':success_count}, status=status.HTTP_200_OK)
-        
-class CCAPI(APIView):
-    def get(self, request, id):
-        c1 = CampaignCatagories.objects.filter(pk=id).exists()
-        c2 = CampaignCatagories.name
-        if c1:
-            c2 = CampaignCatagories.objects.get(pk=id).name
-            CampaignCatagories.objects.filter(status=False).update(status=False)
-            return Response({f"Category {c2} is inactive"})
-        else:
-            return Response({f"Category does not exists"})
+class Ongoing_Campaign_Api_built_in(APIView):
+    def get(self, request):
+        oc1=Campaign.objects.all()
+        p=Paginator(oc1,8)
+        page_number=request.GET.get("page")
+        page_object = p.get_page(page_number)
+        serializer=CampaignSerializer(page_object, many=True)
+        return Response(serializer.data)
+    
+class Ongoing_Campaign_Api(APIView):
+    def get(self,request):
+        oc1=Campaign.objects.all()
+        page_size=8
+        page_number=int(request.GET.get("page",1))
+        start_index=(page_number-1)*page_size
+        end_index=start_index+page_size
+        page_object=oc1[start_index:end_index]
+        serializer=CampaignSerializer(page_object, many=True)
+        return Response(serializer.data)
+    
+class CausesbyCategoryAPI(APIView):
+    def get(self,request):
+        causes_by_category = CampaignCatagories.objects.all()
+        titles = [category.name for category in causes_by_category]
+        return Response(titles, status=status.HTTP_200_OK)
         
 class DashboardAPI(APIView):
     def get(self, request):
@@ -75,12 +85,6 @@ class DashboardAPI(APIView):
         }
 
         return Response(serialized_data, status=status.HTTP_200_OK)
-
-class CausesbyCategoryAPI(APIView):
-    def get(self,request):
-        causes_by_category = CampaignCatagories.objects.all()
-        titles = [category.name for category in causes_by_category]
-        return Response(titles, status=status.HTTP_200_OK)
 ##########################################################################
     
 class CampaignCatagoriesView(APIView):
