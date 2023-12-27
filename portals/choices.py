@@ -12,15 +12,7 @@ class RoleChoices(models.TextChoices):
     NORMAL            = NORMAL,NORMAL
     CAMPAIGN_APPROVER = CAMPAIGN_APPROVER,CAMPAIGN_APPROVER
     CAMPAIGN_MANAGER  = CAMPAIGN_MANAGER,CAMPAIGN_MANAGER
-    ADMIN             = ADMIN ,ADMIN 
-
-
-ROLE_CHOICES = [
-    ("normal" ,"Normal")   , 
-    ("campaign_approver" , "Campaign_Approver"),
-    ("campaign_manager", "Campaign_Manager"),
-    ("admin","Admin")
-]
+    ADMIN             = ADMIN,ADMIN 
 
 
 # Campaign Choices 
@@ -50,11 +42,7 @@ class CourseChoices(models.TextChoices):
 
 
 
-COURSE_CHOICES  = [
-    ("undergraduate","undergraduate"),
-    ("postgraduate","postgraduate"),
-    ("doctorate","doctorate")
-]
+
 # Donor 
 
 class DonationChoices(models.TextChoices):
@@ -63,11 +51,6 @@ class DonationChoices(models.TextChoices):
     INTEREST_OFFLOADING = INTEREST_OFFLOADING,INTEREST_OFFLOADING
 
 
-DONATION_CHOICES  = [
-    ("genral_donation","general_donation"),
-    ("zakat","zakat"),
-    ("interest_offloading","interest_offloading")
-]
 
 
 class PaymentChoices(models.TextChoices):

@@ -6,8 +6,8 @@ urlpatterns = [
     path('cause',CampaignDetailsApi.as_view()),
     path('cause/<str:pk>',CampaignDetailsApi.as_view()),
     
-    path('campaign-catagory',CampaignCatagoryApi.as_view()),
-    path('campaign-catagory/<str:pk>',CampaignCatagoryApi.as_view()),
+    path('campaign-category',CampaigncategoryApi.as_view()),
+    path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
 
     path('campaign-details',CKBApi.as_view()),
     path('campaign-details/<str:pk>',CKBApi.as_view()),
@@ -21,5 +21,6 @@ urlpatterns = [
 
     path('dashboard-api',DashboardApi.as_view()),
     path('campaign-filter',CampaignFilterApi.as_view()),
-    path('campaign-by-catagory/<str:pk>',CampaignByCatagoryApi.as_view())
+
+    path('category_filter/<str:pk>',CampaignBycategoryApi.as_view())
 ]

@@ -8,7 +8,9 @@ import uuid
 class UserRole(BaseModel):
     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
 
-
+# we are able to create superadmin 
+# when user role is admin at that time is_admin==True 
+    
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
     email      = models.EmailField(
@@ -27,7 +29,7 @@ class User(AbstractBaseUser):
     created_on      = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on      = models.DateTimeField(auto_now=True)
 
-    user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
+    user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,default=RoleChoices.NORMAL)
     
     objects    = UserManager()
     

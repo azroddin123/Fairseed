@@ -7,13 +7,13 @@ from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 
 
 
-class CampaignCatagory(BaseModel):
+class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     status = models.BooleanField(default=False)
 
 class Campaign(BaseModel):
-    catagory        = models.ForeignKey(CampaignCatagory,on_delete=models.CASCADE,)
+    category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)

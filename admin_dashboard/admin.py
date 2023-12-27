@@ -17,7 +17,7 @@ class SocialProfileAdmin(admin.ModelAdmin):
     list_display = ('facebook_url','twitter_url','instagram_url')
 
 class LandingPageAdmin(admin.ModelAdmin):
-    list_display = ('logo','logo_footer','favicon','image_header','image_bottom','avtar','image_catagory','default_link_color')
+    list_display = ('logo','logo_footer','favicon','image_header','image_bottom','avtar','image_category','default_link_color')
 
 class PageAdmin(admin.ModelAdmin):
     list_display = ('title','slug','show_navbar','show_page','content')

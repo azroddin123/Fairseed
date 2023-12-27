@@ -8,7 +8,7 @@ from .models import (
     UpiTransaction
 )
 from rest_framework.views import APIView
-from fairseed.GM1 import GenericMethodsMixin
+from portals.GM1 import GenericMethodsMixin
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -29,9 +29,7 @@ class DonorApi(GenericMethodsMixin,APIView):
             # obj.fund_raised 
             serializer = DonorSerializer(data=request.data)
             # here i have to update the campaign model also 
-
             if serializer.is_valid():
-               
                 obj.fund_raised = obj.fund_raised + request.data["amount"]
                 obj.save()
                 serializer.save()
@@ -52,3 +50,5 @@ class UpiTransactionApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
+# Remove Cause
+    

@@ -5,9 +5,9 @@ from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from .models import * 
 
-class CampaignCatagorySerializer(ModelSerializer):
+class CampaigncategorySerializer(ModelSerializer):
     class Meta:
-        model  = CampaignCatagory
+        model  = Campaigncategory
         fields = "__all__"
 
 class CampaignSerializer(ModelSerializer):
@@ -18,7 +18,7 @@ class CampaignSerializer(ModelSerializer):
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
-        exclude = ["is_successfull","status","is_featured","is_reported","is_scholarship","course"]
+        exclude = ["is_successfull","status","is_featured","is_reported"]
 
 
 class CKBSerializer(ModelSerializer):
@@ -46,10 +46,10 @@ class DashboardSerializer(serializers.Serializer):
     student_benifited    = serializers.IntegerField()
 
 
-class CampaignByCatagorySerializer(ModelSerializer):
+class CampaignBycategorySerializer(ModelSerializer):
     campaign    = CampaignSerializer1(source="campaign_set",many=True)
     class Meta :
-        model   = CampaignCatagory
+        model   = Campaigncategory
         fields  = "__all__"
 
 class CampaignAdminSerializer(ModelSerializer):

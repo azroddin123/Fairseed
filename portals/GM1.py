@@ -4,7 +4,9 @@ from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 from itertools import chain
 from django.db.models import Q
-
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from django.core.paginator import Paginator
+import math
 
 class GenericMethods:
     def getall(Model, ModelSerializer):
@@ -81,11 +83,23 @@ class GenericMethodsMixin:
     def get(self, request, pk=None, *args, **kwargs):
         filter = {self.lookup: pk}
         if pk == str(0) or pk == None:
-            
             try:
-                return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
+                limit = request.GET.get('limit')
+                page_number = request.GET.get('page')
+                if page_number == None or limit == None:
+                    return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
                     status=status.HTTP_200_OK,
                 )
+                data = self.model.objects.all()
+                pages = int(math.ceil(len(data)/int(limit)))
+                paginator = Paginator(data, limit)
+                if int(request.GET.get('page')) > pages or request.GET.get('page') == str(0):
+                        return Response({"error": False, "pages_count": pages ,"total_records" : len(data), "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
+                else:
+                        data = paginator.get_page(page_number)
+                        serializer = self.serializer(data, many=True)
+                        return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
+
             except:
                 return Response(
                     {
@@ -170,3 +184,21 @@ class GenericMethodsMixin:
 
 
 
+# def get(self, request, pk=None, *args, **kwargs):
+        # filter = {self.lookup: pk}
+        # if pk == str(0) or pk == None:
+        #     try:
+        #         limit = request.GET.get('limit')
+        #         page_number = request.GET.get('page')
+        #         if page_number == None or limit == None:
+        #         return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
+        #             status=status.HTTP_200_OK,
+        #         )
+        #     except:
+        #         return Response(
+        #             {
+        #                 "Error": str(self.model._meta).split(".")[1]
+        #                 + " object does not exists"
+        #             },
+        #             status=status.HTTP_400_BAD_REQUEST,
+        #         )

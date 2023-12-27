@@ -5,6 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from portals.models import BaseModel
 
+# from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
+
 class GeneralSetting(BaseModel):
     namesite           = models.CharField(max_length=32)
     welcome_text       = models.CharField(max_length=32)
@@ -21,6 +23,12 @@ class GeneralSetting(BaseModel):
     facebook_login     = models.BooleanField(default=False)
     google_login       = models.BooleanField(default=False)
 
+    def save(self,*args, **kwargs):
+        data = SocialProfile.objects.all()
+        print("data",data)
+        data.delete()
+        return super(GeneralSetting,self).save(*args, **kwargs)
+
 
 class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
@@ -35,12 +43,23 @@ class Limit(BaseModel):
     donation_max_amount     = models.PositiveIntegerField()
     max_donation_amount     = models.PositiveIntegerField()
 
-
 class SocialProfile(BaseModel):
     # Shall I related it to the the admin model
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
+
+    def save(self,*args, **kwargs):
+        # check the record count if it is one then update the existing one otherwise save the record 
+        count = SocialProfile.objects.count()
+        print(count)
+        if count == 0  :
+            return super(SocialProfile,self).save(*args, **kwargs)
+        else :
+            obj = SocialProfile.objects.all()
+            obj.delete()
+            return super(SocialProfile,self).save(*args, **kwargs)
+  
 
 
 class LandingPage(BaseModel):
@@ -50,8 +69,9 @@ class LandingPage(BaseModel):
     image_header      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     image_bottom      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_catagory    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
+
 
 
 class Pages(BaseModel):

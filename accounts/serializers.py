@@ -11,9 +11,14 @@ class UserSerializer(ModelSerializer):
         exclude = ("last_login","created_on","updated_on","is_admin")
 
     def save(self):
+        print(self.validated_data["user_type"])
         user = User(**self.validated_data)
         password = self.validated_data["password"]
         user.set_password(password)
+        
+        if self.validated_data["user_role"] == "Admin" :
+            user.is_admin = True
+                
         user.save()
         return user
     
