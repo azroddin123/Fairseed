@@ -3,8 +3,7 @@ from .views import *
 
 urlpatterns = [
 
-    path('cause',CampaignDetailsApi.as_view()),
-    path('cause/<str:pk>',CampaignDetailsApi.as_view()),
+  
     
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
@@ -19,8 +18,13 @@ urlpatterns = [
     path('documents/<str:pk>',DocumentApi.as_view()),
 
 
-    path('dashboard-api',DashboardApi.as_view()),
+    path('landing-page',LandingPageApi.as_view()),
     path('campaign-filter',CampaignFilterApi.as_view()),
+    path('campaign/<str:pk>', CampaignDetailsApi.as_view()),
+    path('campaign', CampaignDetailsApi.as_view()),
+    path('catagory', CampaignByCategoryApi.as_view())
 
-    path('category_filter/<str:pk>',CampaignBycategoryApi.as_view())
+    # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),
+    # path('campaign/', CampaignDetailsApi.as_view(), name='campaign-list'),
+    # path('category/', CampaignByCategoryApi.as_view(), name='campaign-by-category'),
 ]

@@ -37,7 +37,20 @@ class DonorApi(GenericMethodsMixin,APIView):
             else:
                 return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        pass
+class DonorApi(GenericMethodsMixin,APIView):
+    model = Donor
+    serializer_class = DonorSerializer
+    lookup_field = "id"
+
+    def post(self,request,pk=None,*args, **kwargs):
+        if pk == str(0) or pk == None :
+            
+            serializer = DonorSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class BankTransactionApi(GenericMethodsMixin,APIView):
     model = BankTransaction

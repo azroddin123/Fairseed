@@ -8,6 +8,9 @@ import uuid
 class UserRole(BaseModel):
     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
 
+    def __str__(self) -> str:
+        return self.role_name
+
 # we are able to create superadmin 
 # when user role is admin at that time is_admin==True 
     
@@ -20,16 +23,16 @@ class User(AbstractBaseUser):
     )
     is_admin         = models.BooleanField(default=False)
     username         = models.CharField(max_length = 50)
-    mobile_number    = models.CharField(max_length=20,unique=True)
+    mobile_number    = models.CharField(max_length=20,unique=True,blank=True,null=True)
     city             = models.CharField(max_length = 50 ,blank=True, null=True)
     country          = models.CharField(max_length=50, blank=True, null=True)
     user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
     accepted_policy  = models.BooleanField(default=False)
 
-    created_on      = models.DateTimeField(auto_now_add=True,editable=False)
-    updated_on      = models.DateTimeField(auto_now=True)
+    created_on       = models.DateTimeField(auto_now_add=True,editable=False)
+    updated_on       = models.DateTimeField(auto_now=True)
 
-    user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,default=RoleChoices.NORMAL)
+    user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     
     objects    = UserManager()
     

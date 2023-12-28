@@ -52,20 +52,7 @@ class DocumentApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-class DashboardApi(APIView):
-    def get(self,request,*args, **kwargs) :
-        data = {
-        "total_campaign" : Campaign.objects.count(),
-        "total_donation" : 0,
-        "donor_count" : Donor.objects.count(),
-        "successfull_campaign" : Campaign.objects.filter(is_successfull=True).count(),
-        "student_benifited" : Campaign.objects.filter(is_successfull=True).count()
-        }
-        print(data)
-        serializer = DashboardSerializer(data=data)
-        if serializer.is_valid():
-            return Response(data=serializer.data,status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CampaignFilterApi(APIView):
@@ -92,16 +79,16 @@ class CampaignBycategoryApi(APIView):
  
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 # Camapaign By Catagory 
-class CampaignBycategoryApi(APIView):  
-    def get(self, request, pk, *args, **kwargs):
-            try:
-                data = Campaigncategory.objects.get(id=pk)
-                serializer = CampaignBycategorySerializer(data)
-                return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
-            except Campaigncategory.DoesNotExist:
-                return Response({"error": "Campaigncategory not found"}, status=status.HTTP_404_NOT_FOUND)
-            except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+# class CampaignBycategoryApi(APIView):  
+#     def get(self, request, pk, *args, **kwargs):
+#             try:
+#                 data = Campaigncategory.objects.get(id=pk)
+#                 serializer = CampaignBycategorySerializer(data)
+#                 return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
+#             except Campaigncategory.DoesNotExist:
+#                 return Response({"error": "Campaigncategory not found"}, status=status.HTTP_404_NOT_FOUND)
+#             except Exception as e:
+#                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
            
 
 # class CampaignBycategoryApi(APIView):
@@ -123,46 +110,55 @@ class ReportedCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-class CampaignByCategoryApi(GenericMethodsMixin,APIView):
-    model = Campaign
-    serializer_class = CampaignSerializer
-    lookup_field  = "id"
-    
-    def get(self,request,pk=None,*args, **kwargs):
-            if pk == None or pk == str(0) :
-                try : 
-                    cat_id = request.GET.get('catagory')
-                    limit = request.GET.get('limit')
-                    data = Campaign.objects.filter(category=cat_id)
-                    page_number = request.GET.get('page')
-                    print(page_number,limit,type(limit),type(page_number))
-                    if page_number == None or limit == None:
-                        serializer = CampaignAdminSerializer(data,many=True)
-                        return Response({"error": False,"data": serializer.data}, status=status.HTTP_200_OK)
-                    pages = int(math.ceil(len(data)/int(limit)))
-                    paginator = Paginator(data, limit)
-                    if int(request.GET.get('page')) > pages or request.GET.get('page') == str(0):
-                        return Response({"error": False, "pages_count": pages ,"total_records" : len(data), "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
-                    # serializer = CampaignAdminSerializer(data,many=True)
-                    else:
-                        data = paginator.get_page(page_number)
-                        serializer = CampaignAdminSerializer(data, many=True)
-                        return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
-                except Campaign.DoesNotExist:
-                    return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
+# class CampaignByCategoryApi(APIView):
+#     def get(self,request,*args, **kwargs):
+#         try : 
+#             cat_id = request.GET.get('category')
+#             limit = request.GET.get('limit')
+#             data = Campaign.objects.filter(category=cat_id)
+#             print(data)
+#             page_number = request.GET.get('page')
+#             if page_number == None or limit == None:
+#                 serializer = CampaignAdminSerializer(data,many=True)
+#                 return Response({"error": False,"data": serializer.data}, status=status.HTTP_200_OK)
+#             pages = int(math.ceil(len(data)/int(limit)))
+#             paginator = Paginator(data, limit)
+#             data = paginator.get_page(page_number)
+#             serializer = CampaignAdminSerializer(data, many=True)
+#             return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
+#         except Exception as e :
+#             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+class CampaignByCategoryApi(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            cat_id = request.GET.get('category')
+            limit = int(request.GET.get('limit', 0))
+            page_number = int(request.GET.get('page', 0))
+
+            data = Campaign.objects.filter(category=cat_id)
             
-            else :
-                data = Campaign.objects.get(pk=pk)
-                serializer = CampaignDetailSerializer(data)
-                return Response({"error": False, "data" : serializer.data},status=status.HTTP_200_OK)
+            paginator = Paginator(data, limit)
+            current_page_data = paginator.get_page(page_number)
             
-    
+            serializer = CampaignAdminSerializer(current_page_data, many=True)
+            
+            return Response({
+                "pages_count": paginator.num_pages,
+                "total_records": paginator.count,
+                "error": False,
+                "data": serializer.data,
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 class CampaignDetailsApi(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignSerializer
     lookup_field  = "id"
     
     def get(self,request,pk=None,*args, **kwargs):
+            print("In Campaign Details API")
             if pk == None or pk == str(0) :
                 try : 
                     limit = request.GET.get('limit')
@@ -174,22 +170,31 @@ class CampaignDetailsApi(GenericMethodsMixin,APIView):
                         return Response({"error": False,"data": serializer.data}, status=status.HTTP_200_OK)
                     pages = int(math.ceil(len(data)/int(limit)))
                     paginator = Paginator(data, limit)
-                    # if int(request.GET.get('page')) > pages or request.GET.get('page') == str(0):
-                    #     return Response({"error": False, "pages_count": pages ,"total_records" : len(data), "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
-                    # # serializer = CampaignAdminSerializer(data,many=True)
-                    # else:
                     data = paginator.get_page(page_number)
                     serializer = CampaignAdminSerializer(data, many=True)
                     return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
                 except Campaign.DoesNotExist:
                     return Response({"error" : "Record not found or exists"},status=status.HTTP_400_BAD_REQUEST)
-            
             else :
                 data = Campaign.objects.get(pk=pk)
                 serializer = CampaignDetailSerializer(data)
                 return Response({"error": False, "data" : serializer.data},status=status.HTTP_200_OK)
-            
-    
 
-
-
+# Landing page api
+class LandingPageApi(APIView):
+    def get(self,request,*args, **kwargs) :
+        try : 
+            data = {
+            "total_campaign" : Campaign.objects.count(),
+            "total_donation" : Donor.objects.aggregate(Sum('amount'))['amount__sum'] or 0,
+            "donor_count" : Donor.objects.count(),
+            "successfull_campaign" : Campaign.objects.filter(is_successful=True).count(),
+            # this should be done when the amoint is credited to student account.
+            "student_benifited" : Campaign.objects.filter(is_withdrawal=True).count()
+            }
+            serializer = DashboardSerializer(data)
+            return Response({"data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"data" : serializer.data},status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

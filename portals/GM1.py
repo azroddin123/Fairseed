@@ -91,14 +91,16 @@ class GenericMethodsMixin:
                     status=status.HTTP_200_OK,
                 )
                 data = self.model.objects.all()
+                count = len(data)
                 pages = int(math.ceil(len(data)/int(limit)))
                 paginator = Paginator(data, limit)
-                if int(request.GET.get('page')) > pages or request.GET.get('page') == str(0):
-                        return Response({"error": False, "pages_count": pages ,"total_records" : len(data), "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
+                # request.GET.get('page') == str(0)
+                if int(request.GET.get('page')) > pages:
+                        return Response({"error": False, "pages_count": pages ,"total_records" : count, "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
                 else:
-                        data = paginator.get_page(page_number)
-                        serializer = self.serializer(data, many=True)
-                        return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
+                    data = paginator.get_page(page_number)
+                    serializer = self.serializer(data, many=True)
+                    return Response({"error": False, "pages_count": pages, "total_records" : count ,"data": serializer.data}, status=status.HTTP_200_OK)
 
             except:
                 return Response(

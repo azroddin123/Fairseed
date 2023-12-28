@@ -10,7 +10,7 @@ from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    status = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
@@ -28,11 +28,13 @@ class Campaign(BaseModel):
     end_date        = models.DateField(null=True,blank=True)
     description     = models.TextField()
     summary         = models.TextField()
-   
-    is_successfull  = models.BooleanField(default=False)
-    is_featured    = models.BooleanField(default=False)
-    is_reported     = models.BooleanField(default=False)
 
+    is_successful   = models.BooleanField(default=False)
+    is_featured     = models.BooleanField(default=False)
+    is_reported     = models.BooleanField(default=False)
+    is_withdrawal   = models.BooleanField(default=False)
+
+   
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')

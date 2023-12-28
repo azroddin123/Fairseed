@@ -10,7 +10,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import status
 
-from fairseed.GM import GenericMethodsMixin
+from portals.GM import GenericMethodsMixin
 
 class PGApi(GenericMethodsMixin,APIView):
     model = PGSetting

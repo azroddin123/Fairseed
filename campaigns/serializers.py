@@ -15,10 +15,15 @@ class CampaignSerializer(ModelSerializer):
         model  = Campaign
         fields = "__all__"
 
+    
+    # def save(self):
+    #     pass
+
+
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
-        exclude = ["is_successfull","status","is_featured","is_reported"]
+        exclude = ["is_successful","status","is_featured","is_reported"]
 
 
 class CKBSerializer(ModelSerializer):
@@ -56,7 +61,7 @@ class CampaignAdminSerializer(ModelSerializer):
     user       = UserAdminSerializer()
     class Meta :
         model  = Campaign
-        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user')
+        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category')
 
 class DocumentSerializer(ModelSerializer):
     class Meta :
