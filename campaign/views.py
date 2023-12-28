@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404,get_list_or_404
 from .serializers import * 
 from .models import (
     Campaign,
@@ -15,6 +15,7 @@ from rest_framework import status
 from .serializers import CampaignSerializer
 from django.db.models import Count, Sum
 from django.db.models import F
+from django.core.paginator import Paginator, EmptyPage
 
 # Create your views here.
 class CampaignApi(GenericMethodsMixin,APIView):
@@ -120,6 +121,72 @@ class success_cam(APIView):
             success_count = Campaign.objects.filter(is_successful=True).count()
             return Response({'Succcessful_campaign_count':success_count}, status=status.HTTP_200_OK)
         
+
+class CampaignCatagoriesListAPI(APIView):
+    def get(self, request):
+        list = CampaignCatagories.objects.all()
+        serializer = CampaignCatagorySerializer(list, many=True)
+        name_list = [item['name'] for item in serializer.data]
+        return Response(name_list, status=status.HTTP_200_OK)
+    
+class StdBenefitedCountAPI(APIView):
+    def get(self, request):
+        b_std= Campaign.objects.filter(is_std_benenfited=True).count()
+        return Response({'std_benefited': b_std})
+    
+class SuccessCount(APIView):
+#     def get(self, request):
+#         s_c = Campaign.objects.filter(is_successful=True).count()
+#         return Response({'Success_count': s_c})
+    
+# class MethodStdBen(APIView):
+    def get(self, request):
+        camp = Campaign.objects.filter(catagory__name='Education', fund_raised=F('goal_amount'))
+            
+        for campaign in camp:
+            print(f"Setting is_std_benefited to True for campaign {campaign.pk}")
+            campaign.is_std_benenfited = True
+            campaign.is_std_benenfited += 1
+            campaign.save()
+        
+        return Response({'message': 'View logic executed successfully'})
+    
+class CampaignCategoryCausesAPI(APIView):
+    def get(self, request, pk):
+        camp= get_object_or_404(Campaign, pk=pk)
+        s1={
+            "title":camp.title,
+            # "image":camp.image,
+        }
+        return Response(s1, status=status.HTTP_200_OK)
+    # def get(self,request,pk):
+        # camp = get_object_or_404(Campaign, pk=pk)
+        # title = camp.title
+        # return Response({"Title": title}, status=status.HTTP_200_OK)
+    
+class CapmPaginationApi(APIView):
+    def get(self, request):
+        camp = Campaign.objects.all()
+        all_titles = Campaign.objects.values_list('title', flat=True)
+        page_size = 4
+        page_number = int(request.GET.get("page", 1))
+
+        try:
+            start_index = (page_number - 1) * page_size
+            end_index = start_index + page_size
+
+            paginated_titles = all_titles[start_index:end_index]
+            response_data = {
+                "Title": list(paginated_titles),
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except EmptyPage:
+            return Response({"Title": []}, status=status.HTTP_200_OK)
+
+        
+
 
 
 

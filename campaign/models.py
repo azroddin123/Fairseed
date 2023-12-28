@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.validators import FileExtensionValidator
 
 
 # Create your models here.
@@ -27,6 +28,10 @@ RAISE_CHOICES = [
     ('others','others')
 ]
 
+#####################      ####################
+
+
+
 class Campaign(models.Model):
     catagory        = models.ForeignKey(CampaignCatagories,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -46,9 +51,16 @@ class Campaign(models.Model):
     is_scholarship  = models.BooleanField(default=False)
     course          = models.CharField(max_length=50,blank=True,null=True)
     is_successful   = models.BooleanField(default=False)  # to count successful campaign
+    is_std_benenfited = models.BooleanField(default=False) # to count successful student benefited
+    image           = models.ImageField(
+        upload_to='images/',
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
+        ],
+    )
 
     # def __str__(self):
-    #     return self.is_successful
+    #     return self.is_std_benenfited
 
     def post_save(self, *args, **kwargs):
         super.save(*args, **kwargs)
@@ -60,6 +72,16 @@ class Campaign(models.Model):
 def update_cam_status(sender, instance, **kwargs):
     if instance.fund_raised == instance.goal_amount:
         Campaign.objects.filter(pk=instance.pk).update(is_successful=True)
+
+# @receiver(post_save, sender=Campaign)
+# def update_std_benefited(sender, instance, **kwargs):
+#     # std= Campaign.objects.filter(catagory='Education')
+#     if instance.catagory.name == 'Education' and instance.fund_raised == instance.goal_amount:
+#         print(f"Setting is_std_benefited to True for campaign {instance.pk}")
+#         Campaign.objects.filter(pk=instance.pk).update(is_std_benenfited=True)
+#         instance.is_std_benenfited += 1
+#         instance.save()
+
 
 
 class BenificiaryBankDetails(models.Model):

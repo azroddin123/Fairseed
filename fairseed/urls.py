@@ -31,8 +31,7 @@ urlpatterns = [
     path('campaign/',include('campaign.urls')),
     path('donor/',include('donor.urls')),
     path('payment_gateway/',include('payment_gateway.urls')),
-
-
+    
     # Token URLs
     # path('api-auth/', include('rest_framework.urls')),
     # path('api/token/',TokenObtainPairView.as_view(),name="token_obtain_pair"),

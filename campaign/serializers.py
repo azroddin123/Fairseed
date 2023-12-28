@@ -25,3 +25,10 @@ class KycDetailSerializer(ModelSerializer):
         model = KycDetails
         fields = "__all__"
 
+##############################################################
+
+class CampaignCatagories1(ModelSerializer):
+    class Meta:
+        model = Campaign
+        exclude = ['is_std_benefited']
+
