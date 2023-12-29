@@ -13,10 +13,8 @@ class CampaignCatagories(models.Model):
     name   = models.CharField(max_length=50)
     status = models.BooleanField(default=False)
 
-
     def __str__(self):
         return self.name
-
 
 ZAKAT_CHOICES = [
     ('yes', 'yes'),
@@ -28,9 +26,12 @@ RAISE_CHOICES = [
     ('others','others')
 ]
 
-#####################      ####################
+class CampaignCause(models.Model):
+    cause_title = models.CharField(max_length=100)
+    cause_img   = models.ImageField(upload_to="static/media_files/",blank=True, null=True)
 
-
+    def __str__(self):
+        return self.cause_title
 
 class Campaign(models.Model):
     catagory        = models.ForeignKey(CampaignCatagories,on_delete=models.CASCADE)
@@ -52,12 +53,7 @@ class Campaign(models.Model):
     course          = models.CharField(max_length=50,blank=True,null=True)
     is_successful   = models.BooleanField(default=False)  # to count successful campaign
     is_std_benenfited = models.BooleanField(default=False) # to count successful student benefited
-    image           = models.ImageField(
-        upload_to='images/',
-        validators=[
-            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
-        ],
-    )
+    
 
     # def __str__(self):
     #     return self.is_std_benenfited
@@ -101,6 +97,9 @@ class KycDetails(models.Model):
     adhar_image   = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     other_details = models.TextField()
     isVerified    = models.BooleanField(default=False)
+
+
+
 
 
 

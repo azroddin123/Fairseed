@@ -32,8 +32,8 @@ urlpatterns = [
     path('api/SuccessCount', SuccessCount.as_view()),
     path('api/CampaignCategoryCausesAPI/<int:pk>', CampaignCategoryCausesAPI.as_view()),
     path('api/CapmPaginationApi', CapmPaginationApi.as_view()),
-    
-    
+    path('api/CampaignCause', CampaignCause.as_view()),
+        
     
     # path('api/campaign/<int:pk>/', success_fund.as_view(), name='campaign_detail'),
     # path('api/updatecamstatus/<int:pk>',update_cam_status, name=update_cam_status),

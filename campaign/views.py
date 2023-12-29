@@ -168,9 +168,8 @@ class CapmPaginationApi(APIView):
     def get(self, request):
         camp = Campaign.objects.all()
         all_titles = Campaign.objects.values_list('title', flat=True)
-        page_size = 4
+        page_size = 3
         page_number = int(request.GET.get("page", 1))
-
         try:
             start_index = (page_number - 1) * page_size
             end_index = start_index + page_size
@@ -179,11 +178,55 @@ class CapmPaginationApi(APIView):
             response_data = {
                 "Title": list(paginated_titles),
             }
-
             return Response(response_data, status=status.HTTP_200_OK)
-
         except EmptyPage:
-            return Response({"Title": []}, status=status.HTTP_200_OK)
+            return Response({"Title": None}, status=status.HTTP_200_OK)
+
+    # def get(self, request, pk):
+    #     # Assuming you have a queryset for campaigns
+    #     queryset = Campaign.objects.all()
+
+    #     # Get the total number of items
+    #     total_items = queryset.count()
+
+    #     # Set the desired number of items per page
+    #     items_per_page = 1
+
+    #     # Get the page number from the request
+    #     page_number = int(request.GET.get("page", 1))
+
+    #     # Calculate the start and end indices for the current page
+    #     start_index = (page_number - 1) * items_per_page
+    #     end_index = start_index + items_per_page
+
+    #     # Slice the queryset for the current page
+    #     paginated_queryset = queryset[start_index:end_index]
+
+    #     # Serialize the paginated queryset
+    #     serializer = CampaignSerializer(paginated_queryset, many=True)
+
+    #     # Construct the response data
+    #     response_data = {
+    #         "title": serializer.data[0]['title'],  # Assuming there is only one item per page
+    #         # Add other fields as needed
+    #     }
+
+    #     return Response(response_data, status=status.HTTP_200_OK)
+
+
+class CampaignCause(APIView):
+    def post(self, request):
+        serializer = CampaignCauseSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        camp_cause = CampaignCause.objects.all()
+
 
         
 
