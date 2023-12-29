@@ -45,8 +45,8 @@ class Campaign(models.Model):
     course          = models.CharField(max_length=50,blank=True,null=True)
     end_date = models.DateField(null=True, blank=True)
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
 
 class BenificiaryBankDetails(models.Model):
     Campaign            = models.ForeignKey(Campaign,on_delete=models.CASCADE)
