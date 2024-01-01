@@ -31,6 +31,7 @@ class User(AbstractBaseUser):
 
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
+    is_active        = models.BooleanField(default=True)
 
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     

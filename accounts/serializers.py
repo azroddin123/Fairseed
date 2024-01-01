@@ -22,6 +22,9 @@ class UserSerializer(ModelSerializer):
         user.save()
         return user
     
+    def validated_data(self):
+        pass
+    
 class UserSerializer1(ModelSerializer):
     class Meta :
         model = User

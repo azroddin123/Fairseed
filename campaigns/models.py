@@ -6,14 +6,15 @@ from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 
 
-
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
 
+
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
+    
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
@@ -34,7 +35,6 @@ class Campaign(BaseModel):
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
 
-   
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')
@@ -62,11 +62,9 @@ class CampaignKycBenificiary(BaseModel):
 #     other_details      = models.CharField(max_length=100,blank=True,null=True)
 #     is_verified        = models.BooleanField(default=False)
 
+# Document fields of Django Admin Panel
 class Documents(BaseModel):
-    campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
-    doc_name = models.CharField(max_length=124)
+    campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
+    doc_name     = models.CharField(max_length=124)
     doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
-
-
-
 

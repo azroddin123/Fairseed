@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from portals.GM1 import GenericMethodsMixin
+from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
@@ -63,22 +63,21 @@ class GeneralSettingApi(GenericMethodsMixin,APIView):
     serializer_class = GSSerializer
     lookup_field = "id"
 
-    def post(self,request,pk=None,*args, **kwargs):
-        try : 
-            if pk==None or pk == 0 :
-                serializer = GSSerializer(data=request.data)
-                if serializer.is_valid():
-                    gs = serializer.save()
-                    kl = []
-                    for item in request.data['keywords'] :
-                        kl.append(Keyword(name=item,gs=gs))
-                    res = Keyword.objects.bulk_create(kl)
-                    print(res)
-
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e :
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    # def post(self,request,pk=None,*args, **kwargs):
+    #     try : 
+    #         if pk==None or pk == 0 :
+    #             serializer = GSSerializer(data=request.data)
+    #             if serializer.is_valid():
+    #                 gs = serializer.save()
+    #                 kl = []
+    #                 for item in request.data['keywords'] :
+    #                     kl.append(Keyword(name=item,gs=gs))
+    #                 res = Keyword.objects.bulk_create(kl)
+    #                 print(res)
+    #                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e :
+    #         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class KeywordSApi(GenericMethodsMixin,APIView):
     model = Keyword

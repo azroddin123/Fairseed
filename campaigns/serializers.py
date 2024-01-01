@@ -58,11 +58,12 @@ class CampaignBycategorySerializer(ModelSerializer):
         fields  = "__all__"
 
 class CampaignAdminSerializer(ModelSerializer):
-    user       = UserAdminSerializer()
+    user_data      = UserAdminSerializer(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category')
+        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','category',"user_data","user")
 
+    
 class DocumentSerializer(ModelSerializer):
     class Meta :
         model  = Documents

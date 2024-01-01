@@ -82,7 +82,7 @@ class GenericMethodsMixin:
 
     def get(self, request, pk=None, *args, **kwargs):
         filter = {self.lookup: pk}
-        if pk == str(0) or pk == None:
+        if pk == str(0) or pk is None:
             try:
                 limit = request.GET.get('limit')
                 page_number = request.GET.get('page')
@@ -127,7 +127,7 @@ class GenericMethodsMixin:
     def post(self, request, pk=None,*args, **kwargs):
         # if request.data['created_by'] : request.data['created_by'] = request.user.id
         print("Outside Api")
-        if pk == str(0) or pk == None :
+        if pk == str(0) or pk is None :
             print("in api")
             serializer = self.serializer(data=request.data)
             if serializer.is_valid():
@@ -188,7 +188,7 @@ class GenericMethodsMixin:
 
 # def get(self, request, pk=None, *args, **kwargs):
         # filter = {self.lookup: pk}
-        # if pk == str(0) or pk == None:
+        # if pk == str(0) or pk is None:
         #     try:
         #         limit = request.GET.get('limit')
         #         page_number = request.GET.get('page')

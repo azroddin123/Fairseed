@@ -3,15 +3,14 @@ from django.contrib import admin
 # Register your models here.
 from .models import * 
 
-
 class GSAdmin(admin.ModelAdmin):
-    list_display = ('namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration','auto_approve','email_verification','facebook_login','google_login')
+    list_display = ('namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled')
 
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('gs','name')
 
 class LimitAdmin(admin.ModelAdmin):
-    list_display = ('num_campaigns','file_size','campaign_min_amount','campaign_max_amount','donation_min_amount','donation_max_amount','max_donation_amount')
+    list_display = ('num_campaigns','max_file_size','campaign_min_amount','campaign_max_amount','donation_min_amount','donation_max_amount','max_donation_amount')
 
 class SocialProfileAdmin(admin.ModelAdmin):
     list_display = ('facebook_url','twitter_url','instagram_url')

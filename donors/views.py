@@ -19,19 +19,18 @@ class DonorApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
     def post(self,request,pk=None,*args, **kwargs):
-        if pk == str(0) or pk == None :
+        if pk == str(0) or pk is None :
             print("in api")
-            amount = request.data["amount"]
-            obj = Campaign.objects.get(pk=request.data["campaign"])
-            required_amount = obj.goal_amount - obj.fund_raised
-            if amount > required_amount :
-                return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
-            # obj.fund_raised 
+            # amount = request.data["amount"]
+            # obj = Campaign.objects.get(pk=request.data["campaign"])
+            # required_amount = obj.goal_amount - obj.fund_raised
+            # if amount > required_amount :
+            #     return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
+            # # obj.fund_raised 
             serializer = DonorSerializer(data=request.data)
-            # here i have to update the campaign model also 
             if serializer.is_valid():
-                obj.fund_raised = obj.fund_raised + request.data["amount"]
-                obj.save()
+                # obj.fund_raised = obj.fund_raised + request.data["amount"]
+                # obj.save()
                 serializer.save()
                 return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
             else:
@@ -43,7 +42,7 @@ class DonorApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
     def post(self,request,pk=None,*args, **kwargs):
-        if pk == str(0) or pk == None :
+        if pk == str(0) or pk is None :
             
             serializer = DonorSerializer(data=request.data)
             if serializer.is_valid():

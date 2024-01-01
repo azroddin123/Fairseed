@@ -1,18 +1,52 @@
 from .models import * 
 from rest_framework.serializers import ModelSerializer 
+from rest_framework import serializers
+# class GSSerializer(ModelSerializer):
+#     keywords = serializers.ListField(child=serializers.CharField(),write_only=True)
+#     class Meta :
+#         model = GeneralSetting
+#         exclude = ("new_registration_enabled","auto_approve_enabled","email_verification_enabled","facebook_login_enabled","google_login_enabled")
 
-class GSSerializer(ModelSerializer):
+#     def save(self, *args, **kwargs):
+#         gs = super().save(*args, **kwargs)
+#         keywords_list = self.validated_data.get("keywords")
+#         print(keywords_list)
+#         print("----------------------",gs)
+#         for item in keywords_list : 
+#             print(Keyword.objects.create(gs=gs,name=item))
+#         # Your additional actions or data update logic here
+#         pass
+    
+    
+class KS(ModelSerializer):
     class Meta :
+        model = Keyword
+        fields = ("name",)
+        
+class GSSerializer(serializers.ModelSerializer):
+    keywords = serializers.ListField(child=serializers.CharField(), write_only=True)
+    keywords_data = KS(source="keyword_set",many=True,read_only=True)
+    class Meta:
         model = GeneralSetting
-        exclude = ("new_registration","auto_approve","email_verification","facebook_login","google_login")
+        # exclude = ("new_registration_enabled", "auto_approve_enabled", "email_verification_enabled", "facebook_login_enabled", "google_login_enabled")
+        fields = ('keywords_data','namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled','keywords')
+    def create(self, validated_data):
+        # Extract the 'keywords' field from validated_data
+        keywords_data = validated_data.pop('keywords', [])
 
-   
-    
-    
+        # Create the GeneralSetting instance
+        gs = GeneralSetting.objects.create(**validated_data)
+
+        # Create Keyword instances associated with the GeneralSetting instance
+        for item in keywords_data:
+            Keyword.objects.create(gs=gs, name=item)
+
+        return gs
 class KeywordSerializer(ModelSerializer):
     class Meta :
         model = Keyword
         fields = "__all__"
+        
 
 class LimitSerializer(ModelSerializer):
     class Meta :
