@@ -3,8 +3,11 @@ from django.db import models
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from portals.models import BaseModel
 
-class GeneralSetting(models.Model):
+# from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
+
+class GeneralSetting(BaseModel):
     namesite           = models.CharField(max_length=32)
     welcome_text       = models.CharField(max_length=32)
     welcome_subtitle   = models.CharField(max_length=32)
@@ -20,12 +23,18 @@ class GeneralSetting(models.Model):
     facebook_login     = models.BooleanField(default=False)
     google_login       = models.BooleanField(default=False)
 
+    def save(self,*args, **kwargs):
+        data = SocialProfile.objects.all()
+        print("data",data)
+        data.delete()
+        return super(GeneralSetting,self).save(*args, **kwargs)
 
-class Keyword(models.Model):
+
+class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50,unique=True)
 
-class Limit(models.Model):
+class Limit(BaseModel):
     num_campaigns           = models.PositiveIntegerField()
     file_size               = models.PositiveIntegerField()
     campaign_min_amount     = models.PositiveIntegerField()
@@ -34,25 +43,38 @@ class Limit(models.Model):
     donation_max_amount     = models.PositiveIntegerField()
     max_donation_amount     = models.PositiveIntegerField()
 
-
-class SocialProfile(models.Model):
+class SocialProfile(BaseModel):
+    # Shall I related it to the the admin model
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
 
+    def save(self,*args, **kwargs):
+        # check the record count if it is one then update the existing one otherwise save the record 
+        count = SocialProfile.objects.count()
+        print(count)
+        if count == 0  :
+            return super(SocialProfile,self).save(*args, **kwargs)
+        else :
+            obj = SocialProfile.objects.all()
+            obj.delete()
+            return super(SocialProfile,self).save(*args, **kwargs)
+  
 
-class LandingPage(models.Model):
+
+class LandingPage(BaseModel):
     logo              = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     logo_footer       = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     favicon           = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     image_header      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     image_bottom      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_catagory    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
 
 
-class Pages(models.Model):
+
+class Pages(BaseModel):
     title       = models.CharField(max_length=50)
     slug        = models.CharField(max_length=124)
     show_navbar = models.BooleanField(default=False)

@@ -25,8 +25,12 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['*',]
+CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_HEADERS = [
+    "*",
+]
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -34,6 +38,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,11 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Apps
     'accounts',
     'admin_dashboard',
-    'donor',
-    'campaign',
-    'payment_gateway',
+    'donors',
+    'campaigns',
+    'payment_gateways',
+    'portals',
+
+    # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders'
@@ -57,6 +66,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Set the default number of items per page for page-based pagination
+    'DEFAULT_LIMIT': 20,  # Set the default limit for limit-based pagination
+}
+
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -135,3 +151,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+CRONJOBS = [
+    ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
+]
