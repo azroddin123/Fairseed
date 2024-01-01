@@ -17,6 +17,7 @@ from .serializers import CampaignSerializer
 from django.db.models import Count, Sum
 from django.db.models import F
 from django.core.paginator import Paginator, EmptyPage
+from django.utils import timezone
 
 # Create your views here.
 class CampaignApi(GenericMethodsMixin,APIView):
@@ -237,14 +238,13 @@ class CampaignCause(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def get(self, request):
-        camp_cause = CampaignCause.objects.all()
-        serializer = CampaignCauseSerializer(camp_cause, many=True)
+    def get(self, request, pk):
+        camp_cause = get_list_or_404(CampaignCause, pk=pk)
+        serializer = CampaignCauseSerializer(camp_cause)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-from django.utils import timezone
- 
+
 class CardAPIViewPagination(APIView):
     
     def get(self, request):

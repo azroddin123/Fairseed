@@ -26,12 +26,12 @@ RAISE_CHOICES = [
     ('others','others')
 ]
 
-class CampaignCause(models.Model):
-    cause_title = models.CharField(max_length=100)
-    cause_img   = models.ImageField(upload_to="static/media_files/",blank=True, null=True)
+# class CampaignCause(models.Model):
+#     cause_title = models.CharField(max_length=100)
+#     cause_img   = models.ImageField(upload_to="static/media_files/",blank=True, null=True)
 
-    def __str__(self):
-        return self.cause_title
+#     def __str__(self):
+#         return self.cause_title
 
 class Campaign(models.Model):
     catagory        = models.ForeignKey(CampaignCatagories,on_delete=models.CASCADE)
