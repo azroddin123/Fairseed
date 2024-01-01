@@ -13,7 +13,11 @@ urlpatterns = [
 
     ##################################################
 
-    path('register1/',RegisterAPI.as_view()),
-    path('register1/<int:pk>/',RegisterAPI.as_view()),
+    path('api/register/userlist/',RegisterUserListAPI.as_view()),
+    path('api/register/user/<int:pk>/',RegisterUserAPI.as_view()),
+    path('api/register/createuser/',RegisterPostAPI.as_view()),
+    path('api/register/deleteuser/<int:pk>',RegisterDeleteApi.as_view()),
+    
+    
     
 ]

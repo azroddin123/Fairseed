@@ -69,14 +69,18 @@ def update_cam_status(sender, instance, **kwargs):
     if instance.fund_raised == instance.goal_amount:
         Campaign.objects.filter(pk=instance.pk).update(is_successful=True)
 
-# @receiver(post_save, sender=Campaign)
-# def update_std_benefited(sender, instance, **kwargs):
-#     # std= Campaign.objects.filter(catagory='Education')
-#     if instance.catagory.name == 'Education' and instance.fund_raised == instance.goal_amount:
-#         print(f"Setting is_std_benefited to True for campaign {instance.pk}")
-#         Campaign.objects.filter(pk=instance.pk).update(is_std_benenfited=True)
-#         instance.is_std_benenfited += 1
-#         instance.save()
+@receiver(post_save, sender=Campaign)
+def update_std_benefited(sender, instance, **kwargs):
+    # std= Campaign.objects.filter(catagory='Education')
+    if instance.catagory.name == 'Education' and instance.fund_raised == instance.goal_amount:
+        print(f"Setting is_std_benefited to True for campaign {instance.pk}")
+        # Disconnect the signal temporarily
+        post_save.disconnect(update_std_benefited, sender=Campaign)
+        instance.is_std_benenfited = True
+        instance.save()
+
+        # Reconnect the signal
+        post_save.connect(update_std_benefited, sender=Campaign)
 
 
 

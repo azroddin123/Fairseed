@@ -55,15 +55,49 @@ class PassIdApi(APIView):
 ################### MY CODE ########################
     
 
-class RegisterAPI(APIView):
+class RegisterUserListAPI(APIView):
     def get(self, request):
         user = User.objects.all()
         serializer = UserSerializer1(user, many=True)
         return Response(serializer.data)
 
-class RegisterAPI(APIView):
+class RegisterUserAPI(APIView):
     def get(self, request, pk):
         user = get_object_or_404(User,pk=pk)
         serializer = UserSerializer1(user)
         return Response(serializer.data)
+    
+class RegisterPostAPI(APIView):
+    def post(self, request):
+        serializer = UserSerializer1(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        serializer = UserSerializer1(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
+    
+
+class RegisterDeleteApi(APIView):
+    def get(self, request, pk):
+        u1 = get_object_or_404(User, pk=pk)
+        serializer = UserSerializer1(u1)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({"message": "User deleted successfully"})
+        except User.DoesNotExist:
+            return Response({"error": "User not found"})
+
+        
+    
+    
     

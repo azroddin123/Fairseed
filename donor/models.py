@@ -10,7 +10,7 @@ payment_type = [
 ]
 
 class Donor(models.Model):
-    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE),
+    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE)
     donation_type = models.CharField(max_length=124)
     full_name     = models.CharField(max_length=124)
     amount        = models.PositiveIntegerField(validators=[MinValueValidator(50, message="Value must be greater than or equal to 50"),
