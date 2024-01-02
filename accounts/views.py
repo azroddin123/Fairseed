@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from portals.GM1 import GenericMethodsMixin
+from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError

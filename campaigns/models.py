@@ -11,7 +11,6 @@ class Campaigncategory(BaseModel):
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
 
-
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
     
@@ -34,6 +33,11 @@ class Campaign(BaseModel):
     is_featured     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
+    
+    @classmethod
+    def get_reported_campaigns(cls):
+        return cls.objects.filter(is_reported=True)
+
 
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
@@ -51,7 +55,6 @@ class CampaignKycBenificiary(BaseModel):
     adhar_card_image    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
-
 
 # class KycDetails(BaseModel):
 #     campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')

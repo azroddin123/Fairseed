@@ -46,7 +46,6 @@ class CampaignAdminApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field  = "id"
 
-
 class DocumentApi(GenericMethodsMixin,APIView):
     model = Documents
     serializer_class = DocumentSerializer
@@ -84,7 +83,6 @@ class ReportedCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-
 class CampaignByCategoryApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
@@ -117,8 +115,6 @@ class CampaignDetailsApi(APIView):
         except Exception as e :
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        
-
 # Get Campaign Details if its individual and if all campaigns
 # class CampaignDetailsApi(GenericMethodsMixin,APIView):
 #     model = Campaign
@@ -148,7 +144,6 @@ class CampaignDetailsApi(APIView):
 #                 return Response({"error": False, "data" : serializer.data},status=status.HTTP_200_OK)
 
 
-
 # Landing page api
 class LandingPageApi(APIView):
     def get(self,request,*args, **kwargs) :
@@ -162,7 +157,7 @@ class LandingPageApi(APIView):
             "student_benifited" : Campaign.objects.filter(is_withdrawal=True).count()
             }
             serializer = DashboardSerializer(data)
-            return Response({"data" : serializer.data},status=status.HTTP_200_OK)
+            return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
