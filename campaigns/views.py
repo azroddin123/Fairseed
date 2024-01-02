@@ -16,10 +16,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
 
-# Create your views here.
-# limit = 10 
-
-
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignSerializer
@@ -58,7 +54,7 @@ class CampaignFilterApi(APIView):
             campain_id=Campaigncategory.objects.get(name=category)
             campaing_data = Campaign.objects.filter(category=campain_id)
             serializer = CampaignSerializer1(campaing_data,many=True)
-            return Response({"error": False, "data" : serializer.data },status=status.HTTP_200_OK)
+            return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
@@ -71,7 +67,8 @@ class CampaignFilterApi(APIView):
 #                 return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
 #             except Campaigncategory.DoesNotExist:
 #                 return Response({"error": "Campaigncategory not found"}, status=status.HTTP_404_NOT_FOUND)
-#             except Exception as e:
+#             except Ex
+# ception as e:
 #                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class ReportedCauseApi(APIView):
@@ -79,7 +76,7 @@ class ReportedCauseApi(APIView):
         try :
             data = Campaign.objects.filter(is_reported=True)
             serializer = CampaignSerializer1(data,many=True)
-            return Response({"error": False, "data" : serializer.data },status=status.HTTP_200_OK)
+            return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
@@ -87,21 +84,12 @@ class CampaignByCategoryApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             cat_id = request.GET.get('category')
-            limit = int(request.GET.get('limit', 0))
-            page_number = int(request.GET.get('page', 0))
-
             data = Campaign.objects.filter(category=cat_id)
-            
-            paginator = Paginator(data, limit)
-            current_page_data = paginator.get_page(page_number)
-            
-            serializer = CampaignAdminSerializer(current_page_data, many=True)
-            
+            serializer = CampaignAdminSerializer(data, many=True)
             return Response({
-                "pages_count": paginator.num_pages,
-                "count": paginator.count,
+                "count": len(data),
                 "error": False,
-                "data": serializer.data,
+                "rows": serializer.data,
             }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

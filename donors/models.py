@@ -1,12 +1,12 @@
 from django.db import models
-from campaigns.models import Campaign
+# from campaigns.models import Campaign
 from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel
 from portals.choices import DonationChoices,PaymentChoices
 # Create your models here.
 
 class Donor(BaseModel):
-    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="donors")
+    campaign      = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE,related_name="donors")
     donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)
     full_name     = models.CharField(max_length=124)
     amount        = models.PositiveIntegerField(validators=[MinValueValidator(50, message="Value must be greater than or equal to 50"),

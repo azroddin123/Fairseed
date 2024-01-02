@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from .models import * 
-from .models import Donor,Campaign
+from .models import Donor
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
@@ -31,25 +31,6 @@ class DonorSerializer(ModelSerializer):
         model = Donor
         fields = "__all__"
 
-    def validate(self, data):
-        amount = data["amount"]
-        campaign = data["campaign"]
-        print(amount)
-        print(data,campaign.goal_amount,campaign.fund_raised)
-        required_amount = campaign.goal_amount - campaign.fund_raised
-        return data
-
-    def save(self, **kwargs):
-        amount = self.validated_data["amount"]
-        campaign = self.validated_data["campaign"]
-        required_amount = campaign.goal_amount - campaign.fund_raised
-        print(amount,required_amount)
-        if amount > required_amount:
-            raise serializers.ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
-        campaign.fund_raised += amount
-        print(campaign.save())
-        return super().save(**kwargs)
-    
 class DonorSerializer1(ModelSerializer):
     class Meta :
         model = Donor
@@ -64,4 +45,26 @@ class UpiSerializers(ModelSerializer):
     class Meta :
         model = UpiTransaction
         fields = "__all__"
-        
+
+
+
+
+    # def validate(self, data):
+    #     amount = data["amount"]
+    #     campaign = data["campaign"]
+    #     print(amount)
+    #     print(data,campaign.goal_amount,campaign.fund_raised)
+    #     required_amount = campaign.goal_amount - campaign.fund_raised
+    #     return data
+
+    # def save(self, **kwargs):
+    #     amount = self.validated_data["amount"]
+    #     campaign = self.validated_data["campaign"]
+    #     required_amount = campaign.goal_amount - campaign.fund_raised
+    #     print(amount,required_amount)
+    #     if amount > required_amount:
+    #         raise serializers.ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
+    #     campaign.fund_raised += amount
+    #     print(campaign.save())
+    #     return super().save(**kwargs)
+    

@@ -1,10 +1,13 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
-# Create your models here.
 from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+# from django.core.exceptions import ValidationError
+from rest_framework.serializers import ValidationError
+from donors.models import Donor
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
@@ -12,8 +15,7 @@ class Campaigncategory(BaseModel):
     is_active = models.BooleanField(default=False)
 
 class Campaign(BaseModel):
-    category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
-    
+    category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
@@ -34,10 +36,24 @@ class Campaign(BaseModel):
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
     
+    
+    @receiver(post_save,sender=Donor)
+    def update_campaign(sender, instance, **kwargs):
+            campaign = instance.campaign
+            required_amount = campaign.goal_amount - campaign.fund_raised
+            if instance.amount > required_amount:
+                print(instance.delete(),"instance deleted successfully")
+                raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
+            campaign.fund_raised += instance.amount
+            campaign.save()
+
     @classmethod
     def get_reported_campaigns(cls):
         return cls.objects.filter(is_reported=True)
-
+   
+    @classmethod
+    def get_successful_campaign(cls):
+        return cls.objects.filter(is_successful=True)
 
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
@@ -56,6 +72,7 @@ class CampaignKycBenificiary(BaseModel):
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
 
+
 # class KycDetails(BaseModel):
 #     campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')
 #     pan_card           = models.CharField(max_length=10)
@@ -66,6 +83,7 @@ class CampaignKycBenificiary(BaseModel):
 #     is_verified        = models.BooleanField(default=False)
 
 # Document fields of Django Admin Panel
+
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name     = models.CharField(max_length=124)

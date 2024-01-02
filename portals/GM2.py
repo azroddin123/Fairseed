@@ -11,13 +11,10 @@ import math
 class GenericMethodsMixin:
     def __init__(self, serializer_class=None, create_serializer_class=None) -> None:
         print(self.serializer_class,create_serializer_class)
-        
         self.model = self.get_model()
         self.queryset = self.get_queryset()
         self.serializer = self.get_serializer_class() or serializer_class
-        # self.serializer_class = serializer_class
-        # print(self.serializer,"------------------------",self.create_serializer_class)
-        # self.create_serializer_class = self.create_serializer_class or self.serializer
+
             
         self.lookup = self.get_lookup()
         self.query = self.get_query()
@@ -48,9 +45,7 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
     
-    
     def get_paginated_data(self, request):
-        print("paginated data")
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
         data = self.model.objects.all()
         try:
@@ -60,30 +55,8 @@ class GenericMethodsMixin:
                 "count": len(data) or 0 ,
                 "rows": serializer.data,
             }, status=status.HTTP_200_OK)
-        except :
-            pass
-        # print("paginated data")
-        # limit = max(int(request.GET.get('limit', 0)), 5) 
-        # page_number = max(int(request.GET.get('page', 0)), 1)  
-        # # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
-        # data = self.model.objects.all()
-        # print(len(data))
-        # paginator = Paginator(data, limit)
-        # try:
-        #     current_page_data = paginator.get_page(page_number)
-        # except EmptyPage:
-        #     return Response(
-        #         {"error": True, "message": "Page not found"},
-        #         status=status.HTTP_404_NOT_FOUND
-        #     )
-        # serializer = self.serializer_class(current_page_data, many=True)
-        # return Response({
-        #     "error": False,
-        #     "pages_count": paginator.num_pages,
-        #     "count": paginator.count,
-        #     "rows": serializer.data,
-        # }, status=status.HTTP_200_OK)
-
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def get_single_data(self, pk):
         try:
@@ -94,7 +67,7 @@ class GenericMethodsMixin:
             return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
         except self.model.DoesNotExist:
             return self.handle_does_not_exist_error()
-        
+
     # for post method
     def create_data(self, request):
         print(self.create_serializer_class)
@@ -174,3 +147,25 @@ class GenericMethodsMixin:
     #                 "message" : str(e) 
     #             },status=status.HTTP_400_BAD_REQUEST)
 
+    # print("paginated data")
+        # limit = max(int(request.GET.get('limit', 0)), 5) 
+        # page_number = max(int(request.GET.get('page', 0)), 1)  
+        # # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
+        # data = self.model.objects.all()
+        # print(len(data))
+        # paginator = Paginator(data, limit)
+        # try:
+        #     current_page_data = paginator.get_page(page_number)
+        # except EmptyPage:
+        #     return Response(
+        #         {"error": True, "message": "Page not found"},
+        #         status=status.HTTP_404_NOT_FOUND
+        #     )
+        # serializer = self.serializer_class(current_page_data, many=True)
+        # return Response({
+        #     "error": False,
+        #     "pages_count": paginator.num_pages,
+        #     "count": paginator.count,
+        #     "rows": serializer.data,
+        # }, status=status.HTTP_200_OK)
+        

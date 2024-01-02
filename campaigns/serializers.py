@@ -15,7 +15,6 @@ class CampaignSerializer(ModelSerializer):
         model  = Campaign
         fields = "__all__"
 
-    
     # def save(self):
     #     pass
 
@@ -49,7 +48,6 @@ class DashboardSerializer(serializers.Serializer):
     donor_count          = serializers.IntegerField()
     successfull_campaign = serializers.IntegerField()
     student_benifited    = serializers.IntegerField()
-
 
 class CampaignBycategorySerializer(ModelSerializer):
     campaign    = CampaignSerializer1(source="campaign_set",many=True)
