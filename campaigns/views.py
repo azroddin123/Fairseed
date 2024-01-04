@@ -1,63 +1,65 @@
-from django.shortcuts import render
-from django.db.models import Sum, F
-from donors.models import Donor
-from django.utils import timezone
-from .serializers import * 
-from .models import (
-    Campaign,
-    Campaigncategory,
-    CampaignKycBenificiary,
-)
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
-from rest_framework.views import APIView
-import uuid
+import datetime
 import math
-from portals.GM1 import GenericMethodsMixin
-from rest_framework.response import Response
-from rest_framework import status
+import uuid
+
 from django.core.paginator import Paginator
+from django.db.models import F, Sum
+from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.utils.dateformat import DateFormat
+from django.utils.formats import get_format
+from django.utils.timezone import localtime
+from rest_framework import status
+from rest_framework.pagination import (LimitOffsetPagination,
+                                       PageNumberPagination)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from donors.models import Donor
+from portals.GM1 import GenericMethodsMixin
+
+from .models import Campaign, Campaigncategory, CampaignKycBenificiary
+from .serializers import *
 
 # Create your views here.
-# limit = 10 
-
 
 ##############################################################################################################################################
+class Campaigndetail(APIView):
+    def get(self, request):
+        campaigns = Campaign.objects.all()
+        serializer = CampaignSerializer(campaigns, many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 class CardAPIViewPagination(APIView):
     
     def get(self, request):
-        page_size = 8
-        page_number = int(request.GET.get("page",1))
+        
+        params = request.GET
+        page_number = int(params.get("pg", 1))
+        page_size = int(params.get("limit", 8))
+        offset = (page_number - 1) * page_size
+        limit = page_size
 
         campaigns = Campaign.objects.annotate(cause_fund_raised=F('fund_raised'))
 
-        start_index = (page_number - 1) * page_size
-        end_index = start_index + page_size
-        paginated_campaigns = campaigns[start_index:end_index]
+        paginated_campaigns = campaigns[offset:offset + limit]
 
         all_campaigns_data = []
-        print("test")
-        
+
         for c1 in paginated_campaigns:
-            print("test1")
-            print(c1)
-            # to calculate the number of donors and total amount
             donors_per_campaign = Donor.objects.filter(campaign=c1)
-            # Campaign.objects.get(id = 1)
-            # donors:Donor = Donor.objects.filter(campaign=1)
-            # print(donors_per_campaign)
             num_donors = donors_per_campaign.count()
             sum_amt = donors_per_campaign.aggregate(sum_amt=Sum('amount'))['sum_amt'] if donors_per_campaign.exists() else 0
             
             today_date = timezone.now().date()
-
-            # if c1.end_date:
-            #     days_remaining = (c1.end_date - today_date).days
-            #     if days_remaining >= 0:
-            #         days_left_message = f'{days_remaining} days left'
-            #     else:
-            #         days_left_message = 'Campaign ended'
-            # else:
-            days_left_message = 'No end date'
+            if c1.end_date:
+                days_remaining = (c1.end_date - today_date).days
+                if days_remaining >= 0:
+                    days_left_message = f'{days_remaining} days left'
+                else:
+                    days_left_message = 'Campaign ended'
+            else:
+                days_left_message = 'No end date'
             
             api_data = {
                 'id': c1.id,
@@ -69,43 +71,41 @@ class CardAPIViewPagination(APIView):
                 'num_donors': num_donors,
             }
 
-
             all_campaigns_data.append(api_data)
 
         return Response(all_campaigns_data, status=status.HTTP_200_OK)
     
+class CardAPIView2(APIView):
+    def get(self, request, pk):
+        campaign = get_object_or_404(Campaign, id=pk)
+        formatted_date_time = campaign.created_on.strftime('%b %d, %Y %I:%M %p')
+
+        data = {
+            'Status': 'Campaign Ongoing' if campaign.end_date and campaign.end_date >= timezone.now().date() else 'Campaign Ended',
+            'Fund Raised': campaign.fund_raised,
+            'Goal Amount': campaign.goal_amount,
+            'Zakah Eligible': campaign.zakat_eligible,
+            'Date Time': formatted_date_time,
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+class RecentDonors(APIView):
+    def get(self, request, pk):
+        campaign = get_object_or_404(Campaign, id=pk)
+        donors_list = Donor.objects.filter(campaign=pk)
+        donor_data = [{'full_name': donor.full_name,
+                       'amount': donor.amount,
+                       'created_on': donor.created_on.strftime('%d %b %Y')}
+                       for donor in donors_list]
+        return Response(donor_data)
     
-# class Ongoing_Campaign_Api_built_in(APIView):
-#     def get(self, request):
-#         oc1=Campaign.objects.all()
-#         p=Paginator(oc1,8)
-#         page_number=request.GET.get("page")
-#         page_object = p.get_page(page_number)
-#         serializer=CampaignSerializer(page_object, many=True)
-#         return Response(serializer.data)
-    
-# class Ongoing_Campaign_Api(APIView):
-#     def get(self,request):
-#         oc1=Campaign.objects.all()
-#         page_size=8
-#         page_number=int(request.GET.get("page",1))
-#         start_index=(page_number-1)*page_size
-#         end_index=start_index+page_size
-#         page_object=oc1[start_index:end_index]
-#         serializer=CampaignSerializer(page_object, many=True)
-#         return Response(serializer.data)
-    
+
 class CausesbyCategoryAPI(APIView):
     def get(self,request):
         causes_by_category = Campaign.objects.all()
         titles = [campaigns.title for campaigns in causes_by_category]
         return Response(titles, status=status.HTTP_200_OK)
-        
-# class CausesbyCategoryAPI(APIView):
-#     def get(self,request):
-#         names_of_category=get_object_or_404(CampaignCatagories)
-#         cause_name=CampaignCatagories.objects.filter(name=names_of_category)
-#         return Response(cause_name, status=status.HTTP_200_OK)
 
 class DashboardAPI(APIView):
     def get(self, request):

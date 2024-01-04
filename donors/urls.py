@@ -6,6 +6,9 @@ import uuid
 
 urlpatterns = [
 
+#########################################################################
+    path('api/donor_record/',DonorRecord.as_view()),
+#########################################################################
     path('donor-details', DonorApi.as_view()),
     path('donor-details/<int:pk>', DonorApi.as_view()),
 
@@ -15,9 +18,7 @@ urlpatterns = [
     path('upi-transaction', UpiTransactionApi.as_view()),
     path('upi-transaction/<int:pk>', UpiTransactionApi.as_view()),
     
-
-
-##################################################################
+    ##################################################################
 
     path('donor-details',DonorApi.as_view()),
     path('donor-details/<str:uuid>',DonorApi.as_view()),

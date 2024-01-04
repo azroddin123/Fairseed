@@ -5,6 +5,13 @@ from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from .models import * 
 
+########################################################################################################
+# class AfterCardviewSerializer(ModelSerializer):
+#     class Meta:
+#         model = Donor
+#         fields =["full_name", "amount"]
+########################################################################################################
+
 class CampaigncategorySerializer(ModelSerializer):
     class Meta:
         model  = Campaigncategory
@@ -27,7 +34,7 @@ class CampaignSerializer1(ModelSerializer):
 
 
 class CKBSerializer(ModelSerializer):
-    class meta :
+    class Meta :
         model  = CampaignKycBenificiary
         fields = "__all__"
 

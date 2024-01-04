@@ -14,6 +14,7 @@ payment_type = [
 class Donor(models.Model):
     campaign      = models.ForeignKey(Campaign, on_delete=models.CASCADE)
     donation_type = models.CharField(max_length=124)
+    
 from campaigns.models import Campaign
 from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel

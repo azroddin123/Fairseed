@@ -12,6 +12,13 @@ from portals.GM1 import GenericMethodsMixin
 from rest_framework import status
 from rest_framework.response import Response
 
+###################################################################################
+class DonorRecord(APIView):
+    def get(self, request):
+        donors_record = Donor.objects.all()
+        serializers = DonorSerializer1(donors_record, many = True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+###################################################################################
 
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor

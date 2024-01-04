@@ -9,11 +9,21 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 
 ########################################################################
+# class RegisterApi(APIView):
+#     def get(self, request):
+#         u1 = User.objects.all()
+#         serializers = UserSerializer1(u1, many = True)
+#         return Response(serializers.data)
+
 class RegisterApi(APIView):
-    def get(self, request):
-        u1 = User.objects.all()
-        serializers = UserSerializer1(u1, many = True)
-        return Response(serializers.data)
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer1(user)
+        return Response(serializer.data)
 ########################################################################
 class UserApi(GenericMethodsMixin, APIView):
     model = User
