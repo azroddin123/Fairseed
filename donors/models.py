@@ -17,6 +17,7 @@ class Donor(BaseModel):
     mobile        = models.CharField(max_length=124)
     pancard       = models.CharField(max_length=124,blank=True,null=True)
     comment       = models.TextField()
+    date          = models.DateField(null=True,blank=True)
     payment_type  = models.CharField(choices=PaymentChoices.choices,max_length=124)
     is_anonymous  = models.BooleanField(default=False)
     status        = models.BooleanField(default=True)

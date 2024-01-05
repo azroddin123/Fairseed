@@ -15,10 +15,6 @@ class CampaignSerializer(ModelSerializer):
         model  = Campaign
         fields = "__all__"
 
-    # def save(self):
-    #     pass
-
-
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
@@ -56,10 +52,10 @@ class CampaignBycategorySerializer(ModelSerializer):
         fields  = "__all__"
 
 class CampaignAdminSerializer(ModelSerializer):
-    user_data      = UserAdminSerializer(read_only=True)
+    user    = UserAdminSerializer(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','category',"user_data","user")
+        fields = ('id','title','campaign_image','goal_amount','fund_raised','start_date','end_date','status','category',"user")
 
     
 class DocumentSerializer(ModelSerializer):

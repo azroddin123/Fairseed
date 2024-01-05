@@ -9,14 +9,16 @@ from django.dispatch import receiver
 from rest_framework.serializers import ValidationError
 from donors.models import Donor
 
+
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
-    image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    image  = models.ImageField(upload_to="static/media_files/catagory/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
 
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
+    campaign_image  = models.ImageField(upload_to='static/media_files/campaign_images/', null=True, blank=True)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 100"),
@@ -63,15 +65,14 @@ class CampaignKycBenificiary(BaseModel):
     bank_name           = models.CharField(max_length=124)
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
-    passbook_image      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    passbook_image      = models.ImageField(upload_to="static/media_files/kyc/",blank=True,null=True,)
     
     pan_card            = models.CharField(max_length=10)
-    pan_card_image      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    pan_card_image      = models.ImageField(upload_to="static/media_files/kyc/",blank=True,null=True,)
     adhar_card          = models.CharField(max_length=16)
-    adhar_card_image    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    adhar_card_image    = models.ImageField(upload_to="static/media_files/kyc/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
-
 
 # class KycDetails(BaseModel):
 #     campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc_details')
@@ -87,5 +88,5 @@ class CampaignKycBenificiary(BaseModel):
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name     = models.CharField(max_length=124)
-    doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
+    doc_file     = models.FileField(upload_to="static/media_files/documents/",blank=True,null=True)
 

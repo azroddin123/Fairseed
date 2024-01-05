@@ -23,30 +23,25 @@ class KS(ModelSerializer):
         model = Keyword
         fields = ("name",)
         
+        
 class GSSerializer(serializers.ModelSerializer):
-    keywords = serializers.ListField(child=serializers.CharField(), write_only=True)
+    keywords = serializers.ListField(child=serializers.CharField(), write_only=True,required=False,allow_null=True,allow_empty=True)
     keywords_data = KS(source="keyword_set",many=True,read_only=True)
     class Meta:
         model = GeneralSetting
-        # exclude = ("new_registration_enabled", "auto_approve_enabled", "email_verification_enabled", "facebook_login_enabled", "google_login_enabled")
-        fields = ('keywords_data','namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled','keywords')
+        fields = ('id','namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled','keywords','keywords_data')
+    
     def create(self, validated_data):
-        # Extract the 'keywords' field from validated_data
         keywords_data = validated_data.pop('keywords', [])
-
-        # Create the GeneralSetting instance
         gs = GeneralSetting.objects.create(**validated_data)
-
-        # Create Keyword instances associated with the GeneralSetting instance
         for item in keywords_data:
             Keyword.objects.create(gs=gs, name=item)
-
         return gs
+    
 class KeywordSerializer(ModelSerializer):
     class Meta :
         model = Keyword
         fields = "__all__"
-        
 
 class LimitSerializer(ModelSerializer):
     class Meta :

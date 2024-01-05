@@ -6,7 +6,6 @@ from django.dispatch import receiver
 from portals.models import BaseModel
 
 # from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
-
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
     welcome_text                = models.CharField(max_length=32)
@@ -25,13 +24,22 @@ class GeneralSetting(BaseModel):
     google_login_enabled        = models.BooleanField(default=False)
     captcha_enabled             = models.BooleanField(default=False)
     input_field_enabled         = models.BooleanField(default=False)
-
-
+    
+    def save(self,*args, **kwargs):
+        # check the record count if it is one then update the existing one otherwise save the record 
+        count = GeneralSetting.objects.count()
+        print(count)
+        if count == 0  :
+            return super(GeneralSetting,self).save(*args, **kwargs)
+        else :
+            obj = GeneralSetting.objects.all()
+            obj.delete()
+            return super(GeneralSetting,self).save(*args, **kwargs)
 
 class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=50,unique=True)
-
+    
 class Limit(BaseModel):
     num_campaigns           = models.PositiveIntegerField()
     max_file_size           = models.PositiveIntegerField()
@@ -40,6 +48,18 @@ class Limit(BaseModel):
     donation_max_amount     = models.PositiveIntegerField()
     campaign_max_amount     = models.PositiveIntegerField()
     max_donation_amount     = models.PositiveIntegerField()
+    
+    
+    def save(self,*args, **kwargs):
+        # check the record count if it is one then update the existing one otherwise save the record 
+        count = Limit.objects.count()
+        print(count)
+        if count == 0  :
+            return super(Limit,self).save(*args, **kwargs)
+        else :
+            obj = Limit.objects.all()
+            obj.delete()
+            return super(Limit,self).save(*args, **kwargs)
 
 class SocialProfile(BaseModel):
     # Shall I related it to the the admin model
@@ -67,7 +87,6 @@ class LandingPage(BaseModel):
     avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
-
 
 class Pages(BaseModel):
     title       = models.CharField(max_length=50)
