@@ -10,25 +10,25 @@ import math
 
 class GenericMethodsMixin:
     def __init__(self, serializer_class=None, create_serializer_class=None) -> None:
-        print(self.serializer_class,create_serializer_class)
         self.model = self.get_model()
         self.queryset = self.get_queryset()
-        self.serializer = self.get_serializer_class() or serializer_class
-
+        self.serializer = self.get_serializer_class()
             
         self.lookup = self.get_lookup()
         self.query = self.get_query()
-       
-        # Assign create_serializer_class only if provided, otherwise, it defaults to serializer_class
-        self.create_serializer_class = create_serializer_class or self.serializer_class
-        # You can use self.create_serializer_class here, or instantiate it if needed
-        self.create_serializer = self.create_serializer_class() if self.create_serializer_class else None
+
         
     def get_lookup(self):
         return self.lookup_field
 
     def get_serializer_class(self):
         return self.serializer_class
+    
+    def get_create_serializer(self):
+        try:
+            return self.create_serializer_class
+        except:
+            return self.serializer
 
     def get_model(self):
         return self.model
@@ -70,9 +70,8 @@ class GenericMethodsMixin:
 
     # for post method
     def create_data(self, request):
-        print(self.create_serializer_class)
-        serializer = self.serializer_class(data=request.data)
-        serializer  = self.create_serializer_class(data=request.data)
+        create_serializer_class = self.get_create_serializer()
+        serializer  = create_serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"error": False, "data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -92,8 +91,9 @@ class GenericMethodsMixin:
             return Response({"error": True, "message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
-        filter = {self.lookup_field: pk}
+       
         try:
+            filter = {self.lookup_field: pk}
             object_instance = self.model.objects.get(**filter)
             serializer = self.create_serializer_class(object_instance,data=request.data, partial=True)
             if serializer.is_valid():
@@ -104,6 +104,9 @@ class GenericMethodsMixin:
 
         except self.model.DoesNotExist:
             return self.handle_does_not_exist_error()
+        
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk, *args, **kwargs):
         try:

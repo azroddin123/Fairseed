@@ -39,6 +39,7 @@ from rest_framework.response import Response
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
+    create_serializer_class = DonorSerializer
     lookup_field = "id"
 
     def post(self,request,pk=None,*args, **kwargs):
