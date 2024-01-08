@@ -77,7 +77,16 @@ class ReportedCauseApi(APIView):
         try :
             data = Campaign.objects.filter(is_reported=True)
             serializer = CampaignAdminSerializer(data,many=True)
-            return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
+            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
+class SuccessfulCauseApi(APIView):
+    def get(self,request,*args, **kwargs) :
+        try :
+            data = Campaign.objects.filter(is_successful=True)
+            serializer = CampaignAdminSerializer(data,many=True)
+            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
@@ -103,6 +112,7 @@ class CampaignDetailsApi(APIView):
             return Response({"error": False, "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Get Campaign Details if its individual and if all campaigns
 # class CampaignDetailsApi(GenericMethodsMixin,APIView):
@@ -150,7 +160,6 @@ class LandingPageApi(APIView):
         except Exception as e :
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
-
 
 
 

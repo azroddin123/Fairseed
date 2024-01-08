@@ -38,7 +38,6 @@ urlpatterns = [
     path('api/token/refresh/',TokenRefreshView.as_view(),name="token_refresh")
 ]
 
-
 from django.contrib import admin
 admin.site.site_header  = 'FairSeed'                             # default: "Django Administration"
 admin.site.index_title  = 'FairSeed Admin Panel'                 # default: "Site administration"

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_seed'
+    
     ]
 
 REST_FRAMEWORK = {
@@ -158,5 +159,5 @@ CRONJOBS = [
     ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
 ]
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['.vercel.app']
 CORS_ORIGIN_ALLOW_ALL = True

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import * 
-from campaigns.views import CampaignAdminApi,CampaigncategoryApi,ReportedCauseApi
+from campaigns.views import CampaignAdminApi,CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
 
 urlpatterns = [
     
@@ -36,7 +36,8 @@ urlpatterns = [
     path('campaign',CampaignAdminApi.as_view()),
     path('campaign/<str:pk>',CampaignAdminApi.as_view()),
     
-    path('reported-campaign',ReportedCauseApi.as_view())
+    path('reported-campaign',ReportedCauseApi.as_view()),
+    path('successful-campaign',SuccessfulCauseApi.as_view())
     
     # logical API 
     # Admin Api
@@ -45,5 +46,5 @@ urlpatterns = [
     # CRUD API for User ,Campaign
     # Crud API for Withdrawal
     # CRUD API for General Setting 
- 
+    
 ]

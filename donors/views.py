@@ -60,7 +60,3 @@ class UpiTransactionApi(GenericMethodsMixin,APIView):
     model = UpiTransaction
     serializer_class = UpiSerializers
     lookup_field = "id"
-
-
-# Remove Cause
-    

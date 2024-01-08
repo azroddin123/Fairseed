@@ -96,3 +96,7 @@ class Documents(BaseModel):
     doc_name     = models.CharField(max_length=124)
     doc_file     = models.FileField(upload_to="static/media_files/documents/",blank=True,null=True)
 
+
+
+# books = Book.objects.select_related('author').all()
+
