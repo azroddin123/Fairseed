@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
+
 from .models import User,UserRole
 from rest_framework import serializers
 from django.db import models
@@ -11,19 +12,19 @@ class UserSerializer(ModelSerializer):
         exclude = ("last_login","created_on","updated_on","is_admin")
 
     def save(self):
-        print(self.validated_data["user_type"])
         user = User(**self.validated_data)
         password = self.validated_data["password"]
         user.set_password(password)
+       
+        # if user is added by our admin then role is passed as admin then we are setting user role admin
+        # to add user then set default user role as Normal
         
-        if self.validated_data["user_role"] == "Admin" :
+        if self.validated_data.get("user_role") == "Admin" :
             user.is_admin = True
                 
         user.save()
         return user
     
-    def validated_data(self):
-        pass
     
 class UserSerializer1(ModelSerializer):
     class Meta :

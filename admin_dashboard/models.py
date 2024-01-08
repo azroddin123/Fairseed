@@ -5,12 +5,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from portals.models import BaseModel
 
+
 # from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
     welcome_text                = models.CharField(max_length=32)
     welcome_subtitle            = models.CharField(max_length=32)
-    Keyword                     = models.TextField(null=True,blank=True)
     description                 = models.CharField(max_length=124)
     email_admin                 = models.EmailField(max_length=254)
     tandc_url                   = models.CharField(max_length=254)

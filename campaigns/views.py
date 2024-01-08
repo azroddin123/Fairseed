@@ -18,12 +18,13 @@ from django.core.paginator import Paginator
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
-    serializer_class = CampaignSerializer
+    serializer_class = CampaignAdminSerializer
+    create_serializer_class = CampaignSerializer
     lookup_field = "id"
 
 class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     model = Campaigncategory
-    serializer_class = CampaigncategorySerializer
+    serializer_class = CampaignCategorySerializer
     lookup_field = "id"
 
 class CKBApi(GenericMethodsMixin,APIView):
@@ -75,7 +76,7 @@ class ReportedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_reported=True)
-            serializer = CampaignSerializer1(data,many=True)
+            serializer = CampaignAdminSerializer(data,many=True)
             return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)

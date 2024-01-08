@@ -7,13 +7,11 @@ import uuid
 # Create your models here.
 class UserRole(BaseModel):
     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
-
     def __str__(self) -> str:
         return self.role_name
 
 # we are able to create superadmin 
 # when user role is admin at that time is_admin==True 
-    
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
     email      = models.EmailField(
@@ -57,3 +55,4 @@ class User(AbstractBaseUser):
     
     def __str__(self) -> str:
         return self.username
+    

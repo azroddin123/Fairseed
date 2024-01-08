@@ -14,6 +14,10 @@ class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/catagory/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return str(self.name)
+    
 
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
@@ -38,6 +42,8 @@ class Campaign(BaseModel):
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
     
+    def __str__(self) -> str:
+        return self.title
     
     @receiver(post_save,sender=Donor)
     def update_campaign(sender, instance, **kwargs):

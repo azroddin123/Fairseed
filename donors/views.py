@@ -51,7 +51,6 @@ class DonorApi(GenericMethodsMixin,APIView):
                 return Response(status=status.HTTP_200_OK)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 class BankTransactionApi(GenericMethodsMixin,APIView):
     model = BankTransaction
     serializer_class =BankTransactionSerializer

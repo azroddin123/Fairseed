@@ -11,6 +11,8 @@ class UserApi(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
+    
+    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
@@ -21,10 +23,7 @@ class RegisterUserApi(APIView):
                 return Response({"message" : "User Created Succefully" , "data" : serializer.data},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
-             raise ValidationError({
-                "status_code" : status.HTTP_400_BAD_REQUEST,
-                "message" :  e
-            })
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):

@@ -26,8 +26,10 @@ class GenericMethodsMixin:
     
     def get_create_serializer(self):
         try:
+            print("here")
             return self.create_serializer_class
         except:
+            print("there")
             return self.serializer
 
     def get_model(self):
@@ -70,6 +72,7 @@ class GenericMethodsMixin:
 
     # for post method
     def create_data(self, request):
+        print("in creare sdfdasdfgbfdsa")
         create_serializer_class = self.get_create_serializer()
         serializer  = create_serializer_class(data=request.data)
         if serializer.is_valid():
@@ -95,7 +98,8 @@ class GenericMethodsMixin:
         try:
             filter = {self.lookup_field: pk}
             object_instance = self.model.objects.get(**filter)
-            serializer = self.create_serializer_class(object_instance,data=request.data, partial=True)
+            create_serializer_class = self.get_create_serializer()
+            serializer = create_serializer_class(object_instance,data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"error": False, "data": serializer.data}, status=status.HTTP_202_ACCEPTED)

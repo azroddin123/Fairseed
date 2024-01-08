@@ -53,7 +53,6 @@ class SocialProfileSerializer(ModelSerializer):
         model = SocialProfile
         fields = "__all__"
     
-    
     def save(self,*args, **kwargs):
         data = SocialProfile.objects.all()
         print("data",data)
