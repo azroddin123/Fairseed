@@ -153,11 +153,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+import os 
 
-
-CRONJOBS = [
-    ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
-]
-
-ALLOWED_HOSTS = ['.vercel.app']
+STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
+ALLOWED_HOSTS = ['.vercel.app','.now.sh']
 CORS_ORIGIN_ALLOW_ALL = True
