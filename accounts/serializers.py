@@ -4,6 +4,12 @@ from .models import User,UserRole
 from rest_framework import serializers
 from django.db import models
 
+###################################################################################
+class EmailNotificationSerializer(serializers.Serializer):
+    subject = serializers.CharField()
+    message = serializers.CharField()
+    recipient = serializers.EmailField()
+###################################################################################
 
 class UserSerializer(ModelSerializer):
     class Meta :

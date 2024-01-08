@@ -19,7 +19,7 @@ class DonorSerializer(ModelSerializer):
         campaign = self.validated_data["campaign"]
         required_amount = campaign.goal_amount - campaign.fund_raised
         if amount > required_amount :
-              return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
+            return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
         
         campaign.fund_raised = campaign.fund_raised + amount
         campaign.save()
@@ -52,7 +52,6 @@ class DonorSerializer(ModelSerializer):
         print(campaign.save())
         return super().save(**kwargs)
     
-     
 class DonorSerializer1(ModelSerializer):
     class Meta :
         model = Donor

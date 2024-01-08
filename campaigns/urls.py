@@ -5,6 +5,8 @@ urlpatterns = [
 
     ###################################################################################################
     # path('card/', CardAPIView.as_view()),
+    # path('api/practice/',PracticeAPI.as_view()),
+    path('api/causes_raised/', TotalCountAPI.as_view(), name='causes-raised'),
     path('api/landing_page/card/', CardAPIViewPagination.as_view()),
     path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
     # path('api/landing_page/causes_by_category',CausesbyCategoryAPI.as_view()),
@@ -29,7 +31,8 @@ urlpatterns = [
     path('campaign-filter',CampaignFilterApi.as_view()),
     path('campaign/<str:pk>', CampaignDetailsApi.as_view()),
     path('campaign', CampaignDetailsApi.as_view()),
-    path('catagory', CampaignByCategoryApi.as_view())
+    path('catagory', CampaignByCategoryApi.as_view()),
+    
 
     # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),
     # path('campaign/', CampaignDetailsApi.as_view(), name='campaign-list'),

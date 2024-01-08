@@ -5,6 +5,7 @@ from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from .models import * 
 
+
 class CampaigncategorySerializer(ModelSerializer):
     class Meta:
         model  = Campaigncategory
@@ -15,7 +16,6 @@ class CampaignSerializer(ModelSerializer):
         model  = Campaign
         fields = "__all__"
 
-    
     # def save(self):
     #     pass
 
