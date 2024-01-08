@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+# CORS_ALLOW_HEADERS = [
+#     "*",
+# ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -34,6 +36,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,15 +44,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Apps
     'accounts',
     'admin_dashboard',
-    'donor',
-    'campaign',
-    'payment_gateway',
+    'donors',
+    'campaigns',
+    'payment_gateways',
+    'portals',
+
+    # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
-]
+    'corsheaders',
+    'django_seed'
+    
+    ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -57,6 +66,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Set the default number of items per page for page-based pagination
+    'DEFAULT_LIMIT': 20,  # Set the default limit for limit-based pagination
+}
+
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -66,6 +82,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -117,9 +134,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
+# settings.py
+
+TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+
+# TIME_ZONE = 'UTC'
+USE_I18N = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -130,3 +152,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+CRONJOBS = [
+    ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
+]
+
+ALLOWED_HOSTS = ['.vercel.app']
+CORS_ORIGIN_ALLOW_ALL = True

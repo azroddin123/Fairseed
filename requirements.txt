@@ -1,0 +1,8 @@
+Django==4.2
+django-cors-headers      
+djangorestframework           
+djangorestframework-simplejwt
+python-dotenv
+Pillow
+python
+django-crontab

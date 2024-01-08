@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
-from fairseed.GM import GenericMethodsMixin
+from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
@@ -11,6 +11,8 @@ class UserApi(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
+    
+    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
@@ -18,13 +20,10 @@ class RegisterUserApi(APIView):
             serializer = UserSerializer(data=request.data)
             if  serializer.is_valid():
                 serializer.save()
-                return Response({"message" : "User Created Succefully"},status=status.HTTP_201_CREATED)
+                return Response({"message" : "User Created Succefully" , "data" : serializer.data},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
-             raise ValidationError({
-                "status_code" : status.HTTP_400_BAD_REQUEST,
-                "message" :  e
-            })
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
@@ -35,17 +34,3 @@ class ChangePasswordApi(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PassIdApi(APIView):
-    def get(self,request,id1,id2,id3):
-        print(id1,id2,id3)
-        
-        id_data = {
-            "id1" : id1,
-            "id2" : id2,
-            "id3" : id3
-        }
-
-        serializers = IDSerializer(data=id_data)
-        if serializers.is_valid() :
-            return Response(data=serializers.data,status=status.HTTP_200_OK)
-        return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)

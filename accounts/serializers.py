@@ -1,27 +1,35 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import User
+
+from .models import User,UserRole
 from rest_framework import serializers
+from django.db import models
+
 
 class UserSerializer(ModelSerializer):
     class Meta :
         model = User
-        exclude = ("last_login","created_at","updated_at","is_admin")
+        exclude = ("last_login","created_on","updated_on","is_admin")
 
     def save(self):
         user = User(**self.validated_data)
         password = self.validated_data["password"]
         user.set_password(password)
-        print("in save")
+       
+        # if user is added by our admin then role is passed as admin then we are setting user role admin
+        # to add user then set default user role as Normal
+        
+        if self.validated_data.get("user_role") == "Admin" :
+            user.is_admin = True
+                
         user.save()
-        print("user saved")
         return user
     
-
+    
 class UserSerializer1(ModelSerializer):
     class Meta :
         model = User
-        exclude = ("last_login","created_at","updated_at","is_admin","password")
+        exclude = ("last_login","created_on","updated_on","is_admin","password")
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -46,7 +54,12 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def validate_old_password(self, old_password):
         print("in validate password")
-        user = self.context['request'].thisUser
+        
+        try : 
+            user = self.context['request'].thisUser
+        except : 
+            raise serializers.ValidationError( "User Not Found")
+            
         if not user.check_password(old_password):
             raise serializers.ValidationError("Old password is incorrect.")
         return old_password
@@ -63,7 +76,13 @@ class ChangePasswordSerializer(serializers.Serializer):
         return user
 
 
-class IDSerializer(serializers.Serializer):
-    id1 = serializers.IntegerField()
-    id2 = serializers.IntegerField()
-    id3 = serializers.IntegerField()
+class UserAdminSerializer(ModelSerializer):
+    class Meta :
+        model = User
+        fields = ('username','email','mobile_number')
+
+
+class UserRoleSerializer(ModelSerializer):
+    class Meta :
+        model = User 
+        fields = "__all__"
