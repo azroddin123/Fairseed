@@ -1,6 +1,7 @@
 import datetime
 import math
 import uuid
+from datetime import timedelta
 
 from django.core.paginator import Paginator
 from django.db.models import F, Sum
@@ -24,12 +25,19 @@ from .serializers import *
 # Create your views here.
 
 ##############################################################################################################################################
+                  
 class Campaigndetail(APIView):
     def get(self, request):
         campaigns = Campaign.objects.all()
         serializer = CampaignSerializer(campaigns, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+    def post(self, request, *args, **kwargs):
+        serializer = CampaignSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
 class CardAPIViewPagination(APIView):
     
     def get(self, request):
@@ -86,21 +94,34 @@ class CardAPIView2(APIView):
             'Goal Amount': campaign.goal_amount,
             'Zakah Eligible': campaign.zakat_eligible,
             'Date Time': formatted_date_time,
+            'Story' : campaign.description,
         }
 
         return Response(data, status=status.HTTP_200_OK)
 
-class RecentDonors(APIView):
-    def get(self, request, pk):
-        campaign = get_object_or_404(Campaign, id=pk)
-        donors_list = Donor.objects.filter(campaign=pk)
-        donor_data = [{'full_name': donor.full_name,
-                       'amount': donor.amount,
-                       'created_on': donor.created_on.strftime('%d %b %Y')}
-                       for donor in donors_list]
-        return Response(donor_data)
+# class RecentDonors(APIView):
+#     def get(self, request, pk):
+#         campaign = get_object_or_404(Campaign, id=pk)
+#         donors_list = Donor.objects.filter(campaign=pk)
+#         donor_data = [{'full_name': donor.full_name,
+#                        'amount': donor.amount,
+#                        'created_on': donor.created_on.strftime('%d %b %Y')}
+#                        for donor in donors_list]
+#         return Response(donor_data)
     
-
+class RecentDonors(APIView):
+    def get(self, request):
+        campaigns = Campaign.objects.all().order_by('-created_on')
+        all_donors = Donor.objects.filter(campaign__in=campaigns)
+        serializer = DonorRecentSerializer(all_donors, many=True)
+        return Response(serializer.data)
+    
+class RecentCampaigns(APIView):
+    def get(self, request):
+        recent_campaigns = Campaign.objects.all().order_by('-created_on')
+        serializer = CampaignSerializer(recent_campaigns, many=True)
+        return Response(serializer.data)
+    
 class CausesbyCategoryAPI(APIView):
     def get(self,request):
         causes_by_category = Campaign.objects.all()

@@ -7,23 +7,64 @@ from portals.GM1 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.serializers import ValidationError
+from django.core.mail import send_mail
+from django.conf import settings
 
 ########################################################################
+
+class EmailNotificationView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = EmailNotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            subject = serializer.validated_data['subject']
+            message = serializer.validated_data['message']
+            recipient = serializer.validated_data['recipient']
+
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [recipient],
+                    fail_silently=False,
+                )
+                return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'message': f'Error sending email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+
 # class RegisterApi(APIView):
-#     def get(self, request):
-#         u1 = User.objects.all()
-#         serializers = UserSerializer1(u1, many = True)
-#         return Response(serializers.data)
+#      def get(self, request, user_id):
+#         try:
+#             user = User.objects.get(id=user_id)
+#         except User.DoesNotExist:
+#             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#         serializer = UserSerializer1(user)
+#         return Response(serializer.data)
+    
 
 class RegisterApi(APIView):
-    def get(self, request, user_id):
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserSerializer1(user)
+    def get(self, request):
+        u1 = User.objects.all()
+        serializer = UserSerializer1(u1, many=True)
         return Response(serializer.data)
+
+    def post(self, request):
+        serializer = UserSerializer1(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status': 200,
+                'message': 'Registration successful.',
+                'data': serializer.data,
+            })
+        return Response({
+            'status': 400,
+            'message': 'Registration failed.',
+            'data': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 ########################################################################
 class UserApi(GenericMethodsMixin, APIView):
     model = User
@@ -35,8 +76,6 @@ class UserApi(GenericMethodsMixin, APIView):
         user = request.user
         serializer = UserSerializer1(user)
         return Response(serializer.data)
-
-    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):

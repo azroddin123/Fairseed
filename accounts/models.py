@@ -33,11 +33,17 @@ class User(AbstractBaseUser):
     updated_on       = models.DateTimeField(auto_now=True)
 
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
+
+    is_verified = models.BooleanField(default=False)
+    otp = models.CharField(max_length=4, null= True, blank=True)
     
     objects    = UserManager()
     
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS=[]
     
+    def name(self):
+        return self.first_name+' '+self.last_name
     def __str__(self):
         return self.email
     def has_perm(self, perm, obj=None):

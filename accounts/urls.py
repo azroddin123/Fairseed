@@ -11,7 +11,8 @@ urlpatterns = [
     # path('test/<int:id1>/<int:id2>/<int:id3>/', PassIdApi.as_view()),
 
     ###################################################
-    path('register-get/<int:user_id>/',RegisterApi.as_view()),
+    path('send-email/', EmailNotificationView.as_view(), name='send-email'),
+    path('register-new',RegisterApi.as_view()),
     ###################################################
     
 ]

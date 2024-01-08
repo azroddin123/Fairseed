@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 DEBUG = True
 ALLOWED_HOSTS = ['*',]
 CORS_ORIGIN_ALLOW_ALL = True
+AUTH_USER_MODEL = 'accounts.User'
 
 CORS_ALLOW_HEADERS = [
     "*",
@@ -152,3 +153,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRONJOBS = [
     ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
 ]
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'komalsamal2001@gmail.com'
+EMAIL_HOST_PASSWORD = 'Skomal@3012'
+DEFAULT_FROM_EMAIL = 'samalkomalcs@gmail.com'
