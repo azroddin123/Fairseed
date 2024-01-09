@@ -5,7 +5,9 @@ from .serializers import *
 from .models import (
     Campaign, 
     Campaigncategory,
-    CampaignKycBenificiary,
+    AccountDetail,
+    Kyc
+    
 )
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.views import APIView
@@ -27,15 +29,15 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     serializer_class = CampaignCategorySerializer
     lookup_field = "id"
 
-class CKBApi(GenericMethodsMixin,APIView):
-    model = CampaignKycBenificiary
-    serializer_class = CKBSerializer
+class AccountDetailApi(GenericMethodsMixin,APIView):
+    model = AccountDetail
+    serializer_class = AccountDSerializer
     lookup_field = "id"
 
-# class KycApi(GenericMethodsMixin,APIView):
-#     model = KycDetails
-#     serializer_class = KycDetailSerializer
-#     lookup_field = "id"
+class KycApi(GenericMethodsMixin,APIView):
+    model = Kyc
+    serializer_class = KycSerializer
+    lookup_field = "id"
 
 class CampaignAdminApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -207,19 +209,3 @@ class LandingPageApi(APIView):
 #         except Exception as e :
 #             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
-from django.db.models import ExpressionWrapper, F, fields, Func
-from datetime import datetime
-
-# Assuming you have a Campaign model
-from django.db.models import F
-from datetime import datetime
-
-# Assuming you have a Campaign model
-for campaign in Campaign.objects.all():
-    campaign.days_left = (campaign.end_date - datetime.now().date()).days
-    print(campaign.days_left)
-    campaign.save()

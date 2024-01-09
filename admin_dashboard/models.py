@@ -79,13 +79,13 @@ class SocialProfile(BaseModel):
             return super(SocialProfile,self).save(*args, **kwargs)
   
 class LandingPage(BaseModel):
-    logo              = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    logo_footer       = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    favicon           = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_header      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_bottom      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    logo              = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    logo_footer       = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    favicon           = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    image_header      = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    image_bottom      = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    avtar             = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
+    image_category    = models.ImageField(upload_to="static/media_files/landing_page/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
 
 class Pages(BaseModel):

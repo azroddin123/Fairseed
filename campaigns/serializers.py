@@ -20,21 +20,20 @@ class CampaignSerializer1(ModelSerializer):
         model   = Campaign
         exclude = ["is_successful","status","is_featured","is_reported"]
 
-class CKBSerializer(ModelSerializer):
-    class meta :
-        model  = CampaignKycBenificiary
+class AccountDSerializer(ModelSerializer):
+    class Meta :
+        model  = AccountDetail
+        fields = "__all__"
+        
+class KycSerializer(ModelSerializer):
+    class Meta :
+        model = Kyc
         fields = "__all__"
 
-# class BBDetailSerailizer(ModelSerializer):
-#     class Meta :
-#         model = BenificiaryBankDetails
-#         fields = "__all__"
-
-# class KycDetailSerializer(ModelSerializer):
-#     class Meta :
-#         model = KycDetails
-#         fields = "__all__"
-
+class DocumentSerializer(ModelSerializer):
+    class Meta :
+        model   = Documents
+        fields  = "__all__"
 
 class DashboardSerializer(serializers.Serializer):
     total_campaign       = serializers.IntegerField()
@@ -43,11 +42,15 @@ class DashboardSerializer(serializers.Serializer):
     successfull_campaign = serializers.IntegerField()
     student_benifited    = serializers.IntegerField()
 
+
+
 class CampaignBycategorySerializer(ModelSerializer):
     campaign    = CampaignSerializer1(source="campaign_set",many=True)
     class Meta :
         model   = Campaigncategory
         fields  = "__all__"
+
+
 
 class CampaignAdminSerializer(ModelSerializer):
     user       = UserAdminSerializer(read_only=True)
@@ -59,11 +62,8 @@ class CampaignAdminSerializer(ModelSerializer):
 
     def get_donor_count(self, obj):
         return obj.donors.count()
- 
-class DocumentSerializer(ModelSerializer):
-    class Meta :
-        model   = Documents
-        fields  = "__all__"
+
+
 
 class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
