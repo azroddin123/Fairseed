@@ -18,7 +18,6 @@ class Campaigncategory(BaseModel):
     
     def __str__(self) -> str:
         return str(self.name)
-    
 
 class Campaign(BaseModel):
     campaign_image  = models.ImageField(upload_to='static/media_files/campaign/campaign_images/', null=True, blank=True)
@@ -31,18 +30,13 @@ class Campaign(BaseModel):
     fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
                     MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
     zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
-    
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location        = models.CharField(max_length=124)
-
     description     = models.TextField()
     summary         = models.TextField()
-    
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     end_date        = models.DateField()
     days_left       = models.IntegerField(default=0)
-
-
     is_successful   = models.BooleanField(default=False)
     is_featured     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
@@ -50,7 +44,6 @@ class Campaign(BaseModel):
     
     def __str__(self) -> str:
         return self.title
-    
     
     @property
     def update_days_left(self):
@@ -66,7 +59,6 @@ class Campaign(BaseModel):
                 raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
             campaign.fund_raised += instance.amount
             campaign.save()
-
 
     @classmethod
     def get_reported_campaigns(cls):
@@ -85,7 +77,6 @@ class AccountDetail(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
-  
     
 class Kyc(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
@@ -99,9 +90,13 @@ class Kyc(BaseModel):
     is_verified         = models.BooleanField(default=False)
     tandc_accept        = models.BooleanField(default=False)
 
+
+from tinymce.models import HTMLField
+
 class Documents(BaseModel):
-    campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
+    campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_name     = models.CharField(max_length=124,blank=True,null=True)
-    doc_file     = models.FileField(upload_to="static/media_files/campaign/documents/")
+    doc_file     = models.FileField(upload_to="static/media_files/campaign/documents/",blank=True,null=True)
+    content      = HTMLField()
     
 

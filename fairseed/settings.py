@@ -58,8 +58,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'django_seed'
-    
+    'django_seed',
+    'tinymce'
     ]
 
 REST_FRAMEWORK = {
@@ -149,7 +149,13 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR.joinpath("media/")
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR.joinpath('static/')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

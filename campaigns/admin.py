@@ -3,8 +3,9 @@ from django.contrib import admin
 # Register your models here.
 from .models import *
 
-# class CCAdmin(admin.ModelAdmin):
-#     list_display = ('name','image','is_active')
+class CCAdmin(admin.ModelAdmin):
+    list_display = ('name','image','is_active','id')
+    
 
 # class CampaignAdmin(admin.ModelAdmin):
 #     list_display = ('title','goal_amount','fund_raised','location','zakat_eligible','status','end_date','description','summary','is_successful','is_featured','is_reported','category','user','rasing_for',)
@@ -17,7 +18,7 @@ from .models import *
 # class KycAdmin(admin.ModelAdmin):
 #     list_display = ('campaign','pan_card','pan_card_image','adhar_card','adhar_card_image','other_details','is_verified')
 
-# admin.site.register(Campaigncategory,CCAdmin)
+admin.site.register(Campaigncategory,CCAdmin)
 # admin.site.register(Campaign,CampaignAdmin)
 # admin.site.register(CampaignKycBenificiary,BBAdmin)
 # admin.site.register(KycDetails,KycAdmin)
