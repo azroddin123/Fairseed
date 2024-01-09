@@ -8,7 +8,7 @@ from .models import *
 class CampaignCategorySerializer(ModelSerializer):
     class Meta:
         model  = Campaigncategory
-        fields = ("name","image","is_active")
+        fields = ("name","image","is_active","id")
 
 class CampaignSerializer(ModelSerializer):
     class Meta :

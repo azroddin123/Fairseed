@@ -125,7 +125,9 @@ class LandingPageApi(APIView):
 
 class AddCampaignApi(APIView):
     def post(self,request,*args, **kwargs):
-        data = request.data 
+        # data = request.data.
+        print(data)
+        pass
         
         
     

@@ -5,10 +5,8 @@ import jwt
 from accounts.models import User
 
 class CustomAuthentication:
-    
     def __init__(self, get_response):
         self.get_response = get_response
-
 
     def __call__(self, request):
         if request.path.startswith("/admin/") or request.path.endswith("nt/")  or request.path.startswith("/api/token/"):
@@ -16,11 +14,15 @@ class CustomAuthentication:
             response = self.get_response(request)
             return response
         token = request.headers.get('x-access-token')
-
+    
         if not token:
            return JsonResponse({"Error" :"Credentials Not Found ..Please Login"},status=status.HTTP_403_FORBIDDEN)
-        payload = jwt.decode(token,settings.SECRET_KEY,algorithms=['HS256'])
-        user = User.objects.filter(id=payload["id"]).first()
+        payload = jwt.decode(token,"asdfghjkhgfdsasdrtyu765rewsazxcvbnjkio908765432wsxcdfrt",algorithms=['HS256'])
+        print(payload)
+        user = User.objects.filter(email=payload["email"]).first()
         request.thisUser = user
         response = self.get_response(request)
         return response    
+
+
+
