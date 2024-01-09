@@ -1,4 +1,4 @@
-from django.shortcuts import render
+# from django.shortcuts import render
 from django.db.models import Sum
 from donors.models import Donor
 from .serializers import * 
@@ -52,7 +52,7 @@ class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
             category = request.GET.get('name')
-            campain_id=Campaigncategory.objects.get(name=category)
+            campain_id=Campaigncategory.objects.get(name=category).first()
             campaing_data = Campaign.objects.filter(category=campain_id)
             serializer = CampaignSerializer1(campaing_data,many=True)
             return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
@@ -93,8 +93,10 @@ class SuccessfulCauseApi(APIView):
 class CampaignByCategoryApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
+            print("Campoaasdfjhgfdsa")
             cat_id = request.GET.get('category')
             data = Campaign.objects.filter(category=cat_id)
+            print(len(data))
             serializer = CampaignAdminSerializer(data, many=True)
             return Response({
                 "count": len(data),
@@ -160,34 +162,6 @@ class LandingPageApi(APIView):
         except Exception as e :
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
  
 # Camapaign By Catagory 
 # class CampaignBycategoryApi(APIView):  
@@ -232,3 +206,20 @@ class LandingPageApi(APIView):
 #             return Response({"error": False, "pages_count": pages, "total_records" : len(data),"data": serializer.data}, status=status.HTTP_200_OK)
 #         except Exception as e :
 #             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+from django.db.models import ExpressionWrapper, F, fields, Func
+from datetime import datetime
+
+# Assuming you have a Campaign model
+from django.db.models import F
+from datetime import datetime
+
+# Assuming you have a Campaign model
+for campaign in Campaign.objects.all():
+    campaign.days_left = (campaign.end_date - datetime.now().date()).days
+    print(campaign.days_left)
+    campaign.save()

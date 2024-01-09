@@ -8,6 +8,7 @@ from django.dispatch import receiver
 # from django.core.exceptions import ValidationError
 from rest_framework.serializers import ValidationError
 from donors.models import Donor
+from datetime import datetime, timedelta
 
 
 class Campaigncategory(BaseModel):
@@ -34,6 +35,7 @@ class Campaign(BaseModel):
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     start_date      = models.DateField(null=True,blank=True)
     end_date        = models.DateField(null=True,blank=True)
+    days_left       = models.IntegerField(default=0)
     description     = models.TextField()
     summary         = models.TextField()
 
@@ -45,6 +47,12 @@ class Campaign(BaseModel):
     def __str__(self) -> str:
         return self.title
     
+    
+    @property
+    def update_days_left(self):
+        self.days_left = (self.end_date - datetime.now().date()).days
+        self.save()
+    
     @receiver(post_save,sender=Donor)
     def update_campaign(sender, instance, **kwargs):
             campaign = instance.campaign
@@ -54,6 +62,7 @@ class Campaign(BaseModel):
                 raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
             campaign.fund_raised += instance.amount
             campaign.save()
+
 
     @classmethod
     def get_reported_campaigns(cls):
@@ -98,5 +107,4 @@ class Documents(BaseModel):
 
 
 
-# books = Book.objects.select_related('author').all()
 

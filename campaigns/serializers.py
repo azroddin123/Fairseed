@@ -52,10 +52,13 @@ class CampaignBycategorySerializer(ModelSerializer):
 class CampaignAdminSerializer(ModelSerializer):
     user       = UserAdminSerializer(read_only=True)
     category   = CampaignCategorySerializer(read_only=True)
+    donor_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','campaign_image','goal_amount','fund_raised','start_date','end_date','status',"is_reported","is_successful","is_featured","user","category")
+        fields = ('id','title','campaign_image','goal_amount','fund_raised','start_date','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count')
 
+    def get_donor_count(self, obj):
+        return obj.donors.count()
  
 class DocumentSerializer(ModelSerializer):
     class Meta :
@@ -66,13 +69,17 @@ class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
     category    = serializers.SerializerMethodField(read_only=True)
     donor       = DonorSerializer1(source="donors",many=True,read_only=True)
+    donor_count = serializers.SerializerMethodField(read_only=True)
     
     class Meta :
         model   = Campaign
-        fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category','donor',)
+        fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category','donor','donor_count')
     
     def get_user(self,obj):
         return obj.user.username
     
     def get_category(self,obj):
         return obj.category.name
+    
+    def get_donor_count(self, obj):
+        return obj.donors.count()

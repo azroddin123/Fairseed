@@ -22,7 +22,7 @@ urlpatterns = [
     path('campaign-filter',CampaignFilterApi.as_view()),
     path('campaign/<str:pk>', CampaignApi.as_view()),
     path('campaign', CampaignApi.as_view()),
-    path('catagory', CampaignByCategoryApi.as_view()),
+    path('category', CampaignByCategoryApi.as_view()),
     path('campaign-details/<str:pk>', CampaignDetailsApi.as_view())
 
     # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),

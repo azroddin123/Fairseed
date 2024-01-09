@@ -3,8 +3,9 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel
 from portals.choices import DonationChoices,PaymentChoices
-# Create your models here.
 
+
+# Create your models here.
 class Donor(BaseModel):
     campaign      = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE,related_name="donors")
     donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)

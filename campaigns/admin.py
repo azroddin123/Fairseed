@@ -12,6 +12,8 @@ class CampaignAdmin(admin.ModelAdmin):
 class BBAdmin(admin.ModelAdmin):
     list_display = ('campaign','account_holder_name','account_number','bank_name','branch_name','ifsc_code','passbook_image')
 
+
+
 # class KycAdmin(admin.ModelAdmin):
 #     list_display = ('campaign','pan_card','pan_card_image','adhar_card','adhar_card_image','other_details','is_verified')
 
