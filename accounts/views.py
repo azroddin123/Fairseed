@@ -9,30 +9,33 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
-
+from rest_framework_simplejwt.tokens import RefreshToken
 ########################################################################
 
-class EmailNotificationView(APIView):
+class EmailSMTP(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = EmailNotificationSerializer(data=request.data)
+        serializer = EmailSMTPSerializer(data=request.data)
         if serializer.is_valid():
             subject = serializer.validated_data['subject']
             message = serializer.validated_data['message']
-            recipient = serializer.validated_data['recipient']
+            # recipient = serializer.validated_data['recipient']
+            recipients = list(User.objects.values_list('email', flat=True))
 
             try:
-                send_mail(
-                    subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [recipient],
-                    fail_silently=False,
-                )
+                for recipient_email in recipients:
+                    send_mail(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [recipient_email],
+                        fail_silently=False,
+                    )
                 return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
             except Exception as e:
                 return Response({'message': f'Error sending email: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class RegisterApi(APIView):
 #      def get(self, request, user_id):
@@ -65,6 +68,25 @@ class RegisterApi(APIView):
             'message': 'Registration failed.',
             'data': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        # u2 = User.objects.get(pk=pk)
+        u2 = User.objects.filter(pk=pk).first()
+        serializer = UserSerializer1(u2, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status': 200,
+                'message': 'User information updated successfully.',
+                'data': serializer.data,
+            })
+        return Response({
+            'status': 400,
+            'message': 'Update failed.',
+            'data': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
 ########################################################################
 class UserApi(GenericMethodsMixin, APIView):
     model = User

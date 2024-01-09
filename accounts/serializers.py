@@ -1,14 +1,15 @@
+from django.db import models
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-from .models import User,UserRole
-from rest_framework import serializers
-from django.db import models
+
+from .models import User, UserRole
+
 
 ###########################################################################
-class EmailNotificationSerializer(serializers.Serializer):
+class EmailSMTPSerializer(serializers.Serializer):
     subject = serializers.CharField()
     message = serializers.CharField()
-    recipient = serializers.EmailField()
+    # recipient = serializers.EmailField()
     
 class UserSerializer11(ModelSerializer):
     class Meta:
