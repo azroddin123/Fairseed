@@ -27,14 +27,13 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 DEBUG = True
 ALLOWED_HOSTS = ['*',]
 CORS_ORIGIN_ALLOW_ALL = True
-AUTH_USER_MODEL = 'accounts.User'
+
 
 CORS_ALLOW_HEADERS = [
     "*",
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
-
 
 # Application definition
 

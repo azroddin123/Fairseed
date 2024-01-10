@@ -1,28 +1,35 @@
 from django.db import models
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-
+from django.contrib.auth.hashers import make_password
 from .models import User, UserRole
 
 
 ###########################################################################
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
 class EmailSMTPSerializer(serializers.Serializer):
     subject = serializers.CharField()
     message = serializers.CharField()
-    # recipient = serializers.EmailField()
     
-class UserSerializer11(ModelSerializer):
+    # recipient = serializers.EmailField()
+
+class UserSerializer11(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ["username",  "password"]
-        extra_kwargs = {"password" : {"write_only" : True}}
+        fields = ('id', 'username', 'email', 'password')
 
     def create(self, validated_data):
-        user = User(username = validated_data["username"])
-        user.set_password(validated_data["password"])
-        user.save()
-        return user
-###########################################################################
+        validated_data['password'] = make_password(validated_data['password'])
+        return User.objects.create_user(**validated_data)
+    
+
+    ###########################################################################
 
 class UserSerializer(ModelSerializer):
     class Meta :

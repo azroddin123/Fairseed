@@ -1,23 +1,24 @@
+import random
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import render
-from .serializers import *
-from .models import *
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from portals.GM1 import GenericMethodsMixin
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.serializers import ValidationError
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
-########################################################################
-
+from .models import *
+from .serializers import *
+########################################################################        
 class EmailSMTP(APIView):
     def post(self, request, *args, **kwargs):
         serializer = EmailSMTPSerializer(data=request.data)
         if serializer.is_valid():
             subject = serializer.validated_data['subject']
             message = serializer.validated_data['message']
+
             # recipient = serializer.validated_data['recipient']
             recipients = list(User.objects.values_list('email', flat=True))
 
@@ -36,6 +37,8 @@ class EmailSMTP(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+        
 
 # class RegisterApi(APIView):
 #      def get(self, request, user_id):
