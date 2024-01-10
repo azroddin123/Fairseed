@@ -125,7 +125,7 @@ class LandingPageApi(APIView):
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         
-        print(request.thisUser,"asdfghfrewq12345678987654321234567")
+        print(request.data,"asdfghfrewq12345678987654321234567")
         # request.data['user'] = request.thisUser.id
         print("in add campaign")
         data = request.data
@@ -137,27 +137,34 @@ class AddCampaignApi(APIView):
             print(request.data["documents"])
             print(campaign,"this is campaign")
             uploaded_docs = request.FILES.getlist('documents')
-            # upload_adhar  = request.FILES.getlist("adhar")
-            # pan           = request.FILES.get("pan")
-            # passbook_img      = request.FILES.get("passbook_img")
+            upload_adhar  = request.FILES.getlist("adhar")
             
             # Documents save 
-            doc_list = [] 
             for item in uploaded_docs:
                 print("item",item)
                 obj = Documents(doc_file=item,campaign=campaign)
                 obj.save()
                 print("saved",item)
                 
+            request.data["campaign"]=campaign.id
+            
+            serializer = AccountDSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                print("saved successfully")
+            #     return Response(serializer.data,status=status.HTTP_200_OK)
+            # # return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+                # print("account details saved")
+            
+            serializer = KycSerializer(data=request.data)
+            if serializer.is_valid(): 
+                serializer.save()
+                return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+          
                 
-            # Account Save 
-            account_serializer = AccountDSerializer(data=data)
-        
-        # Kyc Save 
 
-     
-        
-     
+        # Kyc Save 
         # acocunt_details = []
         # kyc_details = [] 
         # documents = [] 

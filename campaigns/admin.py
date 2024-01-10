@@ -17,8 +17,11 @@ class CCAdmin(admin.ModelAdmin):
 
 # class KycAdmin(admin.ModelAdmin):
 #     list_display = ('campaign','pan_card','pan_card_image','adhar_card','adhar_card_image','other_details','is_verified')
-
+admin.site.register(Campaign)
 admin.site.register(Campaigncategory,CCAdmin)
+admin.site.register(Documents)
+admin.site.register(AccountDetail)
+
 # admin.site.register(Campaign,CampaignAdmin)
 # admin.site.register(CampaignKycBenificiary,BBAdmin)
 # admin.site.register(KycDetails,KycAdmin)

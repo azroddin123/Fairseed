@@ -47,18 +47,31 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
     
+    # def get_paginated_data(self, request):
+    #     # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
+    #     data = self.model.objects.all()
+    #     try:
+    #         serializer = self.serializer_class(data, many=True)
+    #         return Response({
+    #             "error": False,
+    #             "count": len(data) or 0 ,
+    #             "rows": serializer.data,
+    #         }, status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     def get_paginated_data(self, request):
+        limit = max(int(request.GET.get('limit', 0)), 1) 
+        page_number = max(int(request.GET.get('page', 0)), 1)  
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
         data = self.model.objects.all()
+        paginator = Paginator(data, limit)
         try:
-            serializer = self.serializer_class(data, many=True)
-            return Response({
-                "error": False,
-                "count": len(data) or 0 ,
-                "rows": serializer.data,
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            current_page_data = paginator.get_page(page_number)
+        except EmptyPage:
+            return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(current_page_data, many=True)
+        return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
 
     def get_single_data(self, pk):
         try:
@@ -72,7 +85,6 @@ class GenericMethodsMixin:
 
     # for post method
     def create_data(self, request):
-        print("in creare sdfdasdfgbfdsa")
         create_serializer_class = self.get_create_serializer()
         serializer  = create_serializer_class(data=request.data)
         if serializer.is_valid():
