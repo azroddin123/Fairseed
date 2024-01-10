@@ -9,7 +9,7 @@ class CustomAuthentication:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith("/admin/") or request.path.endswith("nt/")  or request.path.startswith("/api/token/"):
+        if request.path.startswith("/admin/") or request.path.endswith("nt/")  or request.path.startswith("/campaign/"):
             request.thisUser = None
             response = self.get_response(request)
             return response

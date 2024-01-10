@@ -10,7 +10,6 @@ from rest_framework.serializers import ValidationError
 from donors.models import Donor
 from datetime import datetime, timedelta
 
-
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/campaign/catagory/",blank=True,null=True,)
@@ -49,7 +48,7 @@ class Campaign(BaseModel):
     def update_days_left(self):
         self.days_left = (self.end_date - datetime.now().date()).days
         self.save()
-    
+   
     @receiver(post_save,sender=Donor)
     def update_campaign(sender, instance, **kwargs):
             campaign = instance.campaign
@@ -77,7 +76,8 @@ class AccountDetail(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
-    
+   
+
 class Kyc(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
     pan_card            = models.CharField(max_length=10)
@@ -90,13 +90,9 @@ class Kyc(BaseModel):
     is_verified         = models.BooleanField(default=False)
     tandc_accept        = models.BooleanField(default=False)
 
-
-from tinymce.models import HTMLField
-
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
-    doc_name     = models.CharField(max_length=124,blank=True,null=True)
     doc_file     = models.FileField(upload_to="static/media_files/campaign/documents/",blank=True,null=True)
-    content      = HTMLField()
+
     
 

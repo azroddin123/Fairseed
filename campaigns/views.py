@@ -122,12 +122,46 @@ class LandingPageApi(APIView):
 
 
 # Create campaign API
-
 class AddCampaignApi(APIView):
-    def post(self,request,*args, **kwargs):
-        # data = request.data.
-        print(data)
-        pass
+    def post(self,request,pk=None,*args, **kwargs):
+        
+        print(request.thisUser,"asdfghfrewq12345678987654321234567")
+        # request.data['user'] = request.thisUser.id
+        print("in add campaign")
+        data = request.data
+        print(data,"-------------------->")
+        serializer = CampaignSerializer(data=data)
+        if serializer.is_valid():
+            print("serialier is valid")
+            campaign = serializer.save()
+            print(request.data["documents"])
+            print(campaign,"this is campaign")
+            uploaded_docs = request.FILES.getlist('documents')
+            # upload_adhar  = request.FILES.getlist("adhar")
+            # pan           = request.FILES.get("pan")
+            # passbook_img      = request.FILES.get("passbook_img")
+            
+            # Documents save 
+            doc_list = [] 
+            for item in uploaded_docs:
+                print("item",item)
+                obj = Documents(doc_file=item,campaign=campaign)
+                obj.save()
+                print("saved",item)
+                
+                
+            # Account Save 
+            account_serializer = AccountDSerializer(data=data)
+        
+        # Kyc Save 
+
+     
+        
+     
+        # acocunt_details = []
+        # kyc_details = [] 
+        # documents = [] 
+        return Response({"data" : serializer.data})
         
         
     
