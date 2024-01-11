@@ -81,10 +81,10 @@ class AccountDetail(BaseModel):
 class Kyc(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
     pan_card            = models.CharField(max_length=10)
-    pan_card_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
+    pan_card_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/")
     adhar_card          = models.CharField(max_length=16)
-    adhar_card_front    = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
-    adhar_card_back     = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
+    adhar_card_front    = models.ImageField(upload_to="static/media_files/campaign/kyc/")
+    adhar_card_back     = models.ImageField(upload_to="static/media_files/campaign/kyc/")
     
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)

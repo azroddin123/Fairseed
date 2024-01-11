@@ -60,8 +60,9 @@ class GenericMethodsMixin:
     #     except Exception as e:
     #         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
     def get_paginated_data(self, request):
-        limit = max(int(request.GET.get('limit', 0)), 1) 
+        limit = max(int(request.GET.get('limit', 0)), 8) 
         page_number = max(int(request.GET.get('page', 0)), 1)  
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
         data = self.model.objects.all()
@@ -72,6 +73,7 @@ class GenericMethodsMixin:
             return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(current_page_data, many=True)
         return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
+
 
     def get_single_data(self, pk):
         try:
@@ -106,7 +108,6 @@ class GenericMethodsMixin:
             return Response({"error": True, "message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
-       
         try:
             filter = {self.lookup_field: pk}
             object_instance = self.model.objects.get(**filter)

@@ -21,7 +21,7 @@ admin.site.register(Campaign)
 admin.site.register(Campaigncategory,CCAdmin)
 admin.site.register(Documents)
 admin.site.register(AccountDetail)
-
+admin.site.register(Kyc)
 # admin.site.register(Campaign,CampaignAdmin)
 # admin.site.register(CampaignKycBenificiary,BBAdmin)
 # admin.site.register(KycDetails,KycAdmin)
