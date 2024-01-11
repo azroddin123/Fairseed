@@ -8,6 +8,7 @@ urlpatterns = [
     path('register/nt/',RegisterUserApi.as_view()),
     path('user/nt/',UserApi.as_view()),
     path('change_password',ChangePasswordApi.as_view()),
-    path('login/nt/',LoginAPI.as_view())
-    
+    path('login/nt/',LoginAPI.as_view()),
+    path('forgetpassword',ForgotPasswordAPI.as_view()),
+    path('reset-pass',ResetPasswordAPI.as_view())
 ]

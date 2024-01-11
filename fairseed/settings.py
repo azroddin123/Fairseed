@@ -167,3 +167,12 @@ import os
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = '33azharoddin@gmail.com'
+EMAIL_HOST_PASSWORD = 'tmhzemmcwirzimmc'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True 
+EMAIL_USE_SSL = False
