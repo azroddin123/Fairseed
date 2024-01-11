@@ -148,7 +148,7 @@ class GenericMethodsMixin:
                 return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_202_ACCEPTED)
             return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except self.model.DoesNotExist:
-                  return Response(
+                return Response(
             { "error" : True,
                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
             },
@@ -171,7 +171,7 @@ class GenericMethodsMixin:
             )
         
         except self.model.DoesNotExist:
-                  return Response(
+                return Response(
             {   "error" : True,
                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
             },

@@ -4,6 +4,7 @@ from .managers import UserManager
 from portals.choices import UserChoices,RoleChoices
 from portals.models import BaseModel
 import uuid
+
 # Create your models here.
 class UserRole(BaseModel):
     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
@@ -33,6 +34,8 @@ class User(AbstractBaseUser):
     updated_on       = models.DateTimeField(auto_now=True)
 
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
+    is_verified      = models.BooleanField(default=False)     #Email Verification
+    otp              = models.CharField(max_length=6, null = True, blank=True)
     
     objects    = UserManager()
     

@@ -4,6 +4,9 @@ from .models import User,UserRole
 from rest_framework import serializers
 from django.db import models
 
+from django.contrib.auth import get_user_model
+from rest_framework.exceptions import AuthenticationFailed
+
 
 class UserSerializer(ModelSerializer):
     class Meta :
@@ -50,7 +53,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def validate_old_password(self, old_password):
         print("in validate password")
-        user = self.context['request'].thisUser
+        user = self.context['request'].user
+
+        if user.is_anonymous:
+            raise AuthenticationFailed("User not authenticated.")
         if not user.check_password(old_password):
             raise serializers.ValidationError("Old password is incorrect.")
         return old_password
@@ -77,3 +83,12 @@ class UserRoleSerializer(ModelSerializer):
     class Meta :
         model = User 
         fields = "__all__"
+
+class UserOTPSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'is_verified', 'password']
+
+class VerifyOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()

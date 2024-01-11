@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404,get_list_or_404
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count
 from donors.models import Donor
 from django.utils import timezone
 from .serializers import * 
@@ -15,125 +15,10 @@ import math
 from portals.GM1 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 
 # Create your views here.
 # limit = 10 
-
-
-##############################################################################################################################################
-class CardAPIViewPagination(APIView):
-    
-    def get(self, request):
-        page_size = 8
-        page_number = int(request.GET.get("page",1))
-
-        campaigns = Campaign.objects.annotate(cause_fund_raised=F('fund_raised'))
-
-        start_index = (page_number - 1) * page_size
-        end_index = start_index + page_size
-        paginated_campaigns = campaigns[start_index:end_index]
-
-        all_campaigns_data = []
-        print("test")
-        
-        for c1 in paginated_campaigns:
-            print("test1")
-            print(c1)
-            # to calculate the number of donors and total amount
-            donors_per_campaign = Donor.objects.filter(campaign=c1)
-            # Campaign.objects.get(id = 1)
-            # donors:Donor = Donor.objects.filter(campaign=1)
-            # print(donors_per_campaign)
-            num_donors = donors_per_campaign.count()
-            sum_amt = donors_per_campaign.aggregate(sum_amt=Sum('amount'))['sum_amt'] if donors_per_campaign.exists() else 0
-            
-            today_date = timezone.now().date()
-
-            # if c1.end_date:
-            #     days_remaining = (c1.end_date - today_date).days
-            #     if days_remaining >= 0:
-            #         days_left_message = f'{days_remaining} days left'
-            #     else:
-            #         days_left_message = 'Campaign ended'
-            # else:
-            days_left_message = 'No end date'
-            
-            api_data = {
-                'id': c1.id,
-                'title': c1.title,
-                'description': c1.description,
-                'fund_raised': c1.fund_raised,
-                'days_left': days_left_message,
-                'sum_of_donor': sum_amt,
-                'num_donors': num_donors,
-            }
-
-
-            all_campaigns_data.append(api_data)
-
-        return Response(all_campaigns_data, status=status.HTTP_200_OK)
-    
-    
-# class Ongoing_Campaign_Api_built_in(APIView):
-#     def get(self, request):
-#         oc1=Campaign.objects.all()
-#         p=Paginator(oc1,8)
-#         page_number=request.GET.get("page")
-#         page_object = p.get_page(page_number)
-#         serializer=CampaignSerializer(page_object, many=True)
-#         return Response(serializer.data)
-    
-# class Ongoing_Campaign_Api(APIView):
-#     def get(self,request):
-#         oc1=Campaign.objects.all()
-#         page_size=8
-#         page_number=int(request.GET.get("page",1))
-#         start_index=(page_number-1)*page_size
-#         end_index=start_index+page_size
-#         page_object=oc1[start_index:end_index]
-#         serializer=CampaignSerializer(page_object, many=True)
-#         return Response(serializer.data)
-    
-class CausesbyCategoryAPI(APIView):
-    def get(self,request):
-        causes_by_category = Campaign.objects.all()
-        titles = [campaigns.title for campaigns in causes_by_category]
-        return Response(titles, status=status.HTTP_200_OK)
-        
-# class CausesbyCategoryAPI(APIView):
-#     def get(self,request):
-#         names_of_category=get_object_or_404(CampaignCatagories)
-#         cause_name=CampaignCatagories.objects.filter(name=names_of_category)
-#         return Response(cause_name, status=status.HTTP_200_OK)
-
-class DashboardAPI(APIView):
-    def get(self, request):
-        pk = request.GET.get('pk')
-
-        #Total Donations
-        total_donations = Donor.objects.all().count()
-
-        #Total Funds Raised
-        total_fund_raised_all_campaigns = Campaign.objects.aggregate(total_fund_raised = Sum('fund_raised'))['total_fund_raised'] or 0
-
-        #Total causes raised/Campaign caused raised
-        number_of_causes = Campaign.objects.all().count()
-
-        #Members or users who have sign up
-        number_of_members = User.objects.all().count()
-        
-        serialized_data = {
-            'Total Donation': total_donations,
-            'Fund Raised' : total_fund_raised_all_campaigns,
-            'Causes' : number_of_causes,
-            'Members' : number_of_members,
-        }
-
-        return Response(serialized_data, status=status.HTTP_200_OK)
-    
-###############################################################################################################################################
-
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -168,8 +53,6 @@ class DocumentApi(GenericMethodsMixin,APIView):
 
 
 
-
-
 class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
@@ -191,7 +74,7 @@ class CampaignBycategoryApi(APIView):
             except Campaigncategory.DoesNotExist:
                 return Response({"error": "Campaigncategory not found"}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
- 
+
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 # Camapaign By Catagory 
 # class CampaignBycategoryApi(APIView):  
@@ -204,7 +87,6 @@ class CampaignBycategoryApi(APIView):
 #                 return Response({"error": "Campaigncategory not found"}, status=status.HTTP_404_NOT_FOUND)
 #             except Exception as e:
 #                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-           
 
 # class CampaignBycategoryApi(APIView):
 #     def get(self,pk,request,*args, **kwargs):
@@ -315,7 +197,8 @@ class LandingPageApi(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
-######################################################
+##########################################################################################
+    
 class CampaignGetApi(APIView):
     def get(self,request):
         ongoing_campaign = Campaign.objects.all()
@@ -350,23 +233,19 @@ class CampaignDeletePutApi(APIView):
         except Campaign.DoesNotExist:
             return Response({"error": "Campaign does not exist"})
         
-    
-
-    
+        
 class CampaignCatagoriesGetApi(APIView):
     def get(self, request):
-        CampaignCategory = CampaignCatagories.objects.all()
-        serializer = CampaignCatagorySerializer(CampaignCategory, many = True)
+        CampaignCategory = Campaigncategory.objects.all()
+        serializer = CampaigncategorySerializer(CampaignCategory, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
 class CampaignRaisedUserApi(APIView):
     def get(self, request):
         campaign_raised = Campaign.objects.annotate(user_count=Count('user'))
         total_user_count = campaign_raised.aggregate(causes_raised=Count('user'))['causes_raised']
         return Response({'causes_raised': total_user_count}, status=status.HTTP_200_OK)
     
-
 class SuccessfulCampaignCount(APIView):
     def get(self, request):
         successful_campaigns = Campaign.objects.filter(fund_raised__gte=F('donor__amount'))
@@ -385,30 +264,26 @@ class CampaignDetailApi(APIView):
 
         total_donor = Donor.objects.count()
 
-        total_donor_amount = Donor.objects.annotate(total_f=Sum('amount'))
-        total_f = total_donor_amount.aggregate(sum_f=Sum('total_f'))['sum_f']
-        print(total_f)
-
-        # Successful campaign count
         successful_cam = Campaign.objects.filter(is_successful=True).count()
 
-        #Successful Student Count 
-        cam_std = Campaign.objects.filter(is_std_benenfited=True).count()
+        # cam_std = Campaign.objects.filter(is_std_benenfited=True).count()
+        std_ben = Campaign.objects.filter(title='Education', is_withdrawal=True).count()
+
 
         return Response({
             'causes_raised': total_user_count,
             'fund_raised': total_fund_raised,
             'donor_total': total_donor,
             'success_cam': successful_cam,
-            'std_student': cam_std
+            'std_benefited': std_ben
         },
             status=status.HTTP_200_OK)
         
 
 class CampaignCatagoriesListAPI(APIView):
     def get(self, request):
-        list = CampaignCatagories.objects.all()
-        serializer = CampaignCatagorySerializer(list, many=True)
+        list = Campaigncategory.objects.all()
+        serializer = CampaigncategorySerializer(list, many=True)
         name_list = [item['name'] for item in serializer.data]
         return Response(name_list, status=status.HTTP_200_OK)
     
@@ -452,17 +327,17 @@ class CampaignCategoryCausesAPI(APIView):
     
 class CapmPaginationApi(APIView):
     def get(self, request):
-        camp = Campaign.objects.all()
+        limit = 2
+        pg = int(request.GET.get("page", 1))
         all_titles = Campaign.objects.values_list('title', flat=True)
-        page_size = 3
-        page_number = int(request.GET.get("page", 1))
+    
         try:
-            start_index = (page_number - 1) * page_size
-            end_index = start_index + page_size
+            start_index = (pg - 1) * limit
+            end_index = start_index + pg
 
             paginated_titles = all_titles[start_index:end_index]
             response_data = {
-                "Title": list(paginated_titles),
+                "Title": paginated_titles,
             }
             return Response(response_data, status=status.HTTP_200_OK)
         except EmptyPage:
@@ -499,8 +374,15 @@ class CapmPaginationApi(APIView):
 
     #     return Response(response_data, status=status.HTTP_200_OK)
 
-
-class CampaignCause(APIView):
+#### getting error #####
+class CampaignCause1(APIView):
+    def get(self, request, pk):
+        camp_cause = get_object_or_404(CampaignCause, pk=pk)
+        serializer = CampaignCauseSerializer(camp_cause, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class CamapaignCauseApi(APIView):
     def post(self, request):
         serializer = CampaignCauseSerializer(data=request.data)
 
@@ -509,16 +391,13 @@ class CampaignCause(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def get(self, request, pk):
-        camp_cause = get_list_or_404(CampaignCause, pk=pk)
-        serializer = CampaignCauseSerializer(camp_cause)
+
+    def get(self, request):
+        camp = CampaignCause.objects.all()
+        serializer = CampaignCauseSerializer(camp, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-
-class CardAPIViewPagination(APIView):
-    
+class CardAPIViewPagination(APIView):    
     def get(self, request):
         page_size = 8
         page_number = int(request.GET.get("page",1))
@@ -564,14 +443,52 @@ class CardAPIViewPagination(APIView):
                 'num_donors': num_donors,
             }
 
-
             all_campaigns_data.append(api_data)
 
         return Response(all_campaigns_data, status=status.HTTP_200_OK)
+    
+class OneCardApi(APIView):
+    # working one card api
+    def get(self, request):
+        camp = Campaign.objects.all()
+        data1 = []
+        for c in camp:
+            camp_data={
+                "title" : c.title,
+                "fund_raised": c.fund_raised,
+                "goal_amount": c.goal_amount,
+                'is_zakat_aligible': c.zakat_eligible,
+                'created_date': c.created_on.strftime('%b %d, %Y %I:%M %p'),
+                # "img": c.
+            }
+        data1.append(camp_data)
+        return Response(data1)
+    
+    
+class RecentDonorApi(APIView):   
+    def get(self, request, camp_id):
+        campaign = get_object_or_404(Campaign, id=camp_id)
+        donors = Donor.objects.filter(campaign=campaign)
+        # response_data = []
+        # for donor in donors:
+        #     donor_data = {
+        #         "name": donor.full_name,
+        #         "amount": donor.amount
+                
+        #     }
+        #     response_data.append(donor_data)
+        serializer = RecentDonorSerializer(donors, many=True)
 
-
-        
-
+        return Response(serializer.data, status=200)
+        # return Response(response_data, status=status.HTTP_200_OK)
+    
+class practice(APIView):
+    def get(self, request):
+        u1 = Campaign.objects.all()
+        serializer = CampaignSerializer(u1, many = True)
+        goal = [ {'goal amout': i['goal_amount'], 'title': i['title']}for i in serializer.data]
+        return Response(goal, status=status.HTTP_200_OK)
+    
 
 
 

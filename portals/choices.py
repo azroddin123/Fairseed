@@ -17,7 +17,6 @@ class RoleChoices(models.TextChoices):
 
 # Campaign Choices 
 
-
 class ZakatChoices(models.TextChoices):
     YES = YES,YES
     NO  = NO,NO

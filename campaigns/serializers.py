@@ -27,7 +27,7 @@ class CampaignSerializer1(ModelSerializer):
 
 
 class CKBSerializer(ModelSerializer):
-    class meta :
+    class Meta :
         model  = CampaignKycBenificiary
         fields = "__all__"
 
@@ -74,6 +74,13 @@ class CampaignDetailSerializer(ModelSerializer):
     class Meta :
         model   = Campaign
         fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','donor')
+
+#############################################################################
+        
+class RecentDonorSerializer(ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = ['full_name', 'amount', 'created_on']
 
 
 class CampaignCauseSerializer(ModelSerializer):

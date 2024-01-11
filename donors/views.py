@@ -1,4 +1,6 @@
 from django.shortcuts import render,get_object_or_404
+from django.db.models import Sum
+from accounts.models import User
 
 # Create your views here.
 from .serializers import * 
@@ -82,5 +84,27 @@ class DonorDetailApi(APIView):
 class DonorDonationApi:
     def get(self, request):
         donor = Donor.objects.all()
+    
+
+class DashboardAPI(APIView):
+    def get(self, request):
+        pk = request.GET.get('pk')
+
+        total_donations = Donor.objects.all().count()
+
+        total_fund_raised_all_campaigns = Campaign.objects.aggregate(total_fund_raised = Sum('fund_raised'))['total_fund_raised'] or 0
+
+        number_of_causes = Campaign.objects.all().count()
+
+        number_of_members = User.objects.all().count()
+        
+        serialized_data = {
+            'Total Donation': total_donations,
+            'Fund Raised' : total_fund_raised_all_campaigns,
+            'Causes' : number_of_causes,
+            'Members' : number_of_members,
+        }
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
 
     

@@ -28,7 +28,7 @@ urlpatterns = [
 
 
     path('upi-transaction',UpiTransactionApi.as_view()),
-    path('upi-transaction/<str:uuid>',UpiTransactionApi.as_view())
+    path('upi-transaction/<str:uuid>',UpiTransactionApi.as_view()),
 
 
 
@@ -36,6 +36,11 @@ urlpatterns = [
 
     # path('donordetail/',DonorDetailApi.as_view()),
     # path('donordetail/<int:pk>',DonorDetailApi.as_view())
+    # path('api/recentdonorapi',RecentDonorApi.as_view()),
+    path('api/DashboardAPI',DashboardAPI.as_view()),
+    
+ 
+    
 
 
 

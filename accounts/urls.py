@@ -14,15 +14,22 @@ urlpatterns = [
     ##################################################
 
     path('api/register/userlist/',RegisterUserListAPI.as_view()),
-    path('api/register/user/<int:pk>/',RegisterUserAPI.as_view()),
+    path('api/register/user/<int:id>/',RegisterUserAPI.as_view()),
     path('api/register/createuser/',RegisterPostAPI.as_view()),
-    path('api/register/deleteuser/<int:pk>',RegisterDeleteApi.as_view()),
+    path('api/register/user/<int:pk>',RegisterApi.as_view()),
     
     
     # path('test/<int:id1>/<int:id2>/<int:id3>/', PassIdApi.as_view()),
 
     ###################################################
-    path('register-new/',RegisterApi.as_view()),
-    ###################################################
+    path('register-new/',RegisterUserApi.as_view()),
+    path('register-otp/',RegisterOTPApi.as_view()),
+    path('verify-otp/',VerifyOTPApi.as_view()),
+    path('changepass-otp/',ChangePassOTPApi.as_view()),
     
+    
+
+
+
+
 ]

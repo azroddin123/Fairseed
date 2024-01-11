@@ -2,16 +2,6 @@ from django.urls import path
 from .views import * 
 
 urlpatterns = [
-
-    ###################################################################################################
-    # path('card/', CardAPIView.as_view()),
-    path('api/landing_page/card/', CardAPIViewPagination.as_view()),
-    path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
-    # path('api/landing_page/causes_by_category',CausesbyCategoryAPI.as_view()),
-    # path('api/landing_page/ongoing_campaign_built_in/',Ongoing_Campaign_Api_built_in.as_view()),
-    # path('api/landing_page/ongoing_campaign/',Ongoing_Campaign_Api.as_view()),
-    ###################################################################################################
-    
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
 
@@ -52,11 +42,19 @@ urlpatterns = [
     path('api/StdBenefitedCountAPI', StdBenefitedCountAPI.as_view()),
     path('api/SuccessCount', SuccessCount.as_view()),
     path('api/CampaignCategoryCausesAPI/<int:pk>', CampaignCategoryCausesAPI.as_view()),
-    path('api/CapmPaginationApi', CapmPaginationApi.as_view()),
-    # path('api/CampaignCause/<int:pk>/', CampaignCause.as_view()),
+    path('api/CapmPaginationApi/<int:pk>/', CapmPaginationApi.as_view()),
+    
+    path('CampaignCause/<int:pk>', CampaignCause1.as_view()),
+    path('api/camapaigncause', CamapaignCauseApi.as_view()),
 
     path('api/CardAPIViewPagination', CardAPIViewPagination.as_view()),
-    
+    path('api/landing_page/card/', CardAPIViewPagination.as_view()),
+
+    path('api/OneCardApi', OneCardApi.as_view()),
+    path('api/RecentDonorApi/<str:camp_id>', RecentDonorApi.as_view()),
+
+    path('api/practice', practice.as_view()),
+
 
     # path('api/CardAPIViewPagination', CardAPIViewPagination.as_view()),
 

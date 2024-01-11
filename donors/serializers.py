@@ -67,3 +67,4 @@ class UpiSerializers(ModelSerializer):
     class Meta :
         model = UpiTransaction
         fields = "__all__"
+
