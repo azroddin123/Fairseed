@@ -12,14 +12,14 @@ from datetime import datetime, timedelta
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
-    image  = models.ImageField(upload_to="static/media_files/campaign/catagory/",blank=True,null=True,)
+    image  = models.ImageField(upload_to="campaign/catagory/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return str(self.name)
 
 class Campaign(BaseModel):
-    campaign_image  = models.ImageField(upload_to='static/media_files/campaign/campaign_images/', null=True, blank=True)
+    campaign_image  = models.ImageField(upload_to='campaign/campaign_images/', null=True, blank=True)
     title           = models.CharField(max_length=50)
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -75,16 +75,16 @@ class AccountDetail(BaseModel):
     bank_name           = models.CharField(max_length=124)
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
-    passbook_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/",blank=True,null=True,)
+    passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
    
 
 class Kyc(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
     pan_card            = models.CharField(max_length=10)
-    pan_card_image      = models.ImageField(upload_to="static/media_files/campaign/kyc/")
+    pan_card_image      = models.ImageField(upload_to="campaign/kyc/")
     adhar_card          = models.CharField(max_length=16)
-    adhar_card_front    = models.ImageField(upload_to="static/media_files/campaign/kyc/")
-    adhar_card_back     = models.ImageField(upload_to="static/media_files/campaign/kyc/")
+    adhar_card_front    = models.ImageField(upload_to="campaign/kyc/")
+    adhar_card_back     = models.ImageField(upload_to="campaign/kyc/")
     
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
@@ -92,7 +92,7 @@ class Kyc(BaseModel):
 
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
-    doc_file     = models.FileField(upload_to="static/media_files/campaign/documents/",blank=True,null=True)
+    doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
 
     
 

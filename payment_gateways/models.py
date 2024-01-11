@@ -47,6 +47,6 @@ class PhonePay(BaseModel):
 
 class QRTransfer(BaseModel):
     fee_percent     = models.IntegerField()
-    qr_path         = models.ImageField(upload_to="static/media_files/",blank=True,null=True)
+    qr_path         = models.ImageField(upload_to="",blank=True,null=True)
     is_enabled          = models.BooleanField(default=False)
 

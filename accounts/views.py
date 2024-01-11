@@ -57,7 +57,6 @@ class LoginAPI(APIView):
             else :
                return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
 
-
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
         serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
@@ -65,7 +64,6 @@ class ChangePasswordApi(APIView):
             serializer.save()
             return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ForgotPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
