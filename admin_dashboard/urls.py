@@ -37,14 +37,9 @@ urlpatterns = [
     path('campaign/<str:pk>',CampaignAdminApi.as_view()),
     
     path('reported-campaign',ReportedCauseApi.as_view()),
-    path('successful-campaign',SuccessfulCauseApi.as_view())
+    path('successful-campaign',SuccessfulCauseApi.as_view()),
     
-    # logical API 
-    # Admin Api
-    # Get all User 
-    # Get specific user 
-    # CRUD API for User ,Campaign
-    # Crud API for Withdrawal
-    # CRUD API for General Setting 
+    path('dashboard-api',AdminDashboardApi.as_view()),
+    path('donation-api',AdminDonationApi.as_view())
     
 ]

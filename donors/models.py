@@ -8,6 +8,8 @@ from portals.choices import DonationChoices,PaymentChoices
 # Create your models here.
 class Donor(BaseModel):
     campaign      = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE,related_name="donors")
+    user          = models.ForeignKey("accounts.User",on_delete=models.CASCADE,null=True,blank=True)
+   
     donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)
     full_name     = models.CharField(max_length=124)
     amount        = models.PositiveIntegerField(validators=[MinValueValidator(50, message="Value must be greater than or equal to 50"),

@@ -55,5 +55,5 @@ class User(AbstractBaseUser):
         return self.is_admin
     
     def __str__(self) -> str:
-        return self.username
+        return self.email
     

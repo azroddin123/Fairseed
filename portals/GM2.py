@@ -47,22 +47,11 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
     
-    # def get_paginated_data(self, request):
-    #     # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
-    #     data = self.model.objects.all()
-    #     try:
-    #         serializer = self.serializer_class(data, many=True)
-    #         return Response({
-    #             "error": False,
-    #             "count": len(data) or 0 ,
-    #             "rows": serializer.data,
-    #         }, status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
     def get_paginated_data(self, request):
-        limit = max(int(request.GET.get('limit', 0)), 8) 
+        print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
+        print(request.GET.get('page'),"-----------------------------------page---------------------------->")
+        limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)  
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
         data = self.model.objects.all()

@@ -5,71 +5,32 @@ from django.core.exceptions import ValidationError
 from itertools import chain
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator,EmptyPage
 import math
 
-class GenericMethods:
-    def getall(Model, ModelSerializer):
-        print("Azhar")
-        try:
-            return Response({"error" : False,"Data":
-                ModelSerializer(Model.objects.all(), many=True).data},
-                status=status.HTTP_200_OK,
-                success=True,
-                
-            )
-        except:
-            return Response(
-                data={
-                    "Error": str(Model._meta).split(".")[1] + " object does not exists"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-    def getone(Model, ModelSerializer, pk):
-        try:
-            return Response({"error" : False,"data" : 
-                ModelSerializer(Model.objects.get(id=pk)).data},
-                status=status.HTTP_200_OK,
-            )
-        except Model.DoesNotExist:
-            return Response(
-                data={
-                    "Error": str(Model._meta).split(".")[1] + " object does not exists"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-    def post(ModelSerializer, data):
-        serializer = ModelSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(data=serializer.errors, status=status.HTTP_200_OK)
-
-    def put(Model, ModelSerializer, data, id):
-        classroom = Model.objects.get(id=id)
-        serializer = ModelSerializer(classroom, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class GenericMethodsMixin:
-    def __init__(self) -> None:
+    def __init__(self, serializer_class=None, create_serializer_class=None) -> None:
         self.model = self.get_model()
         self.queryset = self.get_queryset()
         self.serializer = self.get_serializer_class()
+            
         self.lookup = self.get_lookup()
         self.query = self.get_query()
 
+        
     def get_lookup(self):
         return self.lookup_field
 
     def get_serializer_class(self):
         return self.serializer_class
+    
+    def get_create_serializer(self):
+        try:
+            print("here")
+            return self.create_serializer_class
+        except:
+            print("there")
+            return self.serializer
 
     def get_model(self):
         return self.model
@@ -79,128 +40,85 @@ class GenericMethodsMixin:
 
     def get_query(self):
         return self.get_query
-
-    def get(self, request, pk=None, *args, **kwargs):
-        filter = {self.lookup: pk}
-        if pk == str(0) or pk is None:
-            try:
-                limit = request.GET.get('limit')
-                page_number = request.GET.get('page')
-                if page_number == None or limit == None:
-                    return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
-                    status=status.HTTP_200_OK,
-                )
-                data = self.model.objects.all()
-                count = len(data)
-                pages = int(math.ceil(len(data)/int(limit)))
-                paginator = Paginator(data, limit)
-                # request.GET.get('page') == str(0)
-                if int(request.GET.get('page')) > pages:
-                        return Response({"error": False, "pages_count": pages ,"total_records" : count, "data": [], "msg": "data fetched Succefully"}, status=status.HTTP_200_OK)
-                else:
-                    data = paginator.get_page(page_number)
-                    serializer = self.serializer(data, many=True)
-                    return Response({"error": False, "pages_count": pages, "total_records" : count ,"data": serializer.data}, status=status.HTTP_200_OK)
-
-            except:
-                return Response(
-                    {
-                        "Error": str(self.model._meta).split(".")[1]
-                        + " object does not exists"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            try:
-                return Response({"error":False,"data" : 
-                    self.serializer(self.model.objects.get(pk=pk)).data},
-                    status=status.HTTP_200_OK,
-                )
-            except self.model.DoesNotExist:
-                  return Response(
-            { "error" : True,
-                "message": str(self.model._meta).split(".")[1] + " object does not exists"
-            },
+    
+    def handle_does_not_exist_error(self):
+        return Response(
+            {"error": True, "message": f"{self.model._meta} object does not exist"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+    
+    def get_paginated_data(self, request):
+        limit = max(int(request.GET.get('limit', 0)), 8) 
+        page_number = max(int(request.GET.get('page', 0)), 1)  
+        # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
+        data = self.model.objects.filter(user=request.thisUser)
+        paginator = Paginator(data, limit)
+        try:
+            current_page_data = paginator.get_page(page_number)
+        except EmptyPage:
+            return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(current_page_data, many=True)
+        return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
 
-    def post(self, request, pk=None,*args, **kwargs):
-        # if request.data['created_by'] : request.data['created_by'] = request.user.id
-        print("Outside Api")
-        if pk == str(0) or pk is None :
-            print("in api")
-            serializer = self.serializer(data=request.data)
-            if serializer.is_valid():
-                print("serializer data ")
-                serializer.save()
-                data = serializer.data
-                return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_single_data(self,request, pk):
+        try:
+            # here we can add authentication and authorization
+            print("get single data")
+            data = self.model.objects.get(pk=pk,user=request.thisUser)
+            serializer = self.serializer_class(data)
+            return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
+        except self.model.DoesNotExist:
+            return self.handle_does_not_exist_error()
+
+    # for post method
+    def create_data(self, request):
+        create_serializer_class = self.get_create_serializer()
+        serializer  = create_serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"error": False, "data": serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error": True, "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+      
+    def get(self, request, pk=None, *args, **kwargs):
+        if pk in ["0", None]:
+            return self.get_paginated_data(request)
+        else:
+            return self.get_single_data(pk)
+
+    def post(self, request, pk=None, *args, **kwargs):
+        if pk in ["0", None]:
+            return self.create_data(request)
+        else:
+            return Response({"error": True, "message": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, *args, **kwargs):
-        filter = {self.lookup: pk}
-        try : 
-            object1 = self.model.objects.get(**filter)
-            serializer = self.serializer(object1, data=request.data, partial=True)
+        try:
+            filter = {self.lookup_field: pk,}
+            object_instance = self.model.objects.get(**filter)
+            create_serializer_class = self.get_create_serializer()
+            serializer = create_serializer_class(object_instance,data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({ "error" : False,"data" : serializer.data}, status=status.HTTP_202_ACCEPTED)
-            return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except self.model.DoesNotExist:
-                  return Response(
-            { "error" : True,
-                "message": str(self.model._meta).split(".")[1] + " object does not exists"
-            },
-            status=status.HTTP_400_BAD_REQUEST,)
+                return Response({"error": False, "data": serializer.data}, status=status.HTTP_202_ACCEPTED)
+            else:
+                return Response({"error": True, "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+        except self.model.DoesNotExist:
+            return self.handle_does_not_exist_error()
+        
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
     def delete(self, request, pk, *args, **kwargs):
-        try : 
+        try:
             data = self.model.objects.get(pk=pk)
             if data:
                 data.delete()
-                return Response(
-                    {"error" : False, "data": "Record Deleted Successfully"},
-                    status=status.HTTP_204_NO_CONTENT,
-                )
-            return Response(
-                { "error" : True,
-                    "message": str(self.model._meta).split(".")[1] + " object does not exists"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        
-        except self.model.DoesNotExist:
-                  return Response(
-            {   "error" : True,
-                "message": str(self.model._meta).split(".")[1] + " object does not exists"
-            },
-            status=status.HTTP_400_BAD_REQUEST,)
-        
+                return Response({"error": False, "data": "Record Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return self.handle_does_not_exist_error()
+
         except ValidationError as e:
-                # Handle the specific error, e.g., display a custom error message
-                return Response({
-                    "error" : True,
-                    "message" : str(e) 
-                },status=status.HTTP_400_BAD_REQUEST)
-
-
-
-# def get(self, request, pk=None, *args, **kwargs):
-        # filter = {self.lookup: pk}
-        # if pk == str(0) or pk is None:
-        #     try:
-        #         limit = request.GET.get('limit')
-        #         page_number = request.GET.get('page')
-        #         if page_number == None or limit == None:
-        #         return Response({"error" : False,"data":self.serializer(self.model.objects.all(), many=True).data},
-        #             status=status.HTTP_200_OK,
-        #         )
-        #     except:
-        #         return Response(
-        #             {
-        #                 "Error": str(self.model._meta).split(".")[1]
-        #                 + " object does not exists"
-        #             },
-        #             status=status.HTTP_400_BAD_REQUEST,
-        #         )
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

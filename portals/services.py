@@ -21,3 +21,7 @@ def my_mail(mail,otp):
             print("no")
             msg = 0
         return msg  
+
+
+def paginated_data():
+    pass
