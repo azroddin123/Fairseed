@@ -30,7 +30,7 @@ DEBUG = True
 #     "*",
 # ]
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['143.110.253.227',"*",]
 
 AUTH_USER_MODEL = 'accounts.User'
 
