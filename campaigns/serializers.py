@@ -3,36 +3,34 @@ from rest_framework import serializers
 from accounts.serializers import UserAdminSerializer
 from donors.models import Donor
 from donors.serializers import DonorSerializer1
-from .models import * 
-
-########################################################################################################
-class DonorRecentSerializer(ModelSerializer):
-    class Meta:
-        model = Donor
-        fields =["full_name", "amount"]
-
-########################################################################################################
+from .models import *
 
 class CampaigncategorySerializer(ModelSerializer):
     class Meta:
         model  = Campaigncategory
-        fields = "__all__"
+        fields = ("id","name","image","is_active")
 
+    def create(self, validated_data):
+        # Override the create method to handle image field
+        image = validated_data.pop('image', None)
+        instance = super().create(validated_data)
+       
+        if image:
+            instance.image = image
+            instance.save()
+       
+        return instance
+   
 class CampaignSerializer(ModelSerializer):
+   
     class Meta :
         model  = Campaign
-        fields = "__all__"
-
-    
-    # def save(self):
-    #     pass
-
+        exclude = "__all__"
 
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
         exclude = ["is_successful","status","is_featured","is_reported"]
-
 
 class CKBSerializer(ModelSerializer):
     class Meta :
@@ -43,13 +41,11 @@ class CKBSerializer(ModelSerializer):
 #     class Meta :
 #         model = BenificiaryBankDetails
 #         fields = "__all__"
-    
 
 # class KycDetailSerializer(ModelSerializer):
 #     class Meta :
 #         model = KycDetails
 #         fields = "__all__"
-
 
 class DashboardSerializer(serializers.Serializer):
     total_campaign       = serializers.IntegerField()
@@ -58,7 +54,6 @@ class DashboardSerializer(serializers.Serializer):
     successfull_campaign = serializers.IntegerField()
     student_benifited    = serializers.IntegerField()
 
-
 class CampaignBycategorySerializer(ModelSerializer):
     campaign    = CampaignSerializer1(source="campaign_set",many=True)
     class Meta :
@@ -66,39 +61,66 @@ class CampaignBycategorySerializer(ModelSerializer):
         fields  = "__all__"
 
 class CampaignAdminSerializer(ModelSerializer):
-    user       = UserAdminSerializer()
+    user       = UserAdminSerializer(read_only=True)
+    category   = CampaigncategorySerializer(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category')
+        fields = ('id','title','campaign_image','goal_amount','fund_raised','start_date','end_date','status',"is_reported","is_successful","is_featured","user","category")
 
 class DocumentSerializer(ModelSerializer):
     class Meta :
-        model  = Documents
-        fields = "__all__"
-
+        model   = Documents
+        fields  = "__all__"
 
 class CampaignDetailSerializer(ModelSerializer):
-    donor = DonorSerializer1(source="donors",many=True)
+    user        = serializers.SerializerMethodField(read_only=True)
+    category    = serializers.SerializerMethodField(read_only=True)
+    donor       = DonorSerializer1(source="donors",many=True,read_only=True)
+   
     class Meta :
         model   = Campaign
-        fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','donor')
+        fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','category','donor',)
+   
+    def get_user(self,obj):
+        return obj.user.username
+   
+    def get_category(self,obj):
+        return obj.category.name
+   
+########################################################################################################
+class DonorRecentSerializer(ModelSerializer):
+    class Meta:
+        model = Donor
+        fields =["full_name", "amount"]
 
-#################################################################################################################
+class CampaignCategorySerializer1(ModelSerializer):
+    class Meta:
+        model  = Campaigncategory
+        fields = ("id","name","is_active")
+
+class UserSerializerCampaign(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'mobile_number']
+
 class CampaignAdminSerializer1(ModelSerializer):
     user_email = serializers.EmailField(source='user.email', read_only=True)
     user_mobile_number = serializers.CharField(source='user.mobile_number', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
 
-
     class Meta:
         model = Campaign
         fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
+
+class DocumentSerializer1():
+    models = Documents
+    fields = ['doc_file']
 
 class CampaignAdminSerializer2(ModelSerializer):
    
     doc_file = DocumentSerializer(source='documents')
 
-
     class Meta :
         model  = Campaign
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'doc_file','is_featured']
+#############################################################################################################################################################

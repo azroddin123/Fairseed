@@ -4,33 +4,6 @@ from rest_framework.serializers import ModelSerializer, ValidationError
 from django.contrib.auth.hashers import make_password
 from .models import User, UserRole
 
-
-###########################################################################
-
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-
-class EmailSMTPSerializer(serializers.Serializer):
-    subject = serializers.CharField()
-    message = serializers.CharField()
-    
-    # recipient = serializers.EmailField()
-
-class UserSerializer11(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'password')
-
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        return User.objects.create_user(**validated_data)
-    
-
-    ###########################################################################
-
 class UserSerializer(ModelSerializer):
     class Meta :
         model = User
@@ -103,3 +76,50 @@ class UserRoleSerializer(ModelSerializer):
     class Meta :
         model = User 
         fields = "__all__"
+
+
+####################################################################################################################
+
+from django.contrib.auth.hashers import make_password
+
+class UserOTPSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'is_verified', 'password']
+
+class VerifyOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()
+
+class EmailSMTPSerializer(serializers.Serializer):
+    subject = serializers.CharField(max_length=255)
+    message = serializers.CharField()
+
+class UserSerializer11(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'create')
+    
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return User.objects.create_user(**validated_data)
+
+class UserLatestMember(ModelSerializer):
+    created_on = serializers.DateTimeField(format="%b %d, %Y", read_only=True)
+
+    class Meta :
+        model = User
+        fields = ('username', 'created_on')
+
+class LatestMembersSerializer(serializers.ModelSerializer):
+    user_images = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('username', 'created_on', 'user_images')
+
+    def get_user_images(self, obj):
+        return obj.user_images.url if obj.user_images else None
+####################################################################################################################

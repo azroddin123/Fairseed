@@ -2,21 +2,7 @@ from django.urls import path
 
 from .views import *
 
-urlpatterns = [
-
-    ###################################################################################################
-    # path('card/', CardAPIView.as_view()),
-
-    path('api/campaign_list/',Campaigndetail.as_view()),
-    path('api/landing_page/card/', CardAPIViewPagination.as_view()),
-    path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
-    path('api/landing_page/causes_by_category',CausesbyCategoryAPI.as_view()),
-    path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
-    path('api/recent_donors',RecentDonors.as_view()),
-    # path('api/recent_donor/<str:pk>',RecentDonors.as_view()),
-    path('api/recent_campaigns',RecentCampaigns.as_view()),
-    ###################################################################################################
-    
+urlpatterns = [   
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
 
@@ -39,9 +25,21 @@ urlpatterns = [
     # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),
     # path('campaign/', CampaignDetailsApi.as_view(), name='campaign-list'),
     # path('category/', CampaignByCategoryApi.as_view(), name='campaign-by-category'),
-
-####################################################################################################################
+    ###################################################################################################
+    # path('card/', CardAPIView.as_view()),
+    path('api/campaign_list/',CampaignDetailsApi1.as_view()),
+    path('api/landing_page/card/', CardAPIViewPagination.as_view()),
+    path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
+    path('api/landing_page/causes_by_category/',CausesbyCategoryAPI.as_view()),
+    path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
+    path('api/recent_donors',RecentDonors.as_view()),
+    # path('api/recent_donor/<str:pk>',RecentDonors.as_view()),
+    path('api/admin/recent_campaigns/',RecentCampaigns.as_view()),
+    path('api/admin/categories/<str:pk>/',CategoryAdminApi.as_view()),
+    path('api/admin/categories/',CategoryAdminApi.as_view()),
     path('api/admin/campaign/', CampaignAdminApi.as_view()),
     path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
+    ###################################################################################################
+
 
 ]

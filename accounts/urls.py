@@ -10,10 +10,14 @@ urlpatterns = [
     path('change_password',ChangePasswordApi.as_view()),
     # path('test/<int:id1>/<int:id2>/<int:id3>/', PassIdApi.as_view()),
 
-    ###################################################
-    path('send-email/', EmailSMTP.as_view(), name='send-email'),
-    path('register-new',RegisterApi.as_view()),
-    path('register-update/<str:pk>/', RegisterApi.as_view()),
-    ###################################################
+    ###########################################################################
+    path('api/send-email/', RegisterOTPApi.as_view()),
+    path('api/verify-otp/',VerifyOTPApi.as_view()),
+    path('api/login/',LoginView.as_view()),
+    path('api/send-message/',EmailSMTP.as_view()),
+    path('api/register-new/',RegisterApi.as_view()),
+    path('api/register-update/<str:pk>/', RegisterApi.as_view()),
+    path('api/admin/latest-members/',LatestMembers.as_view()),
+    ###########################################################################
     
 ]

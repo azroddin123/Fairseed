@@ -12,9 +12,13 @@ class Campaigncategory(BaseModel):
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
 
+def __str__(self) -> str:
+        return str(self.name)
+
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
+    campaign_image  = models.ImageField(upload_to='static/media_files/campaign_images/', null=True, blank=True) 
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 100"),
@@ -34,7 +38,9 @@ class Campaign(BaseModel):
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
 
-   
+def __str__(self) -> str:
+        return self.title
+
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')
