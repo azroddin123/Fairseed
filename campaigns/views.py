@@ -2,9 +2,9 @@ import datetime
 import math
 import uuid
 from datetime import timedelta
-
+from django.http import Http404
 from django.core.paginator import Paginator
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Q
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.dateformat import DateFormat
@@ -334,3 +334,43 @@ class LandingPageApi(APIView):
             return Response({"data" : serializer.data},status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+###################################################################################################################
+class CampaignAdminApi(APIView):
+
+
+    def get_object(self, pk):
+        try:
+            return Campaign.objects.get(id=pk)
+        except Campaign.DoesNotExist:
+            raise Http404
+       
+    # def get(self, request):
+    #     campaigns = Campaign.objects.all()
+    #     serializer = CampaignAdminSerializer1(campaigns, many=True)
+    #     return Response(serializer.data)
+   
+    def get(self, request, *args, **kwargs):
+        search_query = self.request.query_params.get('search', None)
+
+
+        if search_query:
+            campaigns = Campaign.objects.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+        else:
+            campaigns = Campaign.objects.all()
+
+
+        serializer = CampaignAdminSerializer1(campaigns, many=True)
+
+
+        return Response(serializer.data)
+    def put(self, request, pk):
+        campaigns = self.get_object(pk)
+        serializer = CampaignAdminSerializer2(campaigns, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)

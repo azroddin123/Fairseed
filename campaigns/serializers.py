@@ -82,3 +82,23 @@ class CampaignDetailSerializer(ModelSerializer):
     class Meta :
         model   = Campaign
         fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','donor')
+
+#################################################################################################################
+class CampaignAdminSerializer1(ModelSerializer):
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    user_mobile_number = serializers.CharField(source='user.mobile_number', read_only=True)
+    user_username = serializers.CharField(source='user.username', read_only=True)
+
+
+    class Meta:
+        model = Campaign
+        fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
+
+class CampaignAdminSerializer2(ModelSerializer):
+   
+    doc_file = DocumentSerializer(source='documents')
+
+
+    class Meta :
+        model  = Campaign
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'doc_file','is_featured']

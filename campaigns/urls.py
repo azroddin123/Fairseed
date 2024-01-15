@@ -34,9 +34,14 @@ urlpatterns = [
     path('campaign-filter',CampaignFilterApi.as_view()),
     path('campaign/<str:pk>', CampaignDetailsApi.as_view()),
     path('campaign', CampaignDetailsApi.as_view()),
-    path('catagory', CampaignByCategoryApi.as_view())
+    path('catagory', CampaignByCategoryApi.as_view()),
 
     # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),
     # path('campaign/', CampaignDetailsApi.as_view(), name='campaign-list'),
     # path('category/', CampaignByCategoryApi.as_view(), name='campaign-by-category'),
+
+####################################################################################################################
+    path('api/admin/campaign/', CampaignAdminApi.as_view()),
+    path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
+
 ]
