@@ -342,6 +342,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from accounts.models import User
 
 class CampaignDetailsApi1(APIView):
     def get(self, request):
@@ -386,18 +387,22 @@ class CardAPIViewPagination(APIView):
                     days_left_message = 'Campaign ended'
             else:
                 days_left_message = 'No end date'
-           
-            location_country = f'{c1.location}, {c1.country}' if c1.location and c1.country else 'Location, Country not specified'
-            
+
+            user_images = None
+            if c1.user and hasattr(c1.user, 'user_images') and c1.user.user_images:
+                user_images = c1.user.user_images.url
+
+
             api_data = {
                 'id': c1.id,
+                'logo':user_images,
                 'title': c1.title,
                 'description': c1.description,
                 'fund_raised': c1.fund_raised,
                 'days_left': days_left_message,
                 'sum_of_donor': sum_amt,
                 'num_donors': num_donors,
-                'location_country': location_country,
+                'location': c1.location,
             }
 
             all_campaigns_data.append(api_data)

@@ -26,7 +26,6 @@ class Campaign(BaseModel):
     fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
                     MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
     location        = models.CharField(max_length=124)
-    country         = models.CharField(max_length=124, blank=True, null=True)
     zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     start_date      = models.DateField(null=True,blank=True)
