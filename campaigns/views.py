@@ -387,6 +387,8 @@ class CardAPIViewPagination(APIView):
             else:
                 days_left_message = 'No end date'
            
+            location_country = f'{c1.location}, {c1.country}' if c1.location and c1.country else 'Location, Country not specified'
+            
             api_data = {
                 'id': c1.id,
                 'title': c1.title,
@@ -395,6 +397,7 @@ class CardAPIViewPagination(APIView):
                 'days_left': days_left_message,
                 'sum_of_donor': sum_amt,
                 'num_donors': num_donors,
+                'location_country': location_country,
             }
 
             all_campaigns_data.append(api_data)
@@ -540,4 +543,8 @@ class CampaignAdminApi(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+class CampaignEditApproval(APIView):
+    def get(self, request):
+        campaigns = Campa
 ###############################################################################################################################################

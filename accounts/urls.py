@@ -16,7 +16,7 @@ urlpatterns = [
     path('api/login/',LoginView.as_view()),
     path('api/send-message/',EmailSMTP.as_view()),
     path('api/register-new/',RegisterApi.as_view()),
-    path('api/register-update/<str:pk>/', RegisterApi.as_view()),
+    path('api/register-new/<str:pk>/', RegisterApi.as_view()),
     path('api/admin/latest-members/',LatestMembers.as_view()),
     ###########################################################################
     

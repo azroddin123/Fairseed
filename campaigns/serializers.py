@@ -25,7 +25,7 @@ class CampaignSerializer(ModelSerializer):
    
     class Meta :
         model  = Campaign
-        exclude = "__all__"
+        fields = "__all__"
 
 class CampaignSerializer1(ModelSerializer):
     class Meta :

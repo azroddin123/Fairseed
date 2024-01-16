@@ -178,7 +178,6 @@ class RegisterApi(APIView):
         u2 = User.objects.filter(pk=pk).first()
         serializer = UserSerializer1(u2, data=request.data, partial=True)
 
-
         if serializer.is_valid():
             serializer.save()
             return Response({
