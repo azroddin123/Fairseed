@@ -31,7 +31,7 @@ class Campaign(BaseModel):
     zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location        = models.CharField(max_length=124)
-    description     = models.TextField()
+    story           = models.TextField()
     summary         = models.TextField()
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     end_date        = models.DateField()
@@ -76,7 +76,6 @@ class AccountDetail(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-   
 
 class Kyc(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
@@ -95,4 +94,22 @@ class Documents(BaseModel):
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
 
     
-
+# class BankKYC(BaseModel):
+# # Bank Details
+#     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_kyc')
+#     account_holder_name = models.CharField(max_length=124)
+#     account_number      = models.PositiveIntegerField()
+#     bank_name           = models.CharField(max_length=124)
+#     branch_name         = models.CharField(max_length=124)
+#     ifsc_code           = models.CharField(max_length=124)
+#     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+# # kyc Details
+#     pan_card            = models.CharField(max_length=10)
+#     pan_card_image      = models.ImageField(upload_to="campaign/kyc/")
+#     adhar_card          = models.CharField(max_length=16)
+#     adhar_card_front    = models.ImageField(upload_to="campaign/kyc/")
+#     adhar_card_back     = models.ImageField(upload_to="campaign/kyc/")
+    
+#     other_details       = models.CharField(max_length=100,blank=True,null=True)
+#     is_verified         = models.BooleanField(default=False)
+#     tandc_accept        = models.BooleanField(default=False)

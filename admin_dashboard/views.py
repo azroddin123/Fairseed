@@ -43,7 +43,6 @@ class LandingPageSettingApi(GenericMethodsMixin,APIView):
     serializer_class = LandingPageSerializer
     lookup_field = "id"
 
-
 class AdminDashboardApi(APIView):
     def get(self,request,*args, **kwargs):
         data = {
@@ -67,7 +66,6 @@ class AdminDonationApi(APIView):
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
-        
 
 
 

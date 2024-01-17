@@ -96,3 +96,6 @@ class Pages(BaseModel):
     show_page   = models.BooleanField(default=True)
     content     = models.TextField()
 
+
+class CampaignEditApproval(BaseModel):
+    pass

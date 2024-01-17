@@ -13,20 +13,7 @@ from rest_framework import status
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-# Campaign API
-class CampaignApi(GenericMethodsMixin,APIView):
-    model = Campaign
-    serializer_class = CampaignAdminSerializer
-    create_serializer_class = CampaignSerializer
-    lookup_field = "id"
-    
-# Donor API
-class MyDonationApi(GenericMethodsMixin,APIView):
-    model= Donor
-    serializer_class = DonorSerializer
-    lookup_field = "id"
-    
-    
+
 # User Dasboard API
 class UserDashboardApi(APIView):
     def get(self,request,*args, **kwargs):
@@ -38,6 +25,7 @@ class UserDashboardApi(APIView):
             "amount_receieved" : Campaign.objects.filter(user=request.thisUser).aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
         }
         return Response({"data" : data},status=status.HTTP_200_OK)
+
 
 # Donation Count API
 class DonationCountApi(APIView):
@@ -71,7 +59,37 @@ class FundRaisedApi(APIView):
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
-        # user --> camapign ---> donor ---> amount 
+        
+        
+# Campaign API
+class CampaignApi(GenericMethodsMixin,APIView):
+    model = Campaign
+    serializer_class = CampaignAdminSerializer
+    create_serializer_class = CampaignSerializer
+    lookup_field = "id"
+    
+# Donor API Donation Done By MySelf 
+class MyDonationApi(GenericMethodsMixin,APIView):
+    model= Donor
+    serializer_class = DonorSerializer
+    lookup_field = "id"
+    
+    
+# Recieved Donation For my Campaign 
+class RecivedDonationApi(APIView):
+    def get(self,request,*args, **kwargs):
+        data = Donor.objects.filter(campaign__user="bee9ed7f-ade9-4dd3-a136-d043dd4b9a52")
+        serializer = DonorSerializer(data,many=True)
+        return Response({"data": serializer.data},status=status.HTTP_200_OK)
+
+# class BankKycApi(GenericMethodsMixin,APIView):
+#     model = BankKYC
+#     serializer_class = BankKYCSerializer
+#     lookup_field = "id"
+    
+# user --> Campaign --> Donation 
+# User = request.thisUser 
+
 
 
 

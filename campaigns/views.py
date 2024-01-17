@@ -128,7 +128,7 @@ class LandingPageApi(APIView):
 # Create campaign API
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
-        # try : 
+        try : 
             with transaction.atomic():
                 if pk :
                     campaign = Campaign.objects.get(id=pk)
@@ -206,6 +206,5 @@ class AddCampaignApi(APIView):
                         
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data},status=status.HTTP_200_OK)
                     
-        # except Exception as e :
-        #     return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-    
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
