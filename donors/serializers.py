@@ -19,7 +19,7 @@ class DonorSerializer(ModelSerializer):
 class DonorSerializer1(ModelSerializer):
     class Meta :
         model = Donor
-        fields = ('is_anonymous','full_name','amount')
+        fields = ('is_anonymous','full_name','amount',"created_on")
 
 class BankTransactionSerializer(ModelSerializer):
     class Meta :

@@ -80,12 +80,12 @@ class SuccessfulCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-
 class CampaignByCategoryApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             cat_id = request.GET.get('category')
             data = Campaign.objects.filter(category=cat_id)
+            
             print(len(data))
             serializer = CampaignAdminSerializer(data, many=True)
             return Response({
@@ -95,7 +95,6 @@ class CampaignByCategoryApi(APIView):
             }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 # Campaign Detail API
 class CampaignDetailsApi(APIView):
@@ -123,7 +122,6 @@ class LandingPageApi(APIView):
             return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 # Create campaign API
 class AddCampaignApi(APIView):
@@ -205,6 +203,6 @@ class AddCampaignApi(APIView):
                         kyc_serializer.save()
                         
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data},status=status.HTTP_200_OK)
-                    
+                   
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

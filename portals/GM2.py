@@ -58,6 +58,8 @@ class GenericMethodsMixin:
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)
+            if page_number > paginator.count :
+                return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": []})
         except EmptyPage:
             return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(current_page_data, many=True)
