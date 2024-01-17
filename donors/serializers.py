@@ -17,9 +17,14 @@ class DonorSerializer(ModelSerializer):
         # return obj.campaign.campaign_name if obj.campaign else None
 
 class DonorSerializer1(ModelSerializer):
+    date = serializers.SerializerMethodField()
     class Meta :
         model = Donor
-        fields = ('is_anonymous','full_name','amount',"created_on","date")
+        fields = ('is_anonymous','full_name','amount',"date")
+    
+    def get_date(self, obj):
+        # Format the date here
+        return obj.created_on.strftime('%d-%b-%Y')
 
 class BankTransactionSerializer(ModelSerializer):
     class Meta :
