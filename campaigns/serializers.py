@@ -54,7 +54,7 @@ class CampaignAdminSerializer(ModelSerializer):
     donor_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','campaign_image','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count')
+        fields = ('id','title','campaign_image','story','summary','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count')
 
     def get_donor_count(self, obj):
           return obj.donors.count()
@@ -67,7 +67,7 @@ class CampaignDetailSerializer(ModelSerializer):
     
     class Meta :
         model   = Campaign
-        fields  = ('id','title','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')
+        fields  = ('id','title','story','summary','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')
     
     def get_user(self,obj):
         return obj.user.username
