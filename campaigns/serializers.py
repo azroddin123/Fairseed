@@ -67,7 +67,7 @@ class CampaignDetailSerializer(ModelSerializer):
     
     class Meta :
         model   = Campaign
-        fields  = ('id','title','story','summary','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')
+        fields  = ('id','title','campaign_image','story','summary','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')
     
     def get_user(self,obj):
         return obj.user.username
