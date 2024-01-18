@@ -11,10 +11,14 @@ class CampaignCategorySerializer(ModelSerializer):
         fields = ("name","image","is_active","id")
 
 class CampaignSerializer(ModelSerializer):
+    category = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Campaign
         fields = "__all__"
 
+    def get_category(self,obj):
+       return obj.category.name
+   
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
