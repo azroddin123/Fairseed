@@ -89,7 +89,10 @@ class CampaignByCategoryApi(APIView):
             print(request.GET.get('page'),"-----------------------------------page---------------------------->")
             limit = max(int(request.GET.get('limit', 0)),1) 
             page_number = max(int(request.GET.get('page', 0)), 1)  
+        # 
             data = Campaign.objects.filter(category=cat_id)
+            category_name = Campaigncategory.objects.get(id=cat_id).name
+            
             print(len(data))
             paginator = Paginator(data, limit)
             try:    
@@ -97,8 +100,8 @@ class CampaignByCategoryApi(APIView):
             except EmptyPage:
                 return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
           
-            serializer = CampaignAdminSerializer(current_page_data, many=True)
-            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
+            serializer = CampaignSerializer(current_page_data, many=True)
+            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"category_name" : category_name,"rows": serializer.data, }, status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
 
