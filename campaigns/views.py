@@ -97,7 +97,7 @@ class CampaignByCategoryApi(APIView):
             except EmptyPage:
                 return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
           
-            serializer = CampaignSerializer(current_page_data, many=True)
+            serializer = CampaignAdminSerializer(current_page_data, many=True)
             return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
