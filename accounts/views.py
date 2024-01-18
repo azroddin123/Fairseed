@@ -50,7 +50,7 @@ class LoginAPI(APIView):
             # password_match = check_password(password,user.password)
             password_match = check_password(password,user.password)
             print("password match",password_match)
-            serializer = UserSerializer(user)
+            serializer = UserSerializer1(user)
             data = {"error" : True, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
                 return Response(data,status=status.HTTP_200_OK)

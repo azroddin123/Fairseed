@@ -17,7 +17,7 @@ import math
 from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator,EmptyPage
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -80,21 +80,27 @@ class SuccessfulCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
+# Camapign By Catagory : ---> 
 class CampaignByCategoryApi(APIView):
-    def get(self, request, *args, **kwargs):
-        try:
+    def get(self,request,*args, **kwargs):
+        try : 
             cat_id = request.GET.get('category')
+            print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
+            print(request.GET.get('page'),"-----------------------------------page---------------------------->")
+            limit = max(int(request.GET.get('limit', 0)),1) 
+            page_number = max(int(request.GET.get('page', 0)), 1)  
             data = Campaign.objects.filter(category=cat_id)
-            
             print(len(data))
-            serializer = CampaignAdminSerializer(data, many=True)
-            return Response({
-                "count": len(data),
-                "error": False,
-                "rows": serializer.data,
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            paginator = Paginator(data, limit)
+            try:    
+                current_page_data = paginator.get_page(page_number)
+            except EmptyPage:
+                return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
+          
+            serializer = CampaignSerializer(current_page_data, many=True)
+            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
 
 # Campaign Detail API
 class CampaignDetailsApi(APIView):
@@ -166,7 +172,6 @@ class AddCampaignApi(APIView):
                     kyc_serializer = KycSerializer(data=request.data)
                     kyc_serializer.is_valid(raise_exception=True)
                     kyc_serializer.save()
-                    
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
               
                 else :
@@ -206,3 +211,23 @@ class AddCampaignApi(APIView):
                    
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+class CampaignByCategoryApi2(APIView):
+    def get(self,request,pk,*args, **kwargs):
+        try : 
+            cat_id = request.GET.get('category')
+            print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
+            print(request.GET.get('page'),"-----------------------------------page---------------------------->")
+            limit = max(int(request.GET.get('limit', 0)),1) 
+            page_number = max(int(request.GET.get('page', 0)), 1)  
+            data = Campaign.objects.filter(category=pk)
+            print(len(data))
+            paginator = Paginator(data, limit)
+            try:    
+                current_page_data = paginator.get_page(page_number)
+            except EmptyPage:
+                return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
+            serializer = CampaignSerializer(current_page_data, many=True)
+            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
