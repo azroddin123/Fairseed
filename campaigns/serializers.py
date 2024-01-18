@@ -19,6 +19,17 @@ class CampaignSerializer(ModelSerializer):
     def get_category(self,obj):
        return obj.category.name
    
+class CampaignSerializer2(ModelSerializer):
+    user        = UserAdminSerializer(read_only=True)
+    donor_count = serializers.SerializerMethodField(read_only=True)
+    class Meta :
+        model  = Campaign
+        fields = "__all__"
+
+    def get_donor_count(self, obj):
+        return obj.donors.count()
+   
+   
 class CampaignSerializer1(ModelSerializer):
     class Meta :
         model   = Campaign
