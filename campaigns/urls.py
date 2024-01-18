@@ -2,12 +2,14 @@ from django.urls import path
 from .views import * 
 
 urlpatterns = [
-
     ###################################################################################################
-    # path('card/', CardAPIView.as_view()),
-    # path('api/practice/',PracticeAPI.as_view()),
+    path('api/categories/', CategoriesApi.as_view(),name='categories'),
+    path('api/description/<str:pk>/', CampaignDescriptionApi.as_view(), name='campaign-description-api'),
+    path('api/causesbycategory/', Causes_by_CategoryAPI.as_view(),name='cause_categories'),
+    path('api/card/', CardAPI.as_view(), name='cardview'),
+    path('api/practice/', PracticeAPI.as_view()),
     path('api/causes_raised/', TotalCountAPI.as_view(), name='causes-raised'),
-    path('api/landing_page/card/', CardAPIViewPagination.as_view()),
+    # path('api/landing_page/card/', CardAPIViewPagination.as_view()),
     path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
     # path('api/landing_page/causes_by_category',CausesbyCategoryAPI.as_view()),
     # path('api/landing_page/ongoing_campaign_built_in/',Ongoing_Campaign_Api_built_in.as_view()),

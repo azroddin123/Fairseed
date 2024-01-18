@@ -8,6 +8,32 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 
+
+
+
+###############################################
+class LandingPageImagesAPI(APIView):
+    def get(self, request):
+        landing_pages = LandingPage.objects.all()  
+        if not landing_pages:
+            return Response({"error": "No landing page data found"}, status=status.HTTP_404_NOT_FOUND)
+
+        imgs =[]
+        for landing_page in landing_pages:
+            image_data = {
+            'logo': request.build_absolute_uri(landing_page.logo.url) if landing_page.logo else None,
+            'logo_footer': request.build_absolute_uri(landing_page.logo_footer.url) if landing_page.logo_footer else None,
+            'favicon': request.build_absolute_uri(landing_page.favicon.url) if landing_page.favicon else None,
+            'image_header': request.build_absolute_uri(landing_page.image_header.url) if landing_page.image_header else None,
+            'image_bottom': request.build_absolute_uri(landing_page.image_bottom.url) if landing_page.image_bottom else None,
+            'avtar': request.build_absolute_uri(landing_page.avtar.url) if landing_page.avtar else None,
+            'image_category': request.build_absolute_uri(landing_page.image_category.url) if landing_page.image_category else None,
+        }
+            
+            imgs.append(image_data)
+
+        return Response(imgs, status=status.HTTP_200_OK)
+###############################################
 class PagesAPi(APIView):
     def get(self, request, pk=None):
         try : 

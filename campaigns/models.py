@@ -1,15 +1,19 @@
+# Create your models here.                                       
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
-# Create your models here.
+
 from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
-    image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    image  = models.ImageField(upload_to="static/media_files/catagory/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
-
+    
+    def _str_(self) -> str:
+        return str(self.name)
+    
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
     user            = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -31,6 +35,16 @@ class Campaign(BaseModel):
     is_featured     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
+    is_std_benenfited = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        # Check if the campaign has reached its goal
+        if self.fund_raised >= self.goal_amount:
+            self.is_successful = True
+        else:
+            self.is_successful = False
+
+        super().save(*args, **kwargs)
 
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):

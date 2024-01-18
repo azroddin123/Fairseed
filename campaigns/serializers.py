@@ -74,3 +74,10 @@ class CampaignDetailSerializer(ModelSerializer):
     class Meta :
         model   = Campaign
         fields  = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','donor')
+
+##################################################################################
+class CampaignStorySerializer(ModelSerializer):
+
+    class Meta:
+        model = Campaign
+        fields = ['description']

@@ -9,8 +9,8 @@ class EmailNotificationSerializer(serializers.Serializer):
     subject = serializers.CharField()
     message = serializers.CharField()
     recipient = serializers.EmailField()
-###################################################################################
 
+###################################################################################
 class UserSerializer(ModelSerializer):
     class Meta :
         model = User

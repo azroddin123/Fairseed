@@ -2,6 +2,8 @@ from django.urls import path
 from .views import * 
 from campaigns.views import CampaignAdminApi
 urlpatterns = [
+    path('api/landing-page-images/', LandingPageImagesAPI.as_view(), name='landing-page-images'),
+    ############################
     # add general setting in the project 
     path('gs',GeneralSettingApi.as_view()),
     path('gs/<str:pk>',GeneralSettingApi.as_view()),

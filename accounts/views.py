@@ -34,14 +34,13 @@ class EmailNotificationView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-# class RegisterApi(APIView):
-#     def get(self, request):
-#         u1 = User.objects.all()
-#         serializers = UserSerializer1(u1, many = True)
-#         return Response(serializers.data)
+class RegisterApi(APIView):
+    def get(self, request):
+        u1 = User.objects.all()
+        serializers = UserSerializer1(u1, many = True)
+        return Response(serializers.data)
 
-# class RegisterAPI(APIView):
-#     def 
+
 ########################################################################
 class UserApi(GenericMethodsMixin, APIView):
     model = User
@@ -53,8 +52,6 @@ class UserApi(GenericMethodsMixin, APIView):
         user = request.user
         serializer = UserSerializer1(user)
         return Response(serializer.data)
-
-    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):

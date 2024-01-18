@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+# from allauth.account.auth_backends import AuthenticationBackend
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,7 +59,12 @@ INSTALLED_APPS = [
     # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders'
+    'corsheaders',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 REST_FRAMEWORK = {
@@ -87,6 +94,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     # 'fairseed.middlewares.CustomAuthentication'
 ]
 ROOT_URLCONF = 'fairseed.urls'
@@ -151,10 +159,14 @@ CRONJOBS = [
     ('*/1 * * * *', 'portals.cronjob.update_campaign_fund')
 ]
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'rafatshaikh9990@gmail.com'
-# EMAIL_HOST_PASSWORD = 'Jrshaikh12'
-# DEFAULT_FROM_EMAIL = 'samalkomalcs@gmail.com'
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rafatshaikh9990@gmail.com'
+EMAIL_HOST_PASSWORD = 'sfto pnor crdm mdeq'
+DEFAULT_FROM_EMAIL = 'rafatshaikh9990@gmail.com'
