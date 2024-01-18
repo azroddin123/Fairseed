@@ -9,6 +9,8 @@ from django.dispatch import receiver
 from rest_framework.serializers import ValidationError
 from donors.models import Donor
 from datetime import datetime, timedelta
+import markdown
+
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
@@ -22,7 +24,7 @@ class Campaign(BaseModel):
     campaign_image  = models.ImageField(upload_to='campaign/campaign_images/', null=True, blank=True)
     title           = models.CharField(max_length=50)
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
-    user            = models.ForeignKey(User,on_delete=models.CASCADE)
+    user            = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(0, message="Value must be greater than or equal to 100"),
                     MaxValueValidator(1000000, message="Value must be less than or equal to 1000000")])
@@ -43,6 +45,9 @@ class Campaign(BaseModel):
     
     def __str__(self) -> str:
         return self.title
+    
+    def get_rendered_text(self):
+        return markdown.markdown(self.story)
     
     @property
     def update_days_left(self):

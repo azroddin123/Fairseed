@@ -134,7 +134,7 @@ class LandingPageApi(APIView):
 # Create campaign API
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
-        try : 
+        # try : 
             with transaction.atomic():
                 if pk :
                     campaign = Campaign.objects.get(id=pk)
@@ -178,13 +178,14 @@ class AddCampaignApi(APIView):
               
                 else :
                     data = request.data
+                    data._mutable = True
+
                     uploaded_docs = request.FILES.getlist('documents')
                     upload_adhar  = request.FILES.getlist("adhar")
-                   
-                    
-                    print("---------------------",request.thisUser)
+                    print("---------------------")
                     print("camapign save")
-                    request.data["user"] = request.thisUser.id
+                    
+                    # request.data["user"] = request.thisUser.id
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         print("serilaizer is valid")
@@ -192,14 +193,12 @@ class AddCampaignApi(APIView):
                         print("Document save")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                        request.data["campaign"]=campaign.id
-                        
-                        print("account save")
-                        # Code For Account Serializer
-                        account_serializer = AccountDSerializer(data=request.data)
+                
+                        request.data["campaign"] = campaign.id
+                        account_serializer = AccountDSerializer(data=data)
                         account_serializer.is_valid(raise_exception=True)
                         account_serializer.save()
-              
+
                         # code for Kyc Serializer 
                         print("kyc save")
                         request.data["adhar_card_front"] = upload_adhar[0]
@@ -211,8 +210,8 @@ class AddCampaignApi(APIView):
                         
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data},status=status.HTTP_200_OK)
                    
-        except Exception as e :
-            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        # except Exception as e :
+        #     return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class CampaignByCategoryApi2(APIView):
     def get(self,request,pk,*args, **kwargs):
@@ -233,3 +232,30 @@ class CampaignByCategoryApi2(APIView):
             return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
+
+
+
+class CreateCampaignApi(APIView):
+    def post(self,request,*args, **kwargs):
+        try :
+             with transaction.atomic():
+                campaign_serializer = CampaignSerializer(data=request.data)
+                if campaign_serializer.is_valid():
+                    campaign = campaign_serializer.save()
+                    
+                    uploaded_docs = request.FILES.getlist("documents")
+                    if uploaded_docs:
+                        print("adding docs")
+                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        Documents.objects.bulk_create(documents_to_create)
+
+                    # account_details = request.data.get('account_details')
+                    # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
+        except Exception as e:
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)           
+                     
+#  bank transaction details 
+                    
+#         except : 
+#             pass 
+        

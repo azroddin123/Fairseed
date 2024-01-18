@@ -26,6 +26,6 @@ urlpatterns = [
     path('campaign-details/<str:pk>', CampaignDetailsApi.as_view()),
    
     # add campaign
-    path('add_campaign/<str:pk>',AddCampaignApi.as_view()),
+    # path('add_campaign/<str:pk>',AddCampaignApi.as_view()),
     path('add_campaign',AddCampaignApi.as_view())
 ]
