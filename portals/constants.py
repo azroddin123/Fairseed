@@ -15,6 +15,8 @@ NO                  = "No"
 # Raise Choices 
 SELF                = "Self"
 OTHER               = "Other"
+CHARITY             = "Charity"
+FAMILY             = "Family"
 
 # Campaign Choices 
 PENDING             = "Pending"

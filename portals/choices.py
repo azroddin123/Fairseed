@@ -22,6 +22,9 @@ class ZakatChoices(models.TextChoices):
 class RaiseChoices(models.TextChoices):
     SELF  = SELF,SELF
     OTHER =  OTHER,OTHER
+    FAMILY = FAMILY,FAMILY
+    CHARITY = CHARITY,CHARITY
+    
 
 class CampaignChoices(models.TextChoices):
     PENDING    = PENDING,PENDING
