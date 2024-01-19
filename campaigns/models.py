@@ -21,7 +21,7 @@ class Campaigncategory(BaseModel):
 
 class Campaign(BaseModel):
     campaign_image  = models.ImageField(upload_to='campaign/campaign_images/', null=True, blank=True)
-    title           = models.CharField(max_length=50)
+    title           = models.CharField(max_length=124)
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
@@ -33,7 +33,7 @@ class Campaign(BaseModel):
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location        = models.CharField(max_length=124)
     story           = models.TextField(blank=True,null=True)
-    summary         = models.TextField()
+    summary         = models.TextField(blank=True,null=True)
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     end_date        = models.DateField()
     days_left       = models.IntegerField(default=0)
