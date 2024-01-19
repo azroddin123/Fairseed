@@ -12,7 +12,7 @@ class Donor(BaseModel):
    
     donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)
     full_name     = models.CharField(max_length=124)
-    amount        = models.DecimalField(max_digits=5, decimal_places=2)
+    amount        = models.DecimalField(max_digits=10, decimal_places=2)
     email         = models.CharField(max_length=124)
     city          = models.CharField(max_length=124)
     country       = models.CharField(max_length=124)

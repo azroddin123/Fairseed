@@ -11,7 +11,6 @@ from donors.models import Donor
 from datetime import datetime, timedelta
 import markdown
 
-
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="campaign/catagory/",blank=True,null=True,)
@@ -33,7 +32,7 @@ class Campaign(BaseModel):
     zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location        = models.CharField(max_length=124)
-    story           = models.TextField()
+    story           = models.TextField(blank=True,null=True)
     summary         = models.TextField()
     status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
     end_date        = models.DateField()
@@ -42,6 +41,8 @@ class Campaign(BaseModel):
     is_featured     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
+    campaign_data   = models.JSONField(null=True,blank=True)
+    is_admin_approved = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.title
@@ -71,6 +72,9 @@ class Campaign(BaseModel):
     @classmethod
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
+    
+    
+    # if user make 
 
 # want to combine these two models 
 class AccountDetail(BaseModel):

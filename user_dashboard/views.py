@@ -7,7 +7,7 @@ from campaigns.serializers import *
 from donors.serializers import * 
 from campaigns.models import * 
 from rest_framework.views import APIView
-from portals.GM1 import GenericMethodsMixin
+from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
@@ -68,6 +68,13 @@ class CampaignApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field = "id"
     
+    def put(self,request,pk,*args, **kwargs):
+        print(request.data)
+        campaign = Campaign.objects.get(id=pk)
+        print(request.data)
+        campaign.campaign_data=request.data
+        campaign.save()
+        return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
 # Donor API Donation Done By MySelf 
 class MyDonationApi(GenericMethodsMixin,APIView):
     model= Donor

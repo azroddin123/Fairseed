@@ -248,7 +248,12 @@ class CreateCampaignApi(APIView):
                         print("adding docs")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
+                        
+                        account = request.data.get('account_details')
+                        obj = AccountDetail.objects.create(campaign=campaign,account_holder_name = account["account_holder_name"],account_number=account["account_number"],bank_name=account["bank_name"],branch_name=account["branch_name"],ifsc_code = account["ifsc_code"]) 
 
+                        
+                    # return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
                     # account_details = request.data.get('account_details')
                     # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
         except Exception as e:
