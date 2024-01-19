@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from accounts.serializers import UserAdminSerializer
+from accounts.serializers import UserAdminSerializer, UserSerializer
 from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from .models import * 
@@ -87,3 +87,75 @@ class CampaignCauseSerializer(ModelSerializer):
     class Meta:
         model = CampaignCause
         fields = "__all__"
+
+class CampaigncategorySerializer1(ModelSerializer):
+    class Meta:
+        model  = Campaigncategory
+        exclude = ['created_on', 'updated_on', 'image'] 
+
+
+class CampaignSerializer2(ModelSerializer):
+    user_info = UserAdminSerializer(source='user', read_only=True)
+    class Meta:
+        model = Campaign
+        fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','user_info')
+
+class CamapaignSearchSeraializer(serializers.Serializer):
+    id= serializers.UUIDField(required=False)
+    username = serializers.CharField(required=False)
+    title = serializers.CharField(required=False)
+    email = serializers.CharField(required=False)
+    mobile_number = serializers.CharField(required=False)
+    goal_amount = serializers.CharField(required=False)
+    fund_raised = serializers.CharField(required=False)
+    status = serializers.CharField(required=False)
+    start_date = serializers.CharField(required=False)
+
+    # sort_by = serializers.CharField(allow_blank=True, required=False)
+    # sort_order = serializers.ChoiceField(choices=[('asc', 'Ascending'), ('desc','Descending')], allow_blank=True, required=False)
+
+class CamapaignDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = ('user','campaign_image','title','goal_amount','location','category','zakat_eligible','end_date')
+
+class CampaignDocSerializer(ModelSerializer):
+    class Meta:
+        model = Documents
+        fields = ['doc_file']
+
+class CampaignStorySerailaizer(ModelSerializer):
+    doc = CampaignDocSerializer(source='campaign', read_only=True)
+    class Meta :
+        model = Campaign
+        fields = ('description','summary','goal_amount','doc')
+
+class CampaignAccSerailaizer(ModelSerializer):
+    class Meta :
+        model = Campaign
+        fields = ('rasing_for')
+
+class CamapaignAccountSerializer(ModelSerializer):
+    # user_info = CampaignAccSerailaizer(source='user', read_only=True)
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ('account_holder_name','account_number','bank_name','branch_name','ifsc_code','passbook_image')
+
+class CampaignDetailStorySerializer(ModelSerializer):
+    doc = CampaignDocSerializer(source='campaign', read_only=True)
+    class Meta:
+        model = Campaign
+        fields = ('user','campaign_image','title','goal_amount','location','category','zakat_eligible','end_date','description','summary','doc')
+    
+class CamapaignKYCSerializer(ModelSerializer):
+    class Meta:
+        model  = CampaignKycBenificiary
+        fields = ('adhar_card','adhar_card_image', 'pan_card','pan_card_image')
+
+class CamapaignCreateSerializer(serializers.ModelSerializer):
+    doc = CampaignDocSerializer(source='documents', read_only=True)
+    acc_detail = CamapaignAccountSerializer(source='bank_details',read_only=True)
+    kyc_detail = CamapaignKYCSerializer(source='bank_details',read_only=True)
+    class Meta:
+        model = Campaign
+        fields = ('user','campaign_image','title','goal_amount','location','category','zakat_eligible','end_date','description','summary','goal_amount','doc','rasing_for','acc_detail','kyc_detail')

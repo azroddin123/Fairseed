@@ -7,7 +7,7 @@ class BaseModel(models.Model):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
     created_on = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on = models.DateTimeField(auto_now=True)
- 
+
     class Meta:
         abstract = True
         ordering = ("-created_on",)

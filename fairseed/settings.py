@@ -166,3 +166,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True  # Set to False if your email server doesn't use TLS
 EMAIL_HOST_USER = 'fatemataskeen14@gmail.com'  # Replace with your email username
 EMAIL_HOST_PASSWORD = 'vkhv hyag ikgf rdqa'  # Replace with your email password
+
+
+# for login authentication
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+

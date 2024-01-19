@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
-# Create your models here.
+
 from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
 
@@ -11,6 +11,9 @@ class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 class CampaignCause(models.Model):
     cause_title = models.CharField(max_length=100)
@@ -40,6 +43,7 @@ class Campaign(BaseModel):
     is_featured     = models.BooleanField(default=False)
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
+    campaign_image  = models.ImageField('static/media_files/campaign_images/', null=True, blank=True)
 
 
 # want to combine these two models 
@@ -72,7 +76,7 @@ class CampaignKycBenificiary(BaseModel):
 class Documents(BaseModel):
     campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name = models.CharField(max_length=124)
-    doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
+    doc_file = models.FileField(upload_to="static/media_files/",blank=True,null=True)
 
 
 

@@ -29,6 +29,16 @@ urlpatterns = [
 
     path('api/CampaignGetApi', CampaignGetApi.as_view()),
     path('api/CampaignPostApi', CampaignPostApi.as_view()),
+
+    path('api/CampaignDetailPostApi', CampaignDetailPostApi.as_view()),
+    path('api/CampaignGetApi1', CampaignGetApi1.as_view()),
+    path('api/CamapaignAccountDetailApi', CamapaignAccountDetailApi.as_view()),
+    
+    path('api/CamapaignStoryApi', CamapaignStoryApi.as_view()),
+    path('api/CampaignDetailStoryApi', CampaignDetailStoryApi.as_view()),
+    path('api/CamapaignKYCApi', CamapaignKYCApi.as_view()),
+    path('api/CampaignCreateApi1', CampaignCreateApi1.as_view()),
+    
     path('api/CampaignDeletePutApi/<int:pk>', CampaignDeletePutApi.as_view()),
     
     path('api/CampaignCatagoriesGetApi', CampaignCatagoriesGetApi.as_view()),
@@ -38,6 +48,10 @@ urlpatterns = [
     # path('api/SuccessfulCampaignCount', SuccessfulCampaignCount.as_view()),
 
     path('api/CampaignCatagoriesListAPI',CampaignCatagoriesListAPI.as_view()),
+    path('api/CamapaignActionApi/<str:id>',CamapaignActionApi.as_view()),
+    path('api/CamapaignActionApi1/',CampaignCatagoriesGetApi1.as_view()),
+    
+    
 
     path('api/StdBenefitedCountAPI', StdBenefitedCountAPI.as_view()),
     path('api/SuccessCount', SuccessCount.as_view()),
@@ -55,8 +69,11 @@ urlpatterns = [
 
     path('api/practice', practice.as_view()),
 
+    path('api/campaignsearch/', CampaignSearchApi.as_view()),
 
-    # path('api/CardAPIViewPagination', CardAPIViewPagination.as_view()),
+    path('api/scholarshipcampaign/', ScholarshipCampaignApi.as_view()),
+    
+    path('api/RelegiousEducationCampApi', RelegiousEducationCampApi.as_view()),
 
     
 ]

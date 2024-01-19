@@ -24,7 +24,8 @@ class ZakatChoices(models.TextChoices):
 
 class RaiseChoices(models.TextChoices):
     SELF  = SELF,SELF
-    OTHER =  OTHER,OTHER
+    CHARITY = CHARITY, CHARITY
+    FRIENDS_FAMILY = FAMILY_FRIENDS, FAMILY_FRIENDS
 
 
 class CampaignChoices(models.TextChoices):
@@ -48,8 +49,6 @@ class DonationChoices(models.TextChoices):
     GENERAL_DONATION = GENERAL_DONATION,GENERAL_DONATION
     ZAKAT = ZAKAT,ZAKAT
     INTEREST_OFFLOADING = INTEREST_OFFLOADING,INTEREST_OFFLOADING
-
-
 
 
 class PaymentChoices(models.TextChoices):

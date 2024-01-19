@@ -204,6 +204,7 @@ class CampaignGetApi(APIView):
         ongoing_campaign = Campaign.objects.all()
         serializer = CampaignSerializer(ongoing_campaign, many = True)
         return Response(serializer.data , status=status.HTTP_200_OK)
+
     
 class CampaignPostApi(APIView):
     def post(self, request):
@@ -234,11 +235,52 @@ class CampaignDeletePutApi(APIView):
             return Response({"error": "Campaign does not exist"})
         
         
-class CampaignCatagoriesGetApi(APIView):
+class CampaignCatagoriesGetApi(APIView):  # camapign get API (Admin Panel)
+    def get(self, request):
+        CampaignCategory = Campaigncategory.objects.all()
+        serializer = CampaigncategorySerializer1(CampaignCategory, many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CampaigncategorySerializer1(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CamapaignActionApi(APIView):        # campaign Action API(Admin Panel)
+    def put(self, request,id):
+        try:
+            camp = Campaigncategory.objects.get(id=id)
+        except Campaigncategory.DoesNotExist:
+            return Response({"error": "Campaign Category not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CampaigncategorySerializer1(camp, data=request.data, )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        try:
+            camp = Campaigncategory.objects.get(id=id)
+            camp.delete()
+            return Response({"message": "Campaign Category deleted successfully"})
+        except Campaigncategory.DoesNotExist:
+            return Response({"error": "Campaign Category does not exist"})
+
+
+class CampaignCatagoriesGetApi1(APIView):  # camapign get API (Admin Panel)
     def get(self, request):
         CampaignCategory = Campaigncategory.objects.all()
         serializer = CampaigncategorySerializer(CampaignCategory, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    def post(self, request):
+        serializer = CampaigncategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class CampaignRaisedUserApi(APIView):
     def get(self, request):
@@ -280,7 +322,7 @@ class CampaignDetailApi(APIView):
             status=status.HTTP_200_OK)
         
 
-class CampaignCatagoriesListAPI(APIView):
+class CampaignCatagoriesListAPI(APIView):     # get cmapaign category name list.....
     def get(self, request):
         list = Campaigncategory.objects.all()
         serializer = CampaigncategorySerializer(list, many=True)
@@ -489,6 +531,301 @@ class practice(APIView):
         goal = [ {'goal amout': i['goal_amount'], 'title': i['title']}for i in serializer.data]
         return Response(goal, status=status.HTTP_200_OK)
     
+####### Admin Campaign API's   #############
+
+class CampaignGetApi(APIView):   # Campaign get Api (Admin panel)
+    def get(self,request):
+        ongoing_campaign = Campaign.objects.all()
+        serializer = CampaignSerializer2(ongoing_campaign, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
+
+# class CampaignSearchApi(APIView):
+#     def get(self,request):
+#         ongoing_campaign = Campaign.objects.all()
+#         serializer = CampaignSerializer2(ongoing_campaign, many = True)
+#         return Response(serializer.data , status=status.HTTP_200_OK)
+
+#     def get(self, request, *args, **kwargs):
+#         serializer = CamapaignSearchSeraializer(data=request.query_params)
+#         serializer.is_valid(raise_exception=True)
+#         queryset = Campaign.objects.all()
+
+#         start_date = serializer.validated_data.get('start_date')
+#         username= serializer.validated_data.get('username')
+#         title = serializer.validated_data.get('title')
+#         email = serializer.validated_data.get('email')
+#         mobile_number= serializer.validated_data.get('mobile_number')
+#         start_date = serializer.validated_data.get('start_date')
+#         goal_amount = serializer.validated_data.get('goal_amount')
+#         fund_raised = serializer.validated_data.get('fund_raised')
+#         id = serializer.validated_data.get('id')
+
+#         sort_with = serializer.validated_data.get('sort_with')
+#         sort_by = serializer.validated_data.get('sort_by')  # get('sort_by','asc')
+
+#         if username:
+#             queryset = queryset.filter(user__username__icontains=username)
+#         if title:
+#             queryset= queryset.filter(title__icontains=title)
+#         if mobile_number:
+#             queryset = queryset.filter(user__mobile_number__icontains=mobile_number)
+#         if email:
+#             queryset = queryset.filter(user__email__icontains=email)
+#         if start_date:
+#             queryset = queryset.filter(start_date__icontains=start_date)
+#         if goal_amount:
+#             queryset = queryset.filter(goal_amount__icontains=goal_amount)
+#         if fund_raised:
+#             queryset = queryset.filter(fund_raised__icontains=fund_raised)
+#         if id:
+#             queryset = queryset.filter(user__id__icontains=id)
+
+#         if sort_with:
+#             order_by_field = sort_with
+#             if sort_by =='desc':
+#                 order_by_field = '-' + order_by_field
+#             queryset = queryset.order_by(order_by_field)
+
+#         print(f'Sorting by {sort_with} in {sort_by} order')
+#         # print(f'Final queryset: {queryset.query}')
+
+#         serializer = CampaignSerializer2(queryset, many=True)
+
+#         return Response(serializer.data) 
+
+
+
+
+class CampaignSearchApi(APIView):
+    def get(self,request):
+        ongoing_campaign = Campaign.objects.all()
+        serializer = CampaignSerializer2(ongoing_campaign, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        serializer = CamapaignSearchSeraializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        queryset = Campaign.objects.all()
+
+        start_date = serializer.validated_data.get('start_date')
+        username= serializer.validated_data.get('username')
+        title = serializer.validated_data.get('title')
+        email = serializer.validated_data.get('email')
+        mobile_number= serializer.validated_data.get('mobile_number')
+        start_date = serializer.validated_data.get('start_date')
+        goal_amount = serializer.validated_data.get('goal_amount')
+        fund_raised = serializer.validated_data.get('fund_raised')
+        id = serializer.validated_data.get('id')
+
+        sort_with = serializer.validated_data.get('sort_with')
+        print(sort_with)
+        sort_by = serializer.validated_data.get('sort_by')  # get('sort_by','asc')
+        print(sort_by)
+
+        if username:
+            queryset = queryset.filter(user__username__icontains=username)
+        if title:
+            queryset= queryset.filter(title__icontains=title)
+        if mobile_number:
+            queryset = queryset.filter(user__mobile_number__icontains=mobile_number)
+        if email:
+            queryset = queryset.filter(user__email__icontains=email)
+        if start_date:
+            queryset = queryset.filter(start_date__icontains=start_date)
+        if goal_amount:
+            queryset = queryset.filter(goal_amount__icontains=goal_amount)
+        if fund_raised:
+            queryset = queryset.filter(fund_raised__icontains=fund_raised)
+        if id:
+            queryset = queryset.filter(user__id__icontains=id)
+
+        if sort_with:
+            print(sort_with)
+            # Map frontend field names to model field names for sorting
+            field_mapping = {'User': 'user__username', 'Date': 'start_date'}
+
+            if sort_with in field_mapping:
+                ordering_field = field_mapping[sort_with]
+
+                if sort_by == 'desc':
+                    ordering_field = '-' + ordering_field
+                queryset = queryset.order_by(ordering_field)
+
+            print(f'Sorting by {sort_with} in {sort_by} order')
+                # print(f'Final queryset: {queryset.query}')
+
+        serializer = CampaignSerializer2(queryset, many=True)
+
+        return Response(serializer.data)
+
+
+### Admin Panel > Scholarship 
+    
+class ScholarshipCampaignApi(APIView):
+    def get(self, request):
+        camp = Campaign.objects.filter(category__name__icontains='Scholarship')
+        print(type(camp))
+        print(camp)
+        print(f'Number of campaign {camp.count()}')
+        serializer = CampaignSerializer2(camp, many=True)
+        return Response(serializer.data)
+    
+# campaign cretae Api's
+    
+class CampaignDetailPostApi(APIView):
+    def post(self, request):
+        serializer = CamapaignDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CampaignGetApi1(APIView):
+    def get(self,request):
+        camp = Campaign.objects.all()
+        serializer = CamapaignDetailSerializer(camp, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CamapaignDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CamapaignStoryApi(APIView):  #not working ...asking fo goal_amount
+    def get(self,request):
+        camp = Campaign.objects.all()
+        serializer = CampaignStorySerailaizer(camp,many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CampaignStorySerailaizer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class CamapaignAccountDetailApi(APIView):
+    def get(self,request):
+        camp = CamapaignAccountSerializer.objects.all()
+        serializer = CKBSerializer(camp,many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CamapaignAccountSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class CampaignDetailStoryApi(APIView):
+    def get(self, request):
+        camp = Campaign.objects.all()
+        serializer = CampaignDetailStorySerializer(camp,many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CampaignDetailStorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CamapaignKYCApi(APIView):
+    def get(self, request):
+        camp = CampaignKycBenificiary.objects.all()
+        serializer = CamapaignKYCSerializer(camp, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CamapaignKYCSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CampaignCreateApi1(APIView):
+    def get(self, request):
+        camp = Campaign.objects.all()
+        serializer = CamapaignCreateSerializer(camp, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = CamapaignCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RelegiousEducationCampApi(APIView):    
+    def get(self, request):
+        params = request.GET
+        page_number = int(params.get("pg", 1))
+        page_size = int(params.get("limit", 8))
+        offset = (page_number - 1) * page_size
+        limit = page_size
+
+        campaigns = Campaign.objects.annotate(cause_fund_raised=F('fund_raised'))
+
+
+        # Filter by zakat=true
+        zakat_filter = params.get("zakat_eligible")
+        if zakat_filter and zakat_filter.lower() == 'true':
+            campaigns = campaigns.filter(zakat_eligible=True)
+
+        # Filter by user_type=NGO
+        user_type_filter = params.get("user_type")
+        if user_type_filter and user_type_filter.lower() == 'ngo':
+            campaigns = campaigns.filter(user__user_type='NGO')
+        #Filter by location
+        # location_filter = params.get("location")
+        # if location_filter and loca
+
+
+        paginated_campaigns = campaigns[offset:offset + limit]
+
+        all_campaigns_data = []
+
+        for c1 in paginated_campaigns:
+            donors_per_campaign = Donor.objects.filter(campaign=c1)
+            num_donors = donors_per_campaign.count()
+            sum_amt = donors_per_campaign.aggregate(sum_amt=Sum('amount'))['sum_amt'] if donors_per_campaign.exists() else 0
+
+            today_date = timezone.now().date()
+            if c1.end_date:
+                days_remaining = (c1.end_date - today_date).days
+                if days_remaining >= 0:
+                    days_left_message = f'{days_remaining} days left'
+                else:
+                    days_left_message = 'Campaign ended'
+            else:
+                days_left_message = 'No end date'
+
+            user_images = None
+            if c1.user and hasattr(c1.user, 'user_images') and c1.user.user_images:
+                user_images = c1.user.user_images.url
+
+            api_data = {
+                'id': c1.id,
+                'logo':user_images,
+                'title': c1.title,
+                'description': c1.description,
+                'fund_raised': c1.fund_raised,
+                'days_left': days_left_message,
+                'sum_of_donor': sum_amt,
+                'num_donors': num_donors,
+                'location': c1.location,
+            }
+
+            all_campaigns_data.append(api_data)
+
+        return Response(all_campaigns_data, status=status.HTTP_200_OK)   
+    
+
 
 
 

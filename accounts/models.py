@@ -36,6 +36,9 @@ class User(AbstractBaseUser):
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     is_verified      = models.BooleanField(default=False)     #Email Verification
     otp              = models.CharField(max_length=6, null = True, blank=True)
+    old_password     = models.CharField(max_length=10, null=True, blank=True)
+    new_password     = models.CharField(max_length=10, null=True, blank=True)
+    confirm_password = models.CharField(max_length=10, null=True, blank=True)
     
     objects    = UserManager()
     

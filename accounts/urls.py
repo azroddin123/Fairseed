@@ -7,7 +7,7 @@ urlpatterns = [
     path('user/<str:pk>', UserApi.as_view()),
     path('register/nt/',RegisterUserApi.as_view()),
     path('user/nt/',UserApi.as_view()),
-    path('change_password',ChangePasswordApi.as_view()),
+    path('change_password/',ChangePasswordApi.as_view()),
     path('test/<int:id1>/<int:id2>/<int:id3>/', PassIdApi.as_view()),
     # email verification apiview
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('register-otp/',RegisterOTPApi.as_view()),
     path('verify-otp/',VerifyOTPApi.as_view()),
     path('changepass-otp/',ChangePassOTPApi.as_view()),
+    path('loginapi/',LoginView.as_view()),
     
     
 

@@ -20,4 +20,4 @@ admin.site.register(Campaign,CampaignAdmin)
 admin.site.register(CampaignKycBenificiary,BBAdmin)
 # admin.site.register(KycDetails,KycAdmin)
 admin.site.register(CampaignCause)
-
+admin.site.register(Documents)
