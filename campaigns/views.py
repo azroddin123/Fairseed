@@ -18,6 +18,7 @@ from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator,EmptyPage
+from portals.services import paginate_model_data
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -85,25 +86,13 @@ class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
             cat_id = request.GET.get('category')
-            print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
-            print(request.GET.get('page'),"-----------------------------------page---------------------------->")
-            limit = max(int(request.GET.get('limit', 0)),1) 
-            page_number = max(int(request.GET.get('page', 0)), 1)  
-        # 
-            data = Campaign.objects.filter(category=cat_id)
-            category_data = CampaignCategorySerializer(Campaigncategory.objects.get(id=cat_id)).data           
-            
-            paginator = Paginator(data, limit)
-            try:    
-                current_page_data = paginator.get_page(page_number)
-            except EmptyPage:
-                return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
-          
-            serializer = CampaignSerializer2(current_page_data, many=True)
-            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"category_data" : category_data,"rows": serializer.data, }, status=status.HTTP_200_OK)
+            response = paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
+            category_data = CampaignCategorySerializer(Campaigncategory.objects.get(id=cat_id)).data 
+            response["category_data"] = category_data
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
-
+   
 # Campaign Detail API
 class CampaignDetailsApi(APIView):
     def get(self,request,pk,*args, **kwargs): 
@@ -180,8 +169,8 @@ class AddCampaignApi(APIView):
                     data = request.data
                     data._mutable = True
 
-                    uploaded_docs = request.FILES.getlist('documents')
-                    upload_adhar  = request.FILES.getlist("adhar")
+                    # uploaded_docs = request.FILES.getlist('documents')
+                    # upload_adhar  = request.FILES.getlist("adhar")
                     print("---------------------")
                     print("camapign save")
                     
@@ -191,8 +180,8 @@ class AddCampaignApi(APIView):
                         print("serilaizer is valid")
                         campaign = campaign_serializer.save()
                         print("Document save")
-                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
-                        Documents.objects.bulk_create(documents_to_create)
+                        # documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        # Documents.objects.bulk_create(documents_to_create)
                 
                         request.data["campaign"] = campaign.id
                         account_serializer = AccountDSerializer(data=data)
@@ -201,8 +190,8 @@ class AddCampaignApi(APIView):
 
                         # code for Kyc Serializer 
                         print("kyc save")
-                        request.data["adhar_card_front"] = upload_adhar[0]
-                        request.data["adhar_card_back"]  = upload_adhar[1]
+                        # request.data["adhar_card_front"] = upload_adhar[0]
+                        # request.data["adhar_card_back"]  = upload_adhar[1]
                         
                         kyc_serializer = KycSerializer(data=request.data)
                         kyc_serializer.is_valid(raise_exception=True)
@@ -216,6 +205,14 @@ class AddCampaignApi(APIView):
 class CampaignByCategoryApi2(APIView):
     def get(self,request,pk,*args, **kwargs):
         try : 
+            cat_id = request.GET.get('category')
+            response = paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
+            category_data = CampaignCategorySerializer(Campaigncategory.objects.get(id=cat_id)).data 
+            response["category_data"] = category_data
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
+   
             cat_id = request.GET.get('category')
             print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
             print(request.GET.get('page'),"-----------------------------------page---------------------------->")
@@ -252,15 +249,18 @@ class CreateCampaignApi(APIView):
                         account = request.data.get('account_details')
                         obj = AccountDetail.objects.create(campaign=campaign,account_holder_name = account["account_holder_name"],account_number=account["account_number"],bank_name=account["bank_name"],branch_name=account["branch_name"],ifsc_code = account["ifsc_code"]) 
 
-                        
                     # return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
                     # account_details = request.data.get('account_details')
                     # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
         except Exception as e:
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)           
                      
-#  bank transaction details 
-                    
-#         except : 
-#             pass 
-        
+
+# Filter API
+# days left 
+# Trending  --> 
+# Most Supported --> where donor count is grater 
+
+# Need's love ---> donor count is less 
+# Expiring Soon --> campaign Which are expiring soon
+# 

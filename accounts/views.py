@@ -44,9 +44,6 @@ class LoginAPI(APIView):
             if user is None : 
              return Response({"error" : False,"data" : "User Not Exists"},status=status.HTTP_404_NOT_FOUND)
             token = generate_token(user.email)
-            print(token)
-            print(password,user.password)
-            print(type(password),type(user.password))
             # password_match = check_password(password,user.password)
             password_match = check_password(password,user.password)
             print("password match",password_match)
