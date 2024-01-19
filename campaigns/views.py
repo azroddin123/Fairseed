@@ -202,12 +202,15 @@ class LandingPageApi(APIView):
     
 ##############################################################################################################################################
 from datetime import datetime
+
 from django.db.models import F, Q, Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+
 from accounts.models import User
+
 
 #******************************************************************************#
 class CampaignCategory1(APIView):
@@ -268,19 +271,25 @@ class CardAPIViewPagination(APIView):
             else:
                 days_left_message = 'No end date'
 
+            user_data = {
+                'username': c1.user.username,
+            }
+
             user_images = None
             if c1.user and hasattr(c1.user, 'user_images') and c1.user.user_images:
                 user_images = c1.user.user_images.url
 
+            campaign_image_url = c1.campaign_image.url if c1.campaign_image else None
+
             api_data = {
-                'id': c1.id,
+                'campaign image': campaign_image_url,
                 'logo':user_images,
+                'user': user_data,
                 'title': c1.title,
-                'description': c1.description,
                 'fund_raised': c1.fund_raised,
-                'days_left': days_left_message,
-                'sum_of_donor': sum_amt,
+                "goal_amount": c1.goal_amount,
                 'num_donors': num_donors,
+                'days_left': days_left_message,
                 'location': c1.location,
             }
 
@@ -451,7 +460,7 @@ class CampaignEditApproval(APIView):
             }
             formatted_data.append(formatted_campaign)
         return Response(formatted_data)
-         
+    
     def put(self, request, pk):
         campaign_edit = get_object_or_404(Campaign, id=pk)
         serializer = CampaignEditSerializer(campaign_edit, data=request.data)
@@ -528,7 +537,7 @@ class ReportedCampaigns(APIView):
         delete_reported_campaign.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-#**********************************************************************************************************************************************#
+#******************************************************************************#
 class DonateToCampaignCard(APIView):
 
     def get(self, request, pk):
@@ -561,4 +570,78 @@ class DonateToCampaignCard(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
         
+#******************************************************************************#
+#Tags api remaining
+    
+class CampaignBycategory(APIView):
+    def get(self, request):
+
+        params = request.GET
+        page_number = int(params.get("pg", 1))
+        page_size = int(params.get("limit", 4))
+        offset = (page_number - 1) * page_size
+        limit = page_size
+
+        campaigns = Campaign.objects.filter(is_successful=True).annotate(cause_fund_raised=F('fund_raised'))
+
+        paginated_campaigns = campaigns[offset:offset + limit]
+
+        all_campaigns_data = []
+
+        for c1 in paginated_campaigns:
+            donors_per_campaign = Donor.objects.filter(campaign=c1)
+            num_donors = donors_per_campaign.count()
+    
+            today_date = timezone.now().date()
+            if c1.end_date:
+                days_remaining = (c1.end_date - today_date).days
+                if days_remaining >= 0:
+                    days_left_message = f'{days_remaining} days left'
+                else:
+                    days_left_message = 'Campaign ended'
+            else:
+                days_left_message = 'No end date'
+
+            user_data = {
+                'username': c1.user.username,
+            }
+
+            user_images = None
+            if c1.user and hasattr(c1.user, 'user_images') and c1.user.user_images:
+                user_images = c1.user.user_images.url
+
+            campaign_image_url = c1.campaign_image.url if c1.campaign_image else None
+
+            api_data = {
+                'campaign image': campaign_image_url,
+                'logo': user_images,
+                'user': user_data,
+                'title': c1.title,
+                'fund_raised': c1.fund_raised,
+                "goal_amount": c1.goal_amount,
+                'num_donors': num_donors,
+                'days_left': days_left_message,
+                'location': c1.location,
+            }
+
+            all_campaigns_data.append(api_data)
+
+        return Response(all_campaigns_data, status=status.HTTP_200_OK)
+    
+#******************************************************************************#
+    
+#working on this
+# class WithdrawalCampaignView(APIView):
+#     def get(self, request, pk=None):
+#         if pk is not None:
+#             campaign = Campaign.objects.filter(pk=pk).first()
+#             if not campaign:
+#                 return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#             serializer = WithdrawalCampaignSerializer(campaign)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             campaigns = Campaign.objects.all()
+#             serializer = CampaignWithdrawalSerializer(campaigns, many=True)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
 ###############################################################################################################################################

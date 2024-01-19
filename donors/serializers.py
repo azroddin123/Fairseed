@@ -6,26 +6,26 @@ from .models import *
 from .models import Campaign, Donor
 
 
-class DonorSerializer(ModelSerializer):
-    class Meta :
-        model = Donor
-        fields = "__all__"
+# class DonorSerializer(ModelSerializer):
+#     class Meta :
+#         model = Donor
+#         fields = "__all__"
 
-    def save(self):
-        print(self.validated_data["amount"],self.validated_data["campaign"])
-        donor = Donor(**self.validated_data)
-        amount = self.validated_data["amount"]
-        # campaign = Campaign.objects.get(pk=self.validated_data["campaign"])
-        campaign = self.validated_data["campaign"]
-        required_amount = campaign.goal_amount - campaign.fund_raised
-        if amount > required_amount :
-              return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK) 
+    # def save(self):
+    #     print(self.validated_data["amount"],self.validated_data["campaign"])
+    #     donor = Donor(**self.validated_data)
+    #     amount = self.validated_data["amount"]
+    #     # campaign = Campaign.objects.get(pk=self.validated_data["campaign"])
+    #     campaign = self.validated_data["campaign"]
+    #     required_amount = campaign.goal_amount - campaign.fund_raised
+    #     if amount > required_amount :
+    #           return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK) 
         
-        campaign.fund_raised = campaign.fund_raised + amount
-        campaign.save()
+    #     campaign.fund_raised = campaign.fund_raised + amount
+    #     campaign.save()
 
-        print("------------------")
-        donor.save()
+    #     print("------------------")
+    #     donor.save()
 
 
 class DonorSerializer1(ModelSerializer):
@@ -59,10 +59,10 @@ class DonorSerializer1(ModelSerializer):
         model = Donor
         fields = ('is_anonymous','full_name','amount')
 
-class BankTransactionSerializer(ModelSerializer):
-    class Meta :
-        model = BankTransaction
-        fields = "__all__"
+# class BankTransactionSerializer(ModelSerializer):
+#     class Meta :
+#         model = BankTransaction
+#         fields = "__all__"
 
 class UpiSerializers(ModelSerializer):
     class Meta :
@@ -85,6 +85,36 @@ class DonorBankTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BankTransaction
         fields = '__all__'
+
+####################################################################
+class BankTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BankTransaction
+        fields = '__all__'
+
+from django.db import transaction
+
+class DonorSerializer(serializers.ModelSerializer):
+    bank_transactions = BankTransactionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Donor
+        fields = '__all__'
+
+    def create(self, validated_data):
+        bank_transactions_data = validated_data.pop('bank_transactions', None)
+
+        with transaction.atomic():
+            donor = Donor.objects.create(**validated_data)
+
+            if bank_transactions_data:
+                for transaction_data in bank_transactions_data:
+                    BankTransaction.objects.create(donor=donor, **transaction_data)
+
+        return donor
+
+
+
 
 
 

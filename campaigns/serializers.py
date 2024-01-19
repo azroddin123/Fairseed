@@ -124,7 +124,7 @@ class DocumentSerializer1():
     fields = ['doc_file']
 
 class CampaignAdminSerializer2(ModelSerializer):
-   
+
     doc_file = DocumentSerializer(source='documents')
 
     class Meta :
@@ -136,4 +136,35 @@ class CampaignEditSerializer(ModelSerializer):
     class Meta :
         model  = Campaign
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary']
+
+class DonorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = ('payment_type')
+
+# class UserWithdrawalSerializerW(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('id', 'username', 'email', 'mobile_number')
+
+# class CampaignWithdrawalSerializer(serializers.ModelSerializer):
+#     user = UserWithdrawalSerializerW()
+#     donors = DonorSerializer(many=True, read_only=True, source='donors')
+#     class Meta:
+#         model = Campaign
+#         fields = ('id', 'title', 'fund_raised', 'payment_type', 'status', 'end_date', 'user')
+
+# class CampaignKycSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CampaignKycBenificiary
+#         fields = '__all__'
+
+# class WithdrawalCampaignSerializer(serializers.ModelSerializer):
+#     bank_details = CampaignKycSerializer(read_only=True)
+#     donors = DonorSerializer(many=True, read_only=True, source='donors')
+
+#     class Meta:
+#         model = Campaign
+#         fields = ('id', 'title', 'bank_details', 'fund_raised', 'payment_type', 'end_date', 'status')
+
 #############################################################################################################################################################

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 def send_otp_via_email(email):
     subject = 'Your Account Verification'
-    otp=random.randint(100000, 999999)
+    otp=random.randint(1000, 9999)
     message = f'Your OTP is {otp}'
     email_from = settings.EMAIL_HOST
     send_mail(subject, message, email_from, [email], fail_silently=False)

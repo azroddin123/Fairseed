@@ -113,4 +113,31 @@ class BankTransaction1(APIView):
             return Response(serialized_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#**********************************************************************************************************************************************#
+class DonateAndTransfer(APIView):
+    def post(self, request, format=None):
+        donor_serializer = DonorSerializer(data=request.data)
+        if donor_serializer.is_valid():
+            donor = donor_serializer.save()
+            donation_data = donor_serializer.data
+        else:
+            return Response(donor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        bank_transactions_data = request.data.get('bank_transactions', [])
+        bank_transactions = []
+
+        for transaction_data in bank_transactions_data:
+            transaction_data['donor'] = donor.id
+            bank_transaction_serializer = BankTransactionSerializer(data=transaction_data)
+            if bank_transaction_serializer.is_valid():
+                bank_transaction = bank_transaction_serializer.save()
+                bank_transactions.append(bank_transaction_serializer.data)
+            else:
+                return Response(bank_transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            'donor': donation_data,
+            'bank_transactions': bank_transactions,
+        }, status=status.HTTP_201_CREATED)
+
 #################################################################################################################################################
