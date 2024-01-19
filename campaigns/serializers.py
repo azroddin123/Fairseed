@@ -88,6 +88,12 @@ class CampaignDetailSerializer(ModelSerializer):
         return obj.category.name
    
 ########################################################################################################
+# Convert UUID to integer
+    
+class SequentialIntegerField(serializers.Field):
+    def to_representation(self, value):
+        return self.context['counter']
+        
 class DonorRecentSerializer(ModelSerializer):
     class Meta:
         model = Donor
@@ -104,6 +110,7 @@ class UserSerializerCampaign(ModelSerializer):
         fields = ['email', 'mobile_number']
 
 class CampaignAdminSerializer1(ModelSerializer):
+    id = SequentialIntegerField()
     user_email = serializers.EmailField(source='user.email', read_only=True)
     user_mobile_number = serializers.CharField(source='user.mobile_number', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
@@ -123,4 +130,10 @@ class CampaignAdminSerializer2(ModelSerializer):
     class Meta :
         model  = Campaign
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'doc_file','is_featured']
+
+class CampaignEditSerializer(ModelSerializer):
+
+    class Meta :
+        model  = Campaign
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary']
 #############################################################################################################################################################

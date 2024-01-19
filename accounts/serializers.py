@@ -28,7 +28,7 @@ class UserSerializer1(ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True)
+    # old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     confirm_password = serializers.CharField(required=True)
     model = User
@@ -41,7 +41,7 @@ class ChangePasswordSerializer(serializers.Serializer):
             return value
         raise ValidationError(
             {
-                "old_password": "This field may not be null.",
+                # "old_password": "This field may not be null.",
                 "new_password": "This field may not be null.",
                 "confirm_password": "This field may not be null.",
             }
@@ -82,14 +82,19 @@ class UserRoleSerializer(ModelSerializer):
 
 from django.contrib.auth.hashers import make_password
 
+
 class UserOTPSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'is_verified', 'password']
 
-class VerifyOTPSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    otp = serializers.CharField()
+    def save(self, **kwargs):
+        self.validated_data['password'] = make_password(self.validated_data.get('password'))
+        return super().save(**kwargs)
+
+# class VerifyOTPSerializer(serializers.Serializer):
+#     email = serializers.EmailField()
+#     otp = serializers.CharField()
 
 class EmailSMTPSerializer(serializers.Serializer):
     subject = serializers.CharField(max_length=255)
@@ -122,4 +127,69 @@ class LatestMembersSerializer(serializers.ModelSerializer):
 
     def get_user_images(self, obj):
         return obj.user_images.url if obj.user_images else None
+    
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+
+        if not email:
+            raise ValidationError({'message': 'Email is required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            raise ValidationError({'message': 'Email not found in the database.'})
+
+        return data
+    
+class VerifyForgotOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    otp = serializers.CharField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        otp = data.get('otp')
+
+        if not (email and otp):
+            raise ValidationError({'message': 'Email and OTP are required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user or user.otp != otp:
+            raise ValidationError({'message': 'Invalid email or OTP.'})
+
+        return data
+    
+class SetNewPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+
+        if not (email and new_password and confirm_password):
+            raise ValidationError({'message': 'Email, new password, and confirm password are required.'})
+
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            raise ValidationError({'message': 'User not found in the database.'})
+
+        if new_password != confirm_password:
+            raise ValidationError({'message': 'New password and confirm password do not match.'})
+
+        return data
+    
+    def save(self):
+        print("Save")
+        user = User.objects.get(email=self.validated_data['email'])
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        print("Save1")
+
 ####################################################################################################################

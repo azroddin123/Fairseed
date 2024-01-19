@@ -1,9 +1,9 @@
-from rest_framework.serializers import ModelSerializer
-from .models import * 
-from .models import Donor,Campaign
+from rest_framework import serializers, status
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+from django.shortcuts import get_object_or_404
+from .models import *
+from .models import Campaign, Donor
 
 
 class DonorSerializer(ModelSerializer):
@@ -19,7 +19,7 @@ class DonorSerializer(ModelSerializer):
         campaign = self.validated_data["campaign"]
         required_amount = campaign.goal_amount - campaign.fund_raised
         if amount > required_amount :
-              return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
+              return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK) 
         
         campaign.fund_raised = campaign.fund_raised + amount
         campaign.save()
@@ -27,7 +27,8 @@ class DonorSerializer(ModelSerializer):
         print("------------------")
         donor.save()
 
-class DonorSerializer(ModelSerializer):
+
+class DonorSerializer1(ModelSerializer):
     class Meta:
         model = Donor
         fields = "__all__"
@@ -67,3 +68,24 @@ class UpiSerializers(ModelSerializer):
     class Meta :
         model = UpiTransaction
         fields = "__all__"
+
+#################################################################################################################################################
+# class BankTransactionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BankTransaction
+#         fields = ['transaction_id', 'bank_name', 'transaction_date', 'other_details']
+
+class DonateToCampaignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = '__all__'
+
+class DonorBankTransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BankTransaction
+        fields = '__all__'
+
+
+
+#################################################################################################################################################

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import * 
+from .views import *
 from .views import DonorApi, BankTransactionApi, UpiTransactionApi
 import uuid
 
@@ -29,12 +29,7 @@ urlpatterns = [
 
 
     path('upi-transaction',UpiTransactionApi.as_view()),
-    path('upi-transaction/<str:uuid>',UpiTransactionApi.as_view())
-
-
-
-
-]
+    path('upi-transaction/<str:uuid>',UpiTransactionApi.as_view()),
 
 
 # urlpatterns = [
@@ -51,3 +46,11 @@ urlpatterns = [
 
 
 # ]
+
+#################################################################################################################################################
+    path('api/donor-form/',DonateToCampaign.as_view()), # Donate To Campaign Page
+    path('api/donate_to_bank_transfer/',DonateToBankTransfer.as_view()), # Donate To Bank Transfer
+    path('api/donate_to_bank_transfer/<str:pk>/',DonateToBankTransfer.as_view()), # Donate To Bank Transfer
+    # path('api/donate_bank_transaction/', BankTransaction1.as_view()),
+#################################################################################################################################################
+]

@@ -26,7 +26,7 @@ class Stripe(BaseModel):
 class BankTransfer(BaseModel) :
     fee_percent  = models.IntegerField()
     bank_details = models.TextField()
-    is_enabled       = models.BooleanField(default=True)
+    is_enabled   = models.BooleanField(default=True)
 
 
 class RazorPay(BaseModel):

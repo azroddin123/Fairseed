@@ -44,6 +44,7 @@ class DonorApi(GenericMethodsMixin,APIView):
             else:
                 return Response({"error" : True , "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+#**************************************************************************************************************************************************************************#
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
@@ -69,6 +70,47 @@ class UpiTransactionApi(GenericMethodsMixin,APIView):
     serializer_class = UpiSerializers
     lookup_field = "id"
 
+#################################################################################################################################################    
+from payment_gateways.serializers import BankTransferSerializer1
+from payment_gateways.models import BankTransfer
 
-# Remove Cause
+#**********************************************************************************************************************************************#
+class DonateToCampaign(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = DonateToCampaignSerializer(data=request.data)
+        if serializer.is_valid():
+            campaign_id = serializer.validated_data['campaign'].id
+            amount = serializer.validated_data['amount']
+            campaign = Campaign.objects.get(id=campaign_id)
+            if amount > campaign.goal_amount:
+                error_message = f"Donation amount cannot exceed more than {campaign.goal_amount}"
+                raise serializers.ValidationError(error_message)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#**********************************************************************************************************************************************#
+class DonateToBankTransfer(APIView):
+    def get(self, request, *args, **kwargs):
+        bank_transfers = BankTransfer.objects.all()
+        serializer = BankTransferSerializer1(bank_transfers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
+    def post(self, request, *args, **kwargs):
+        serializer = DonorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+#**********************************************************************************************************************************************#
+class BankTransaction1(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = DonorBankTransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            instance = serializer.save()
+            serialized_data = DonorBankTransactionSerializer(instance).data
+            return Response(serialized_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#################################################################################################################################################

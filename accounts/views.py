@@ -52,7 +52,13 @@ class ChangePasswordApi(APIView):
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.dateparse import parse_datetime
-from .email import send_otp_via_email
+from .email import *
+from django.contrib.auth import authenticate
+# from django.utils.decorators import method_decorator
+# from django.contrib.auth import update_session_auth_hash
+# from django.contrib.auth.decorators import login_required
+import logging
+from django.utils import timezone
 
 class RegisterOTPApi(APIView):
     def post(self, request):
@@ -79,7 +85,8 @@ class RegisterOTPApi(APIView):
                 'message': 'Internal Server Error',
                 'data': str(e),
             })
-
+        
+#******************************************************************************#
 class VerifyOTPApi(APIView):
     def post(self, request):
         try:
@@ -113,13 +120,101 @@ class VerifyOTPApi(APIView):
                 'data': str(e),
             })
 
+#******************************************************************************#
+class ForgotPasswordApi(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = ForgotPasswordSerializer(data=data)
+
+            if serializer.is_valid():
+                send_otp_via_email(serializer.validated_data['email'])
+
+                return Response({
+                    'status': 200,
+                    'message': 'OTP sent successfully.',
+                    'data': serializer.validated_data,
+                })
+
+            return Response({
+                'status': 400,
+                'message': 'Something went wrong',
+                'data': serializer.errors
+            })
+
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': 500,
+                'message': 'Internal Server Error',
+                'data': str(e),
+            })
+
+#******************************************************************************#
+class VerificationOtpApi(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = VerifyForgotOTPSerializer(data=data)
+
+            if serializer.is_valid():
+                return Response({
+                    'status': 200,
+                    'message': 'OTP verification successful.',
+                    'data': serializer.validated_data,
+                })
+
+            return Response({
+                'status': 400,
+                'message': 'OTP verification failed',
+                'data': serializer.errors
+            })
+
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': 500,
+                'message': 'Internal Server Error',
+                'data': str(e),
+            })
+        
+#******************************************************************************#
+class SetNewPasswordApi(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = SetNewPasswordSerializer(data=data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status': 200,
+                    'message': 'Password reset successful.',
+                    'data': serializer.validated_data,
+                })
+
+            return Response({
+                'status': 400,
+                'message': 'Password reset failed.',
+                'data': serializer.errors
+            })
+
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': 500,
+                'message': 'Internal Server Error',
+                'data': str(e),
+            })
+
+#******************************************************************************#
 class LoginView(APIView):
     def post(self, request):
-        username = request.data.get('username')
+        email = request.data.get('email')  # Use 'email' as the key
         password = request.data.get('password')
 
-        # Authenticate the user
-        user = User.objects.filter(username=username, password=password).first()
+        user = authenticate(request, email=email, password=password)
+
         if user:
             return Response({
                 'user_id': user.pk,
@@ -128,6 +223,7 @@ class LoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+#******************************************************************************#
 class EmailSMTP(APIView):
     def post(self, request, *args, **kwargs):
         serializer = EmailSMTPSerializer(data=request.data)
@@ -151,6 +247,7 @@ class EmailSMTP(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#******************************************************************************#
 class RegisterApi(APIView):
     
     def get(self, request):
@@ -191,7 +288,7 @@ class RegisterApi(APIView):
             'data': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
-
+#******************************************************************************#
 class LatestMembers(APIView):
     def get(self, request):
         latest_members = User.objects.order_by('-created_on')[:4]

@@ -47,4 +47,14 @@ class QRTransferApi(GenericMethodsMixin,APIView):
     serializer_class = QRTransferSerializer
     lookup_field = "id"
 
-    
+########################################################################################################################
+class BankTransferView(APIView):
+    def post(self, request):
+        serializer = BankTransferSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+########################################################################################################################

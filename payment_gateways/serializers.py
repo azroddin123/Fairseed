@@ -39,4 +39,9 @@ class QRTransferSerializer(ModelSerializer):
         model = QRTransfer
         fields = "__all__"
 
-        
+###################################################################################################################################################
+class BankTransferSerializer1(ModelSerializer):
+    class Meta :
+        model = BankTransfer
+        fields = ['bank_details']
+###################################################################################################################################################
