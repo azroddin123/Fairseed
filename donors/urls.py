@@ -39,7 +39,7 @@ urlpatterns = [
     # path('api/recentdonorapi',RecentDonorApi.as_view()),
     path('api/DashboardAPI',DashboardAPI.as_view()),
     
- 
+    path('api/DonationsAPApi',DonationsAPApi.as_view()),
     
 
 

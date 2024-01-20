@@ -15,6 +15,8 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
+
+
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
@@ -106,5 +108,54 @@ class DashboardAPI(APIView):
         }
 
         return Response(serialized_data, status=status.HTTP_200_OK)
+    
+class DonationsAPApi(APIView):
+    def get(self,request):
+        ongoing_campaign = Donor.objects.all()
+        serializer = DonorSerializer2(ongoing_campaign, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        serializer = DonorSerializer2(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        queryset = Donor.objects.all()
+
+        full_name = serializer.validated_data.get('full_name')
+        amount = serializer.validated_data.get('amount')
+        email = serializer.validated_data.get('email')
+        city = serializer.validated_data.get('city')
+        fund_raised = serializer.validated_data.get('fund_raised')
+        id = serializer.validated_data.get('id')
+        country = serializer.validated_data.get('country')
+
+        # Explicitly define each filter condition
+        if full_name:
+            queryset = queryset.filter(full_name__icontains=full_name)
+        if amount:
+            queryset = queryset.filter(amount__icontains=amount)
+        if email:
+            queryset = queryset.filter(email__icontains=email)
+        if city:
+            queryset = queryset.filter(city__icontains=city)
+        if fund_raised:
+            queryset = queryset.filter(fund_raised__icontains=fund_raised)
+        if id:
+            queryset = queryset.filter(id__icontains=id)
+        if country:
+            queryset = queryset.filter(country__icontains=country)
+
+
+        serializer = DonorSerializer2(queryset, many=True)
+
+        return Response(serializer.data)
+
+
+
+
+
+    
+
+
+
 
     

@@ -68,3 +68,8 @@ class UpiSerializers(ModelSerializer):
         model = UpiTransaction
         fields = "__all__"
 
+class DonorSerializer2(ModelSerializer):
+    class Meta:
+        model = Donor
+        exclude = ['created_on','updated_on','mobile','pancard','comment','is_anonymous','is_approved']
+

@@ -760,34 +760,57 @@ class CampaignCreateApi1(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from django.db.models import Q, F, ExpressionWrapper, DecimalField
+from django.utils import timezone
+from datetime import timedelta
 
+# working
 class RelegiousEducationCampApi(APIView):    
     def get(self, request):
         params = request.GET
         page_number = int(params.get("pg", 1))
-        page_size = int(params.get("limit", 8))
+        page_size = int(params.get("limit", 2))
         offset = (page_number - 1) * page_size
         limit = page_size
 
         campaigns = Campaign.objects.annotate(cause_fund_raised=F('fund_raised'))
 
-
         # Filter by zakat=true
         zakat_filter = params.get("zakat_eligible")
-        if zakat_filter and zakat_filter.lower() == 'true':
+        if zakat_filter and zakat_filter.lower() == 'True':
             campaigns = campaigns.filter(zakat_eligible=True)
 
         # Filter by user_type=NGO
         user_type_filter = params.get("user_type")
         if user_type_filter and user_type_filter.lower() == 'ngo':
             campaigns = campaigns.filter(user__user_type='NGO')
-        #Filter by location
-        # location_filter = params.get("location")
-        # if location_filter and loca
+        
+        # #Filter by location
+        location_filters = params.get("location")
+        # if location_filter:
+        #     campaigns = campaigns.filter(Q(location__icontains=location_filter))
+            
+        if location_filters:
+            locations = [location.strip() for location in location_filters.split(',')]
+            query = Q()
+            for location in locations:
+                query |= Q(location__icontains=location)
+            
+            campaigns = campaigns.filter(query)
+
+        # if expiring_soon:
+        #     ten_days_ago = timezone.now() - timedelta(days=10)
+        #     queryset = queryset.filter(end_date__gte=ten_days_ago)
+
+
+        # Add filter for campaigns where 90% goal amount is equal to or greater than fund raised
+        queryset = queryset.annotate(
+            goal_amount_90_percent=F('goal_amount') * 0.9,
+            fund_raised_decimal=ExpressionWrapper(F('fund_raised'), output_field=DecimalField())
+        ).filter(fund_raised_decimal__gte=F('goal_amount_90_percent'))
 
 
         paginated_campaigns = campaigns[offset:offset + limit]
-
         all_campaigns_data = []
 
         for c1 in paginated_campaigns:
@@ -825,7 +848,6 @@ class RelegiousEducationCampApi(APIView):
 
         return Response(all_campaigns_data, status=status.HTTP_200_OK)   
     
-
 
 
 
