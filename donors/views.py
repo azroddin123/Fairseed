@@ -90,7 +90,6 @@ class DonorDonationApi:
 
 class DashboardAPI(APIView):
     def get(self, request):
-        pk = request.GET.get('pk')
 
         total_donations = Donor.objects.all().count()
 

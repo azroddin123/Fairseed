@@ -243,8 +243,6 @@ class CampaignCause(APIView):
         serializer = CampaignCauseSerializer(camp_cause)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-
 class CardAPIViewPagination(APIView):
     
     def get(self, request):

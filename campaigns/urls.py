@@ -31,12 +31,20 @@ urlpatterns = [
     path('api/CampaignPostApi', CampaignPostApi.as_view()),
 
     path('api/CampaignDetailPostApi', CampaignDetailPostApi.as_view()),
-    path('api/CampaignGetApi1', CampaignGetApi1.as_view()),
-    path('api/CamapaignAccountDetailApi', CamapaignAccountDetailApi.as_view()),
+
+    path('api/CreateCampaignStep1', CreateCampaignStep1.as_view()),
+
+    # path('api/CreateCampaignStep3', CreateCampaignStep3.as_view()),
+    path('api/CreateCampaignStep3/<str:campaign_id>/', CreateCampaignStep3.as_view()),
     
-    path('api/CamapaignStoryApi', CamapaignStoryApi.as_view()),
+    path('api/CreateCampaignStep2', CreateCampaignStep2.as_view()),
+    path('api/CreateCampaignStep2/<str:campaign_id>/', CreateCampaignStep2.as_view()),
+
+    path('api/CreateCampaignStep4', CreateCampaignStep4.as_view()),
+    path('api/CreateCampaignStep4/<str:campaign_id>/', CreateCampaignStep4.as_view()),
+
     path('api/CampaignDetailStoryApi', CampaignDetailStoryApi.as_view()),
-    path('api/CamapaignKYCApi', CamapaignKYCApi.as_view()),
+    
     path('api/CampaignCreateApi1', CampaignCreateApi1.as_view()),
     
     path('api/CampaignDeletePutApi/<int:pk>', CampaignDeletePutApi.as_view()),
@@ -75,5 +83,9 @@ urlpatterns = [
     
     path('api/RelegiousEducationCampApi', RelegiousEducationCampApi.as_view()),
 
-    
+    path('api/ReportedCampaignApi', ReportedCampaignApi.as_view()),
+
+    path('api/admin/campaign/', CampaignAdminApi.as_view()),
+
+
 ]

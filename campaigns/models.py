@@ -24,7 +24,7 @@ class CampaignCause(models.Model):
 
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
-    user            = models.ForeignKey(User,on_delete=models.CASCADE)
+    user            = models.ForeignKey(User,on_delete=models.CASCADE, related_name='user1')
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     title           = models.CharField(max_length=50)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(100, message="Value must be greater than or equal to 100"),
@@ -37,7 +37,7 @@ class Campaign(BaseModel):
     start_date      = models.DateField(null=True,blank=True)
     end_date        = models.DateField(null=True,blank=True)
     description     = models.TextField()
-    summary         = models.TextField()
+    summary         = models.TextField(max_length=100)
 
     is_successful   = models.BooleanField(default=False)
     is_featured     = models.BooleanField(default=False)

@@ -39,6 +39,7 @@ class User(AbstractBaseUser):
     old_password     = models.CharField(max_length=10, null=True, blank=True)
     new_password     = models.CharField(max_length=10, null=True, blank=True)
     confirm_password = models.CharField(max_length=10, null=True, blank=True)
+    user_image       = models.ImageField(upload_to='static/media_files/campaign_images/', null=True, blank=True)
     
     objects    = UserManager()
     
