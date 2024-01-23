@@ -231,7 +231,6 @@ class CampaignByCategoryApi2(APIView):
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
 
 
-
 class CreateCampaignApi(APIView):
     def post(self,request,*args, **kwargs):
         try :
@@ -239,28 +238,50 @@ class CreateCampaignApi(APIView):
                 campaign_serializer = CampaignSerializer(data=request.data)
                 if campaign_serializer.is_valid():
                     campaign = campaign_serializer.save()
-                    
                     uploaded_docs = request.FILES.getlist("documents")
                     if uploaded_docs:
                         print("adding docs")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                        
                         account = request.data.get('account_details')
                         obj = AccountDetail.objects.create(campaign=campaign,account_holder_name = account["account_holder_name"],account_number=account["account_number"],bank_name=account["bank_name"],branch_name=account["branch_name"],ifsc_code = account["ifsc_code"]) 
-
                     # return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
                     # account_details = request.data.get('account_details')
                     # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
         except Exception as e:
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)           
+          
                      
-
 # Filter API
 # days left 
 # Trending  --> 
 # Most Supported --> where donor count is grater 
+from django.db.models import Count
+
+class CampaignFilterAPI(APIView):
+   def get(self,request,key,*args, **kwargs):
+        if key == "most_supported" : 
+        # Most supported 
+            Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count')
+        # Needs_love
+        if key == "needs_love" : 
+            Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
+        # Expiring soon
+        if key == "expiring_soon" : 
+            Campaign.objects.filter().order_by('-end_date')
+        # newly added logic 
+        if key == "newly_added" : 
+            Campaign.objects.filter().order_by('-created_on')
+
+    
+        # response =paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
 
 # Need's love ---> donor count is less 
 # Expiring Soon --> campaign Which are expiring soon
-# 
+
+# data =  Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
+# for item in data :
+#     print(item,item.fund_raised)
+
+
+# Days left 

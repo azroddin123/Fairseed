@@ -51,9 +51,8 @@ class Campaign(BaseModel):
         return markdown.markdown(self.story)
     
     @property
-    def update_days_left(self):
-        self.days_left = (self.end_date - datetime.now().date()).days
-        self.save()
+    def days_left(self):
+        return max(0, (self.end_date - datetime.now().date()).days)
    
     @receiver(post_save,sender=Donor)
     def update_campaign(sender, instance, **kwargs):
@@ -73,8 +72,6 @@ class Campaign(BaseModel):
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
     
-    
-    # if user make 
 
 # want to combine these two models 
 class AccountDetail(BaseModel):

@@ -4,6 +4,7 @@ from accounts.serializers import UserAdminSerializer
 from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from .models import * 
+from datetime import datetime
 
 class CampaignCategorySerializer(ModelSerializer):
     class Meta:
@@ -28,6 +29,8 @@ class CampaignSerializer2(ModelSerializer):
 
     def get_donor_count(self, obj):
         return obj.donors.count()
+
+    
    
    
 class CampaignSerializer1(ModelSerializer):
@@ -73,6 +76,8 @@ class CampaignAdminSerializer(ModelSerializer):
 
     def get_donor_count(self, obj):
           return obj.donors.count()
+
+
 
 class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
