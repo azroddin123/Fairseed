@@ -36,9 +36,6 @@ class UpiSerializers(ModelSerializer):
         model = UpiTransaction
         fields = "__all__"
 
-
-
-
     # def validate(self, data):
     #     amount = data["amount"]
     #     campaign = data["campaign"]

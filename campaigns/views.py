@@ -126,6 +126,8 @@ class AddCampaignApi(APIView):
         try : 
             with transaction.atomic():
                 if pk :
+                    data = request.data
+                    data._mutable = True
                     campaign = Campaign.objects.get(id=pk)
                     c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
                     c_serializer.is_valid(raise_exception=True)
@@ -145,7 +147,7 @@ class AddCampaignApi(APIView):
                         print("updating docs")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                        
+                  
                     # Acocunt Details 
                     AccountDetail.objects.get(campaign=campaign).delete()
                     
@@ -158,7 +160,7 @@ class AddCampaignApi(APIView):
                     Kyc.objects.get(campaign=campaign).delete()
                     
                     request.data["adhar_card_front"] = upload_adhar[0]
-                    request.data["adhar_card_back"]  = upload_adhar[1]
+                    # request.data["adhar_card_back"]  = upload_adhar[1]
                     
                     kyc_serializer = KycSerializer(data=request.data)
                     kyc_serializer.is_valid(raise_exception=True)

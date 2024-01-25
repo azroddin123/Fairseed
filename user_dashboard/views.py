@@ -89,6 +89,7 @@ class RecivedDonationApi(APIView):
         serializer = DonorSerializer(data,many=True)
         return Response({"data": serializer.data},status=status.HTTP_200_OK)
 
+
 # class BankKycApi(GenericMethodsMixin,APIView):
 #     model = BankKYC
 #     serializer_class = BankKYCSerializer
@@ -97,11 +98,35 @@ class RecivedDonationApi(APIView):
 # user --> Campaign --> Donation 
 # User = request.thisUser 
 
+class ViewBankAndKycAPi(APIView):
+    def get(self,request,pk,*args, **kwargs):
+        try : 
+            bank_data = AccountDetail.objects.get(campaign=pk)
+            kyc_data  = Kyc.objects.get(campaign=pk)
+            
+            serializer      = AccountDSerializer(bank_data)
+            kyc_serializer  = KycSerializer(kyc_data)
+            return Response({ "error" : False , "bank_data" : serializer.data ,
+                "kyc_data" : kyc_serializer.data
+            },status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self,request,pk,*args, **kwargs):
+        try :
+            bank_data = AccountDetail.objects.get(campaign=pk)
+            kyc_data  = Kyc.objects.get(campaign=pk)
 
+            bank_serializer = AccountDSerializer(bank_data,data=request.data,partial=True)
+            if bank_serializer.is_valid():
+                bank_serializer.save()
+            
+            kyc_serializer = KycSerializer(kyc_data,data=request.data,partial=True)
+            if kyc_serializer.is_valid():
+                kyc_serializer.save()
+            
+            return Response({"error" : False ,"message" : "Your Request sent to admin for verification"})
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
-
+                

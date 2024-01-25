@@ -12,14 +12,10 @@ class CampaignCategorySerializer(ModelSerializer):
         fields = ("name","image","is_active","id")
 
 class CampaignSerializer(ModelSerializer):
-    # category = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = Campaign
         fields = "__all__"
 
-    # def get_category(self,obj):
-    #    return obj.category.name
-   
 class CampaignSerializer2(ModelSerializer):
     user        = UserAdminSerializer(read_only=True)
     donor_count = serializers.SerializerMethodField(read_only=True)
@@ -29,9 +25,6 @@ class CampaignSerializer2(ModelSerializer):
 
     def get_donor_count(self, obj):
         return obj.donors.count()
-
-    
-   
    
 class CampaignSerializer1(ModelSerializer):
     class Meta :
@@ -77,8 +70,6 @@ class CampaignAdminSerializer(ModelSerializer):
     def get_donor_count(self, obj):
           return obj.donors.count()
 
-
-
 class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
     category    = serializers.SerializerMethodField(read_only=True)
@@ -98,10 +89,8 @@ class CampaignDetailSerializer(ModelSerializer):
     def get_donor_count(self, obj):
         return obj.donors.count()
     
-
-
-# class BankKYCSerializer(ModelSerializer):
-#     class Meta :
-#         model = BankKYC
-#         fields = "__all__"
+class BankKYCSerializer(ModelSerializer):
+    class Meta :
+        model = BankKYC
+        fields = "__all__"
         

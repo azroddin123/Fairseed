@@ -40,6 +40,8 @@ urlpatterns = [
     path('successful-campaign',SuccessfulCauseApi.as_view()),
     
     path('dashboard-api',AdminDashboardApi.as_view()),
-    path('donation-api',AdminDonationApi.as_view())
+    path('donation-api',AdminDonationApi.as_view()),
+    
+    path('user-update/<str:pk>',UserUpdateApi.as_view())
     
 ]

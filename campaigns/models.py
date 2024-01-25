@@ -29,7 +29,7 @@ class Campaign(BaseModel):
                     MaxValueValidator(1000000, message="Value must be less than or equal to 1000000")])
     fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
                     MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
-    zakat_eligible  = models.CharField(max_length=124,choices=ZakatChoices.choices,default=ZakatChoices.YES)
+    zakat_eligible  = models.BooleanField(default=False)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location        = models.CharField(max_length=124)
     story           = models.TextField(blank=True,null=True)
@@ -99,23 +99,24 @@ class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
 
+
+class BankKYC(BaseModel):
+# Bank Details
+    campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_kyc')
+    account_holder_name = models.CharField(max_length=124)
+    account_number      = models.PositiveIntegerField()
+    bank_name           = models.CharField(max_length=124)
+    branch_name         = models.CharField(max_length=124)
+    ifsc_code           = models.CharField(max_length=124)
+    passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+
+# kyc Details
+    pan_card            = models.CharField(max_length=10)
+    pan_card_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    adhar_card          = models.CharField(max_length=16)
+    adhar_card_front    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    adhar_card_back     = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     
-# class BankKYC(BaseModel):
-# # Bank Details
-#     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_kyc')
-#     account_holder_name = models.CharField(max_length=124)
-#     account_number      = models.PositiveIntegerField()
-#     bank_name           = models.CharField(max_length=124)
-#     branch_name         = models.CharField(max_length=124)
-#     ifsc_code           = models.CharField(max_length=124)
-#     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-# # kyc Details
-#     pan_card            = models.CharField(max_length=10)
-#     pan_card_image      = models.ImageField(upload_to="campaign/kyc/")
-#     adhar_card          = models.CharField(max_length=16)
-#     adhar_card_front    = models.ImageField(upload_to="campaign/kyc/")
-#     adhar_card_back     = models.ImageField(upload_to="campaign/kyc/")
-    
-#     other_details       = models.CharField(max_length=100,blank=True,null=True)
-#     is_verified         = models.BooleanField(default=False)
-#     tandc_accept        = models.BooleanField(default=False)
+    other_details       = models.CharField(max_length=100,blank=True,null=True)
+    is_verified         = models.BooleanField(default=False)
+    tandc_accept        = models.BooleanField(default=False)

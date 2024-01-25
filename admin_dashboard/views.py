@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
+from campaigns.serializers import * 
 
 class PagesAPi(APIView):
     model = Pages
@@ -68,4 +69,23 @@ class AdminDonationApi(APIView):
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
 
 
+class UserUpdateApi(APIView):
+    def put(self,request,pk,*args, **kwargs):
+        try : 
+            campaign = Campaign.objects.get(id=pk)
+            data = campaign.campaign_data
+            serializer  = CampaignSerializer(campaign,data=data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                campaign.is_admin_approved = True
+                return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+                
 
+# user role and authentication.
+# user update api.
+# update the data when admin approve it.
+# add admin authentication
+# add user authentication
+# 
