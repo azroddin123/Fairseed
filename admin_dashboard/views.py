@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
@@ -105,5 +105,20 @@ class LandingPageSettingApi(GenericMethodsMixin,APIView):
 #     serializer_class = PageSerializer
 #     lookup_field = "id"
 
+############################################################################################
+    
+class PagesAPI(APIView):
+    # def get(self, request):
+    #     pg = Pages.objects.all()
+    #     serializer = PagesSerializer1(pg, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request,pk):
+        page = get_object_or_404(Pages,id=pk)
+        serializer = PagesSerializer2(page, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -78,6 +78,12 @@ class Documents(BaseModel):
     doc_name = models.CharField(max_length=124)
     doc_file = models.FileField(upload_to="static/media_files/",blank=True,null=True)
 
+# to calculate views of user 
+class CampaignView(BaseModel):
+    campaign   = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    timestamp  = models.DateTimeField(auto_now_add=True)
+    user       = models.ForeignKey(User,on_delete=models.CASCADE, related_name='view')  # Add user field if you want to track views per user
+
 
 
 

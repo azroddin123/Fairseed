@@ -59,7 +59,6 @@ class SocialProfile(BaseModel):
             obj = SocialProfile.objects.all()
             obj.delete()
             return super(SocialProfile,self).save(*args, **kwargs)
-  
 
 
 class LandingPage(BaseModel):

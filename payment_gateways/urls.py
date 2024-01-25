@@ -24,6 +24,22 @@ urlpatterns = [
     path('phonepay/<str:pk>',PhonepayApi.as_view()),
 
     path('qr-transfer',QRTransferApi.as_view()),
-    path('qr-transfer/<str:pk>',QRTransferApi.as_view())
+    path('qr-transfer/<str:pk>',QRTransferApi.as_view()),
+
+    ###############################################
+
+    path('pg-general/',PG_General.as_view()),
+    
+    path('paypalapi/',PayPalApi.as_view()),
+
+    path('stripeapi/',StripeApi.as_view()),
+    
+    path('razorpayapi/',RazorPayApi.as_view()),
+    
+    path('qrtransferapi/',QRTransferApi.as_view()),
+
+    path('phonepayapi/',PhonePayApi.as_view()),
+
+
 
 ]

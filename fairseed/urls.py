@@ -34,7 +34,7 @@ urlpatterns = [
     
     path('campaign/',include('campaigns.urls')),
     path('donor/',include('donors.urls')),
-    path('payment_gateway/',include('payment_gateways.urls')),
+    path('payment_gateway/api/',include('payment_gateways.urls')),
 
     # Token URLs
     # path('api-auth/', include('rest_framework.urls')),

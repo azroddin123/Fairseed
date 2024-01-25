@@ -24,6 +24,8 @@ urlpatterns = [
     path('phonepay/<int:pk>',PhonepayApi.as_view()),
 
     path('qr-transfer',QRTransferApi.as_view()),
-    path('qr-transfer/<int:pk>',QRTransferApi.as_view())
+    path('qr-transfer/<int:pk>',QRTransferApi.as_view()),
+
+    
 
 ]

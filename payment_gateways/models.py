@@ -28,7 +28,6 @@ class BankTransfer(BaseModel) :
     bank_details = models.TextField()
     is_enabled   = models.BooleanField(default=True)
 
-
 class RazorPay(BaseModel):
     razorpay_key    = models.CharField(max_length=154)
     razorpay_secret = models.CharField(max_length=154)
@@ -36,14 +35,12 @@ class RazorPay(BaseModel):
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
 
-
 class PhonePay(BaseModel):
     phonepay_key    = models.CharField(max_length=154)
     phonepay_secret = models.CharField(max_length=154)
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
     is_enabled      = models.BooleanField(default=False)
-
 
 class QRTransfer(BaseModel):
     fee_percent     = models.IntegerField()

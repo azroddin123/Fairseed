@@ -730,9 +730,21 @@ class CreateCampaignStep2(APIView):
         serializer = CampaignStorySerializer(camp,many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def put(self, request, campaign_id):
-        campaign = get_object_or_404(Campaign, id=campaign_id)
-        serializer = CampaignStorySerializer(campaign,data=request.data)
+    # def put(self, request, campaign_id):
+    #     campaign = get_object_or_404(Campaign, id=campaign_id)
+    #     serializer = CampaignStorySerializer(campaign,data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request):
+        try:
+            instance = Campaign.objects.get(id=request.data.get('campaign_id'))
+        except Campaign.DoesNotExist:
+            return Response({"error": "campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CampaignStorySerializer(instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -745,32 +757,28 @@ class CreateCampaignStep3(APIView):
     #     serializer = CKBSerializer(camp,many = True)
     #     return Response(serializer.data, status=status.HTTP_200_OK)
     
-    # def put(self, request, campaign_id):
-    #     camp = get_object_or_404(Campaign, id=campaign_id)
-    #     serializer = CamapaignAccountSerializer(camp, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
     def put(self, request, campaign_id):
         # Get the Campaign instance
         campaign = get_object_or_404(Campaign, id=campaign_id)
-
-        # Check if the related CampaignKycBenificiary already exists
         campaign_kyc, created = CampaignKycBenificiary.objects.get_or_create(campaign=campaign)
-
-        # Print data for debugging
-        print(request.data)
-
-        # Create or update the serializer with data
         serializer = CamapaignAccountSerializer(campaign_kyc, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            print(serializer.errors)  # Print serializer errors for debugging
+            print(serializer.errors)  
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request):
+        try:
+            instance = CampaignKycBenificiary.objects.get(id=request.data.get('campaign_id'))
+        except Campaign.DoesNotExist:
+            return Response({"error": "campaign not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        serializer = CamapaignAccountSerializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class CreateCampaignStep4(APIView):
@@ -782,6 +790,20 @@ class CreateCampaignStep4(APIView):
     def put(self, request, campaign_id):
         camp = get_object_or_404(Campaign, id=campaign_id)
         serializer = CamapaignKYCSerializer(camp,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print(request.FILES)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request):
+        try:
+            instance = CampaignKycBenificiary.objects.get(id=request.data.get('campaign_id'))
+        except Campaign.DoesNotExist:
+            return Response({"error": "campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CamapaignKYCSerializer(instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -872,6 +894,11 @@ class RelegiousEducationCampApi(APIView):
         almost_funded = params.get("almost_funded")
         if almost_funded and almost_funded.lower() == 'true':
             campaigns = campaigns.filter(fund_raised_decimal__gte=F('goal_amount_90_percent'))
+
+        # Trending Filter
+        trending = params.get("trending")
+        if trending and trending.lower() == 'true':
+            campaigns = campaigns.filter()
 
 
         paginated_campaigns = campaigns[offset:offset + limit]
@@ -983,8 +1010,6 @@ class CampaignAdminApi(APIView):
         serializer = CampaignAdminSerializer1(campaigns, many=True, context={'counter': counter})
         return Response(serializer.data)
     
-        
-
     def put(self, request, pk):
         campaign = get_object_or_404(Campaign, id=pk)
         serializer = CampaignAdminSerializer3(campaign, data=request.data)

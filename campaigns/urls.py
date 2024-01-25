@@ -40,7 +40,7 @@ urlpatterns = [
     path('api/CreateCampaignStep2', CreateCampaignStep2.as_view()),
     path('api/CreateCampaignStep2/<str:campaign_id>/', CreateCampaignStep2.as_view()),
 
-    path('api/CreateCampaignStep4', CreateCampaignStep4.as_view()),
+    path('api/CreateCampaignStep4/', CreateCampaignStep4.as_view()),
     path('api/CreateCampaignStep4/<str:campaign_id>/', CreateCampaignStep4.as_view()),
 
     path('api/CampaignDetailStoryApi', CampaignDetailStoryApi.as_view()),

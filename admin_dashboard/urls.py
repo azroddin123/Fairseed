@@ -31,7 +31,10 @@ urlpatterns = [
     path('campaign-admin',CampaignAdminApi.as_view()),
     path('campaign-admin/<str:pk>',CampaignAdminApi.as_view()),
 
-    # logical API 
+####################################################################
+    path('pages-admin',PagesAPI.as_view()),
+    path('pages-admin/<str:pk>',PagesAPI.as_view()),
 
- 
+
+
 ]

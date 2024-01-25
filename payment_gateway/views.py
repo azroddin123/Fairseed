@@ -47,4 +47,5 @@ class QRTransferApi(GenericMethodsMixin,APIView):
     serializer_class = QRTransferSerializer
     lookup_field = "id"
 
+#############################################################
     
