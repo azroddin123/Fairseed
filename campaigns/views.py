@@ -202,7 +202,7 @@ class LandingPageApi(APIView):
     
 ##############################################################################################################################################
 from datetime import datetime
-
+from rest_framework.parsers import FileUploadParser
 from django.db.models import F, Q, Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -259,7 +259,7 @@ class CardAPIViewPagination(APIView):
         for c1 in paginated_campaigns:
             donors_per_campaign = Donor.objects.filter(campaign=c1)
             num_donors = donors_per_campaign.count()
-            sum_amt = donors_per_campaign.aggregate(sum_amt=Sum('amount'))['sum_amt'] if donors_per_campaign.exists() else 0
+            # sum_amt = donors_per_campaign.aggregate(sum_amt=Sum('amount'))['sum_amt'] if donors_per_campaign.exists() else 0
            
             today_date = timezone.now().date()
             if c1.end_date:
@@ -337,7 +337,7 @@ class RecentCampaigns(APIView):
             formatted_data.append(formatted_campaign)
 
         return Response(formatted_data)
-   
+
 #******************************************************************************#
 class CausesbyCategoryAPI(APIView):
     def get(self,request):
@@ -348,19 +348,16 @@ class CausesbyCategoryAPI(APIView):
 #******************************************************************************#
 class DashboardAPI(APIView):
     def get(self, request):
-        pk = request.GET.get('pk')
         total_donations = Donor.objects.all().count()
         total_fund_raised_all_campaigns = Campaign.objects.aggregate(total_fund_raised = Sum('fund_raised'))['total_fund_raised'] or 0
         number_of_causes = Campaign.objects.all().count()
         number_of_members = User.objects.all().count()
-       
         serialized_data = {
             'Total Donation': total_donations,
             'Fund Raised' : total_fund_raised_all_campaigns,
             'Causes' : number_of_causes,
             'Members' : number_of_members,
         }
-
         return Response(serialized_data, status=status.HTTP_200_OK)
     
 #******************************************************************************#
@@ -412,6 +409,8 @@ class CampaignAdminApi(APIView):
     def get(self, request, *args, **kwargs):
         search_query = self.request.query_params.get('search', None)
         reset_query = self.request.query_params.get('reset', None)
+        sort_with = self.request.query_params.get('sort_with', None)
+        sort_by = self.request.query_params.get('sort_by', None)
 
         if reset_query:
             campaigns = Campaign.objects.all()
@@ -429,12 +428,29 @@ class CampaignAdminApi(APIView):
                 Q(start_date__icontains=search_query) |
                 Q(end_date__icontains=search_query)
             )
+
+        if sort_with:
+            if sort_with == 'Date':
+                campaigns = campaigns.order_by('start_date')
+            elif sort_with == 'Title':
+                campaigns = campaigns.order_by('title')
+            elif sort_with == 'User':
+                campaigns = campaigns.order_by('user__username')
+            elif sort_with == 'Status':
+                campaigns = campaigns.order_by('status')
+
+        if sort_by:
+            if sort_by == 'Lower to High':
+                campaigns = campaigns.order_by('goal_amount')
+            elif sort_by == 'High to Low':
+                campaigns = campaigns.order_by('-goal_amount')
+
         else:
             campaigns = Campaign.objects.all()
         counter = 1
         serializer = CampaignAdminSerializer1(campaigns, many=True, context={'counter': counter})
         return Response(serializer.data)
-
+    
     def put(self, request, pk):
         campaign = get_object_or_404(Campaign, id=pk)
         serializer = CampaignAdminSerializer2(campaign, data=request.data)
@@ -475,11 +491,16 @@ class ScholarshipCAmpaigns(APIView):
         def get(self, request, *args, **kwargs):
             search_query = self.request.query_params.get('search', None)
             reset_query = self.request.query_params.get('reset', None)
+            sort_with = self.request.query_params.get('sort_with', None)
+            sort_by = self.request.query_params.get('sort_by', None)
+
+            campaigns = Campaign.objects.all()
+
             if reset_query:
-                campaigns = Campaign.objects.all()
+                pass
 
             if search_query:
-                campaigns = Campaign.objects.filter(
+                campaigns = campaigns.filter(
                     Q(title__icontains=search_query) |
                     Q(description__icontains=search_query) |
                     Q(user__username__icontains=search_query) |
@@ -491,21 +512,27 @@ class ScholarshipCAmpaigns(APIView):
                     Q(start_date__icontains=search_query) |
                     Q(end_date__icontains=search_query)
                 )
-            else:
-                campaigns = Campaign.objects.all()
+
+            if sort_with:
+                if sort_with == 'Date':
+                    campaigns = campaigns.order_by('start_date')
+                elif sort_with == 'User':
+                    campaigns = campaigns.order_by('user__username')
+                elif sort_with == 'Title':
+                    campaigns = campaigns.order_by('-title')
+                elif sort_with == 'Status':
+                    campaigns = campaigns.order_by('status')
+
+            if sort_by:
+                if sort_by == 'Lower to High':
+                    campaigns = campaigns.order_by('goal_amount')
+                elif sort_by == 'High to Low':
+                    campaigns = campaigns.order_by('-goal_amount')
 
             scholarship_campaigns = campaigns.filter(category__name='Scholarship')
             counter = 1
             serializer = CampaignAdminSerializer1(scholarship_campaigns, many=True, context={'counter': counter})
             return Response(serializer.data)
-
-        def put(self, request, pk):
-            campaigns = self.get_object_or_404(Campaign, id=pk)
-            serializer = CampaignAdminSerializer2(campaigns, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #******************************************************************************#
 class ReportedCampaigns(APIView):
@@ -631,17 +658,54 @@ class CampaignBycategory(APIView):
 #******************************************************************************#
     
 #working on this
+    
 # class WithdrawalCampaignView(APIView):
-#     def get(self, request, pk=None):
-#         if pk is not None:
-#             campaign = Campaign.objects.filter(pk=pk).first()
-#             if not campaign:
-#                 return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+    # def get(self, request, pk=None):
+    #     if pk is not None:
+    #         campaign = Campaign.objects.filter(pk=pk).first()
+    #         if not campaign:
+    #             return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#             serializer = WithdrawalCampaignSerializer(campaign)
+    #         serializer = WithdrawalCampaignSerializer(campaign)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     else:
+    #         campaigns = Campaign.objects.all()
+    #         serializer = CampaignWithdrawalSerializer(campaigns, many=True)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WithdrawalCampaignView(APIView):
+    def get(self, request):
+        withdrawal_campaign = Campaign.objects.all()
+        serializer = CampaignWithdrawalSerializer(withdrawal_campaign, many = True)
+        return Response(serializer.data)
+    
+# class WithdrawalInsideView(APIView):
+#     def get(self, request, pk):
+#         try:
+#             campaign = Campaign.objects.get(id=pk)
+#         except Campaign.DoesNotExist:
+#             return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#         serializer = WithdrawalDetailsSerializer(campaign)
+
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+#******************************************************************************#
+#working on this
+# class CampaignKycBenificiaryAPI(APIView):
+#     parser_classes = [FileUploadParser]
+
+#     def get(self, request):
+#         ckb = CampaignKycBenificiary.objects.all()
+#         serializer = CombinedSerializer(ckb, many=True)
+#         return Response(serializer.data)
+    
+#     def patch(self, request, *args, **kwargs):
+#         u2 = get_object_or_404(CampaignKycBenificiary, id=kwargs.get('pk'))
+#         serializer = CKBViewSerializer(u2, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_200_OK)
-#         else:
-#             campaigns = Campaign.objects.all()
-#             serializer = CampaignWithdrawalSerializer(campaigns, many=True)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 ###############################################################################################################################################

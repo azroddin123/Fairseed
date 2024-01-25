@@ -16,13 +16,13 @@ class CustomAuthentication:
         token = request.headers.get('x-access-token')
         if not token:
            return JsonResponse({"Error" :"Credentials Not Found ..Please Login"},status=status.HTTP_403_FORBIDDEN)
-        payload = jwt.decode(token,settings.SECRET_KEY,algorithms=['HS256'])
+        payload = jwt.decode(token,settings.SECRET_KEY,algorithms=['HS256']) #this key is used for both create and verify
         print(payload)
         # user = User.objects.filter(email=payload["email"]).first()
         user = User.objects.filter(id=payload["user_id"]).first()
         request.thisUser = user
         response = self.get_response(request)
-        return response    
+        return response
     
 
 # class AuthMiddleware:

@@ -1,9 +1,12 @@
-from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+
 from accounts.serializers import UserAdminSerializer
 from donors.models import Donor
 from donors.serializers import DonorSerializer1
+from payment_gateways.models import BankTransfer
 from .models import *
+
 
 class CampaigncategorySerializer(ModelSerializer):
     class Meta:
@@ -102,7 +105,7 @@ class DonorRecentSerializer(ModelSerializer):
 class CampaignCategorySerializer1(ModelSerializer):
     class Meta:
         model  = Campaigncategory
-        fields = ("id","name","is_active")
+        fields = ("id","name","is_active","image")
 
 class UserSerializerCampaign(ModelSerializer):
     class Meta:
@@ -119,13 +122,13 @@ class CampaignAdminSerializer1(ModelSerializer):
         model = Campaign
         fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
 
-class DocumentSerializer1():
+class DocumentSerializer1(ModelSerializer):
     models = Documents
     fields = ['doc_file']
 
 class CampaignAdminSerializer2(ModelSerializer):
 
-    doc_file = DocumentSerializer(source='documents')
+    doc_file = DocumentSerializer1(source='documents')
 
     class Meta :
         model  = Campaign
@@ -140,31 +143,77 @@ class CampaignEditSerializer(ModelSerializer):
 class DonorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donor
-        fields = ('payment_type')
+        fields = ('payment_type',)
 
-# class UserWithdrawalSerializerW(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ('id', 'username', 'email', 'mobile_number')
+class UserWithdrawalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'mobile_number')
 
-# class CampaignWithdrawalSerializer(serializers.ModelSerializer):
-#     user = UserWithdrawalSerializerW()
-#     donors = DonorSerializer(many=True, read_only=True, source='donors')
+class CampaignWithdrawalSerializer(serializers.ModelSerializer):
+    user = UserWithdrawalSerializer()
+    # donor_payments = DonorSerializer(many=True, read_only=True, source='donors')
+
+    class Meta:
+        model = Campaign
+        fields = ('id', 'title', 'fund_raised', 'status', 'end_date', 'user')
+
+# class WithdrawalInsideSerializer(serializers.ModelSerializer):
+    
 #     class Meta:
-#         model = Campaign
-#         fields = ('id', 'title', 'fund_raised', 'payment_type', 'status', 'end_date', 'user')
+#         model = BankTransfer
+#         fields = ('id', 'title', 'bank_details', 'fund_raised', 'payment_gateway', 'end_date', 'status')
 
 # class CampaignKycSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CampaignKycBenificiary
-#         fields = '__all__'
+#         fields = ('account_holder_name', 'account_number', 'bank_name', 'ifsc_code', 'other_details')
 
-# class WithdrawalCampaignSerializer(serializers.ModelSerializer):
-#     bank_details = CampaignKycSerializer(read_only=True)
-#     donors = DonorSerializer(many=True, read_only=True, source='donors')
+# class WithdrawalDetailsSerializer(serializers.Serializer):
+#     id = serializers.IntegerField()
+#     # campaign = CampaignWithdrawalSerializer()
+#     bank_details = CampaignKycSerializer(source='campaign.bank_details')
+#     amount = serializers.DecimalField(max_digits=10, decimal_places=2, source='campaign.fund_raised')
+#     payment_gateway = serializers.CharField(source='campaign.rasing_for')  # Change this based on your actual field
+#     date = serializers.DateField(source='campaign.end_date')
+#     status = serializers.CharField(source='campaign.status')
+        
+class CampaignCKB(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = [
+            'title', 'rasing_for', 'adhar_card', 'bank_details',
+            'goal_amount', 'fund_raised', 'location', 'zakat_eligible',
+            'status', 'start_date', 'end_date', 'description', 'summary'
+        ]
 
-#     class Meta:
-#         model = Campaign
-#         fields = ('id', 'title', 'bank_details', 'fund_raised', 'payment_type', 'end_date', 'status')
+class CampaignKycSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = [
+            'account_holder_name', 'account_number', 'bank_name',
+            'branch_name', 'ifsc_code', 'passbook_image',
+            'pan_card', 'pan_card_image', 'adhar_card',
+            'adhar_card_image', 'other_details', 'is_verified'
+        ]
 
+class CombinedSerializer(serializers.ModelSerializer):
+    campaign_id = serializers.UUIDField(source='campaign.id')
+    campaign_title = serializers.CharField(source='campaign.title')
+    campaign_status = serializers.CharField(source='campaign.status')
+
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = [
+            'id', 'account_holder_name', 'account_number', 'ifsc_code', 'bank_name',
+            'campaign_id', 'campaign_title', 'campaign_status'
+        ]
+
+class CKBViewSerializer(serializers.Serializer):
+    campaign_details = CampaignCKB(source='campaign', read_only=True)
+    kyc_details = CampaignKycSerializer(source='campaign.bank_details', read_only=True)
+
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['campaign_details', 'kyc_details']
 #############################################################################################################################################################

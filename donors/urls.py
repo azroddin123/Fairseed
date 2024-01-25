@@ -49,9 +49,9 @@ urlpatterns = [
 
 #################################################################################################################################################
     path('api/donor-form/',DonateToCampaign.as_view()), # Donate To Campaign Page
-    path('api/donate_to_bank_transfer/',DonateToBankTransfer.as_view()), # Donate To Bank Transfer
-    path('api/donate_to_bank_transfer/<str:pk>/',DonateToBankTransfer.as_view()), # Donate To Bank Transfer
     # path('api/donate_bank_transaction/', BankTransaction1.as_view()),
-    path('api/donate_and_transfer/', DonateAndTransfer.as_view()),
+    path('api/donate_and_transfer/', DonateAndTransfer.as_view()), # Donate To Bank Transfer
+    path('api/admin/donations/',DonationsAPApi.as_view()), # Admin Panel
+
 #################################################################################################################################################
 ]

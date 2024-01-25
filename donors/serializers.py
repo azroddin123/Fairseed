@@ -70,27 +70,18 @@ class UpiSerializers(ModelSerializer):
         fields = "__all__"
 
 #################################################################################################################################################
-# class BankTransactionSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = BankTransaction
-#         fields = ['transaction_id', 'bank_name', 'transaction_date', 'other_details']
-
 class DonateToCampaignSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donor
         fields = '__all__'
 
-class DonorBankTransactionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BankTransaction
-        fields = '__all__'
-
-####################################################################
+#*******************************************************************#
 class BankTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BankTransaction
         fields = '__all__'
+
+#*******************************************************************#
 
 from django.db import transaction
 
@@ -113,9 +104,8 @@ class DonorSerializer(serializers.ModelSerializer):
 
         return donor
 
-
-
-
-
-
+class DonorSerializer2(ModelSerializer):
+    class Meta:
+        model = Donor
+        exclude = ['created_on','updated_on','mobile','pancard','comment','is_anonymous','is_approved']
 #################################################################################################################################################

@@ -49,6 +49,13 @@ class QRTransferApi(GenericMethodsMixin,APIView):
 
 ########################################################################################################################
 class BankTransferView(APIView):
+
+    def get(self, request):
+        account_details = BankTransfer.objects.all()
+        serializer = BankTransferSerializer1(account_details, many=True)
+        serialized_data = serializer.data
+        return Response(serialized_data)
+    
     def post(self, request):
         serializer = BankTransferSerializer(data=request.data)
 
@@ -57,4 +64,6 @@ class BankTransferView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
 ########################################################################################################################

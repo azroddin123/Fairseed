@@ -49,8 +49,10 @@ urlpatterns = [
     path('api/admin/reported_campaigns/<uuid:pk>/',ReportedCampaigns.as_view()),
     path('api/donate_page_card/<str:pk>/',DonateToCampaignCard.as_view()), #Donate To Campaign Page Card
     path('api/successful_campaigns/',CampaignBycategory.as_view()), #Successful campaign page
-    # path('api/admin/withdrawal/',WithdrawalCampaignView.as_view()), #Admin panel existing Withdrawal
-    # path('api/admin/withdrawal/<str:pk>',WithdrawalCampaignView.as_view()), #Admin panel existing Withdrawal
+    path('api/admin/withdrawal/',WithdrawalCampaignView.as_view()), #Admin panel existing Withdrawal
+    # path('api/admin/withdrawal_inside/<str:pk>',WithdrawalInsideView.as_view()), #Admin panel existing Withdrawal
+    # path('api/admin/ckb/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
+    # path('api/admin/ckb/<str:pk>/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
     ##############################################################################################################################
 
 

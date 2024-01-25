@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.db.models import Q
 # Create your views here.
 from .serializers import * 
 from .models import (
@@ -90,32 +90,15 @@ class DonateToCampaign(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #**********************************************************************************************************************************************#
-class DonateToBankTransfer(APIView):
-    def get(self, request, *args, **kwargs):
-        bank_transfers = BankTransfer.objects.all()
-        serializer = BankTransferSerializer1(bank_transfers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def post(self, request, *args, **kwargs):
-        serializer = DonorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-#**********************************************************************************************************************************************#
-class BankTransaction1(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = DonorBankTransactionSerializer(data=request.data)
-        if serializer.is_valid():
-            instance = serializer.save()
-            serialized_data = DonorBankTransactionSerializer(instance).data
-            return Response(serialized_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#**********************************************************************************************************************************************#
 class DonateAndTransfer(APIView):
-    def post(self, request, format=None):
+
+    def get(self, request):
+        account_details = BankTransfer.objects.all()
+        serializer = BankTransferSerializer1(account_details, many=True)
+        serialized_data = serializer.data
+        return Response(serialized_data)
+    
+    def post(self, request):
         donor_serializer = DonorSerializer(data=request.data)
         if donor_serializer.is_valid():
             donor = donor_serializer.save()
@@ -139,5 +122,31 @@ class DonateAndTransfer(APIView):
             'donor': donation_data,
             'bank_transactions': bank_transactions,
         }, status=status.HTTP_201_CREATED)
+    
+class DonationsAPApi(APIView):
+    def get(self, request, *args, **kwargs):
+        search_params = {
+            'full_name': self.request.query_params.get('full_name', None),
+            'amount': self.request.query_params.get('amount', None),
+            'email': self.request.query_params.get('email', None),
+            'fund_raised': self.request.query_params.get('fund_raised', None),
+            'country': self.request.query_params.get('country', None),
+        }
+
+        reset_query = self.request.query_params.get('reset', None)
+
+        if reset_query:
+            donors = Donor.objects.all()
+        else:
+            donors = Donor.objects.all()
+
+        for field, value in search_params.items():
+            if value:
+                field_query = f"{field}__icontains"
+                donors = donors.filter(Q(**{field_query: value}))
+
+        counter = 1
+        serializer = DonorSerializer2(donors, many=True, context={'counter': counter})
+        return Response(serializer.data)
 
 #################################################################################################################################################

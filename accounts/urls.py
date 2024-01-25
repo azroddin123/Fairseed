@@ -21,6 +21,11 @@ urlpatterns = [
     path('api/verification-password/', VerificationOtpApi.as_view()),
     path('api/set-new-password/', SetNewPasswordApi.as_view()),
     path('api/admin/latest-members/',LatestMembers.as_view()),
+    path('api/admin/user/',User_AdminPanel.as_view()), #Admin Panel
+    path('api/admin/user/<str:pk>/',User_AdminPanel.as_view()), #Admin Panel
+    path('api/change-password/', UserChangePasswordSettingView.as_view(), name='change-password'),
+    path('api/change-password/<str:pk>/', UserChangePasswordSettingView.as_view(), name='change-password'),
+    path('api/admin/user_card/',UserEditCard_AdminPanel.as_view()),
     ###########################################################################
     
 ]

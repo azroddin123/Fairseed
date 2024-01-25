@@ -4,7 +4,7 @@ from accounts.models import User
 # Create your models here.
 from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
-
+import uuid
 
 
 class Campaigncategory(BaseModel):
@@ -72,7 +72,3 @@ class Documents(BaseModel):
     campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name = models.CharField(max_length=124)
     doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
-
-
-
-

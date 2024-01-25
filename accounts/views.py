@@ -59,7 +59,8 @@ from django.contrib.auth import authenticate
 # from django.contrib.auth.decorators import login_required
 import logging
 from django.utils import timezone
-
+from django.shortcuts import get_object_or_404
+from django.db.models import Q, Subquery, OuterRef, Count
 class RegisterOTPApi(APIView):
     def post(self, request):
         try:
@@ -309,4 +310,68 @@ class LatestMembers(APIView):
             formatted_members.append(member)
 
         return Response(formatted_members)
+
+#******************************************************************************#
+class UserChangePasswordSettingView(APIView):
+    def put(self, request, pk):
+        # Use get_object_or_404 to get the user based on the provided pk
+        user = get_object_or_404(User, pk=pk)
+
+        # Check if the user is authenticated
+        if request.user.is_authenticated and request.user == user:
+            serializer = UserChangePasswordSerializer(data=request.data, context={'request': request})
+
+            if serializer.is_valid():
+                # Set the user_id in the serializer to the correct user's id
+                serializer.validated_data['user_id'] = str(user.id)
+                serializer.save()
+                return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'detail': 'Unauthorized to change password for this user.'}, status=status.HTTP_403_FORBIDDEN)
+
+#******************************************************************************#
+class User_AdminPanel(APIView):
+    def get(self, request):
+        search_query = request.query_params.get('search', None)
+        users = User.objects.all()
+
+        if search_query:
+            users = users.annotate(
+                campaigns_created_count=Subquery(
+                    Campaign.objects.filter(user=OuterRef('id')).values('user').annotate(count=Count('id')).values('count')
+                ),
+            )
+
+        serializer = UserSerializer_AdminPanel(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = AddUserSerializer_AdminPanel(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        user = get_object_or_404(User, id=pk)
+        serializer = EditUserSerializer_AdminPanel(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        user = get_object_or_404(User, id=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserEditCard_AdminPanel(APIView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = AddUserSerializer_AdminPanel(users, many=True)
+        return Response(serializer.data)
 ##################################################################################################################
