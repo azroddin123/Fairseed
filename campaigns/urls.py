@@ -86,6 +86,12 @@ urlpatterns = [
     path('api/ReportedCampaignApi', ReportedCampaignApi.as_view()),
 
     path('api/admin/campaign/', CampaignAdminApi.as_view()),
+    path('api/RecordCampaignView/<str:campaign_id>', RecordCampaignView.as_view()),
+
+    path('api/DashboradCampaignApi/', DashboradCampaignApi.as_view()),
+
+    path('api/DashboradCampaignViewApi/', DashboradCampaignViewApi.as_view()),
+
 
 
 ]

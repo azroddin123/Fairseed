@@ -22,6 +22,13 @@ class CampaignCause(models.Model):
     # def __str__(self):
     #     return self.cause_title
 
+# to calculate views of user
+class CampaignView(BaseModel):
+    campaign = models.ForeignKey('Campaign', on_delete=models.CASCADE, related_name='camp_view', null=True)
+    timestamp  = models.DateTimeField(auto_now_add=True)
+    user       = models.ForeignKey(User,on_delete=models.CASCADE, related_name='view', null=True)  # Add user field if you want to track views per user
+
+
 class Campaign(BaseModel):
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE,)
     user            = models.ForeignKey(User,on_delete=models.CASCADE, related_name='user1')
@@ -44,7 +51,7 @@ class Campaign(BaseModel):
     is_reported     = models.BooleanField(default=False)
     is_withdrawal   = models.BooleanField(default=False)
     campaign_image  = models.ImageField('static/media_files/campaign_images/', null=True, blank=True)
-
+    campaign_view = models.OneToOneField(CampaignView, on_delete=models.SET_NULL, null=True, related_name='associated_campaign')
 
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
@@ -77,12 +84,7 @@ class Documents(BaseModel):
     campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name = models.CharField(max_length=124)
     doc_file = models.FileField(upload_to="static/media_files/",blank=True,null=True)
-
-# to calculate views of user 
-class CampaignView(BaseModel):
-    campaign   = models.ForeignKey(Campaign, on_delete=models.CASCADE)
-    timestamp  = models.DateTimeField(auto_now_add=True)
-    user       = models.ForeignKey(User,on_delete=models.CASCADE, related_name='view')  # Add user field if you want to track views per user
+ 
 
 
 

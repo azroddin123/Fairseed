@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer,DateTimeField
 from .models import * 
 from .models import Donor,Campaign
 from rest_framework.response import Response
@@ -19,7 +19,7 @@ class DonorSerializer(ModelSerializer):
         campaign = self.validated_data["campaign"]
         required_amount = campaign.goal_amount - campaign.fund_raised
         if amount > required_amount :
-              return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
+            return Response({"error" : False,"message" : "You can make donation for this campaign upto "+str(required_amount)+" Rs"},status=status.HTTP_200_OK)     
         
         campaign.fund_raised = campaign.fund_raised + amount
         campaign.save()
@@ -52,7 +52,7 @@ class DonorSerializer(ModelSerializer):
         print(campaign.save())
         return super().save(**kwargs)
     
-     
+
 class DonorSerializer1(ModelSerializer):
     class Meta :
         model = Donor
@@ -68,8 +68,26 @@ class UpiSerializers(ModelSerializer):
         model = UpiTransaction
         fields = "__all__"
 
+#################################################################
+
 class DonorSerializer2(ModelSerializer):
     class Meta:
         model = Donor
         exclude = ['created_on','updated_on','mobile','pancard','comment','is_anonymous','is_approved']
 
+class DashboardDonorSerializer(ModelSerializer):
+    created_on = DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    class Meta:
+        model = Donor
+        fields = ['full_name','campaign','amount','created_on']
+
+class DashboardDonorSerializer1(ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = ['id','full_name','pancard','campaign','amount','payment_type','comment','created_on','is_anonymous']
+
+class MyDonationSerializer(ModelSerializer):
+    created_on = DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    class Meta:
+        model = Donor
+        fields = ['full_name','campaign','email','amount','created_on']

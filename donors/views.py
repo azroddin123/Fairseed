@@ -147,6 +147,26 @@ class DonationsAPApi(APIView):
         serializer = DonorSerializer2(queryset, many=True)
 
         return Response(serializer.data)
+    
+class DashboardDonationsApi(APIView):
+    def get(self,request):
+        donor= Donor.objects.all()
+        serializer = DashboardDonorSerializer(donor, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = DashboardDonorSerializer1(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class MyDonationApi(APIView):
+    def get(self, request, user_id):
+        user_donations = Donor.objects.filter(campaign__user_id=user_id)
+        serializer = MyDonationSerializer(user_donations, many=True)
+        return Response(serializer.data)
+    
 
 
 

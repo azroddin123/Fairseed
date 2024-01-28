@@ -871,11 +871,10 @@ class RelegiousEducationCampApi(APIView):
             query = Q()
             for location in locations:
                 query |= Q(location__icontains=location)
-
             campaigns = campaigns.filter(query)
 
+        
         ten_days_ago = timezone.now() - timedelta(days=10)
-
         # Expiring Soon Filter
         expiring_soon = params.get("expiring_soon")
         if expiring_soon and expiring_soon.lower() == 'true':
@@ -898,7 +897,9 @@ class RelegiousEducationCampApi(APIView):
         # Trending Filter
         trending = params.get("trending")
         if trending and trending.lower() == 'true':
-            campaigns = campaigns.filter()
+            campaigns = campaigns.annotate(num_views=Count('camp_view', filter=Q(camp_view__timestamp__gte=ten_days_ago)))
+            threshold_views = 2    
+            campaigns = campaigns.filter(num_views__gte=threshold_views)
 
 
         paginated_campaigns = campaigns[offset:offset + limit]
@@ -945,6 +946,53 @@ class UserAPApi(APIView):
         camp = User.objects.all()
         serializer = UserAdminSerializer(camp, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK) 
+    
+class RecordCampaignView(APIView):
+    def post(self, request, campaign_id):
+        campaign = get_object_or_404(Campaign, id=campaign_id)
+        
+        # Create a CampaignView instance without checking for user authentication
+        campaign_view = CampaignView.objects.create(campaign=campaign)
+
+        serializer = CampaignViewSerializer(campaign_view)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request):
+        camp = Campaign.objects.all()
+        serializer = CampaignViewSerializer(camp, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+
+######## Dashboard API's ########
+
+class DashboradCampaignApi(APIView):
+    def get(self, request):
+        camp = Campaign.objects.all()
+        serializer = DashboradCampaignSerailaizer(camp, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DashboradCampaignViewApi(APIView):
+    def get (self, request):
+        camp = CampaignKycBenificiary.objects.all()
+        serializer = CKBSerializer(camp, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request):
+        try:
+            instance = Campaign.objects.get(id=request.data.get('campaign_id'))
+            print(instance)
+        except Campaign.DoesNotExist:
+            return Response({"error": "campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CampaignAdminSerializer3(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    
+
 
 
 

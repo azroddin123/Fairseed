@@ -169,15 +169,15 @@ class CamapaignCreateSerializer(serializers.ModelSerializer):
         fields = ('user','campaign_image','title','goal_amount','location','category','zakat_eligible','end_date','description','summary','goal_amount','doc','rasing_for','acc_detail','kyc_detail')
 
     
-class DocumentSerializer3(serializers.Serializer):
+class DocumentSerializer3(ModelSerializer):
     models = Documents
     fields = ['doc_file']
 
 class CampaignAdminSerializer3(ModelSerializer):
-    doc_file = DocumentSerializer3(source='documents')
+    documents = DocumentSerializer3(many=True)
     class Meta :
         model  = Campaign
-        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'doc_file','is_featured']
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'documents','is_featured']
 
 class CampaignAdminSerializer1(ModelSerializer):
     # id = SequentialIntegerField()
@@ -188,3 +188,18 @@ class CampaignAdminSerializer1(ModelSerializer):
     class Meta:
         model = Campaign
         fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
+
+class CampaignViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CampaignView
+        fields = ['id', 'campaign', 'timestamp', 'user']
+
+class DashboradCampaignSerailaizer(ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields  = ['id', 'title','user','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
+
+# class DCampaignSerializer(ModelSerializer):
+#     class Meta :
+#         model  = Campaign
+#         fields = ('title','goal_amount','fund_raised','start_date','end_date','status','category','campaign_image','location','zakat_eligible','')
