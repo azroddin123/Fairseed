@@ -231,8 +231,8 @@ class UserSerializer_AdminPanel(serializers.ModelSerializer):
         return user.created_on.strftime('%b %d, %Y') if user.created_on else None
     
 class AddUserSerializer_AdminPanel(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
-    confirm_password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User

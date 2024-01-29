@@ -202,12 +202,13 @@ class LandingPageApi(APIView):
     
 ##############################################################################################################################################
 from datetime import datetime
-from rest_framework.parsers import FileUploadParser
+
 from django.db.models import F, Q, Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from rest_framework.parsers import FileUploadParser
 
 from accounts.models import User
 
@@ -394,29 +395,21 @@ class CategoryAdminApi(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 #******************************************************************************#
-class CampaignAdminApi(APIView):
+    
+from django.contrib.auth.models import AnonymousUser
 
-    # def get_object(self, pk):
-    #     try:
-    #         return Campaign.objects.get(id=pk)
-    #     except Campaign.DoesNotExist:
-    #         raise Http404
-    # def get(self, request):
-    #     campaigns = Campaign.objects.all()
-    #     serializer = CampaignAdminSerializer1(campaigns, many=True)
-    #     return Response(serializer.data)
-        
+class CampaignAdminApi(APIView):
     def get(self, request, *args, **kwargs):
         search_query = self.request.query_params.get('search', None)
         reset_query = self.request.query_params.get('reset', None)
         sort_with = self.request.query_params.get('sort_with', None)
         sort_by = self.request.query_params.get('sort_by', None)
+        campaigns = Campaign.objects.all()
 
         if reset_query:
-            campaigns = Campaign.objects.all()
-
-        if search_query:
-            campaigns = Campaign.objects.filter(
+            pass
+        elif search_query:
+            campaigns = campaigns.filter(
                 Q(title__icontains=search_query) |
                 Q(description__icontains=search_query) |
                 Q(user__username__icontains=search_query) |
@@ -428,29 +421,49 @@ class CampaignAdminApi(APIView):
                 Q(start_date__icontains=search_query) |
                 Q(end_date__icontains=search_query)
             )
-
         if sort_with:
-            if sort_with == 'Date':
-                campaigns = campaigns.order_by('start_date')
+            if sort_with == 'Sort With':
+                if sort_by == 'Lower to High':
+                    campaigns = campaigns.order_by('id')
+                elif sort_by == 'High to Low':
+                    campaigns = campaigns.order_by('-id')
+                else:
+                    campaigns = campaigns.order_by('id')
+            elif sort_with == 'Date':
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('start_date')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-start_date')
             elif sort_with == 'Title':
-                campaigns = campaigns.order_by('title')
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('title')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-title')
             elif sort_with == 'User':
-                campaigns = campaigns.order_by('user__username')
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('user__username')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-user__username')
             elif sort_with == 'Status':
-                campaigns = campaigns.order_by('status')
+                if sort_by == 'Active':
+                    campaigns = campaigns.filter(status='Active')
+                elif sort_by == 'Pending':
+                    campaigns = campaigns.filter(status='Pending')
+                elif sort_by == 'Rejected':
+                    campaigns = campaigns.filter(status='Rejected')
+                elif sort_by == 'Completed':
+                    campaigns = campaigns.filter(status='Completed')
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('status')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-status')
 
-        if sort_by:
-            if sort_by == 'Lower to High':
-                campaigns = campaigns.order_by('goal_amount')
-            elif sort_by == 'High to Low':
-                campaigns = campaigns.order_by('-goal_amount')
-
-        else:
+        if sort_by == 'Sort By':
             campaigns = Campaign.objects.all()
-        counter = 1
-        serializer = CampaignAdminSerializer1(campaigns, many=True, context={'counter': counter})
+
+        serializer = CampaignAdminSerializer1(campaigns, many=True)
         return Response(serializer.data)
-    
+
     def put(self, request, pk):
         campaign = get_object_or_404(Campaign, id=pk)
         serializer = CampaignAdminSerializer2(campaign, data=request.data)
@@ -459,6 +472,14 @@ class CampaignAdminApi(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
+class CampaignModificationsApi(APIView):
+    def get(self, request, pk):
+        campaign = get_object_or_404(Campaign, id=pk)
+        modifications = campaign.modifications.all()
+        serializer = CampaignModificationSerializer(modifications, many=True)
+        return Response(serializer.data)
+
 #******************************************************************************#
 class CampaignEditApproval(APIView):
     

@@ -18,5 +18,6 @@ class BBAdmin(admin.ModelAdmin):
 admin.site.register(Campaigncategory,CCAdmin)
 admin.site.register(Campaign,CampaignAdmin)
 admin.site.register(CampaignKycBenificiary,BBAdmin)
+admin.site.register(CampaignModification)
 # admin.site.register(KycDetails,KycAdmin)
 

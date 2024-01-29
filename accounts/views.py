@@ -219,7 +219,8 @@ class LoginView(APIView):
         if user:
             return Response({
                 'user_id': user.pk,
-                'email': user.email
+                'email': user.email,
+                'message':'Successfully logged in'
             })
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

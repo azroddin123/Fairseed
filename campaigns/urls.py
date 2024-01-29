@@ -25,22 +25,33 @@ urlpatterns = [
     # path('campaign/<str:pk>/', CampaignDetailsApi.as_view(), name='campaign-details'),
     # path('campaign/', CampaignDetailsApi.as_view(), name='campaign-list'),
     # path('category/', CampaignByCategoryApi.as_view(), name='campaign-by-category'),
+    
     #################################################################################################################################
-    # path('card/', CardAPIView.as_view()),
+    
+    #Admin Panel Dashboard count, latest members(in accounts urls.py) and Recent campaigns
+    path('api/admin/dashboard/', DashboardAPI.as_view()),
+    path('api/admin/recent_campaigns/',RecentCampaigns.as_view()),
+
+    #Admin Panel Categories
+    path('api/admin/categories/<str:pk>/',CategoryAdminApi.as_view()),
+    path('api/admin/categories/',CategoryAdminApi.as_view()),
+
+    #Admin Panel Campaigns
+    path('api/admin/campaign/', CampaignAdminApi.as_view()),
+    path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
+    path('api/admin/modifications/<str:pk>/', CampaignModificationsApi.as_view()),
+
     path('api/campaign_category/',CampaignCategory1.as_view()),
     path('api/campaign_category/<str:pk>/',CampaignCategory1.as_view()),
     path('api/campaign_list/',CampaignDetailsApi1.as_view()),
-    path('api/admin/dashboard/', DashboardAPI.as_view(), name='dashboard-api'),
     path('api/landing_page/causes_by_category/',CausesbyCategoryAPI.as_view()),
     path('api/landing_page/card/', CardAPIViewPagination.as_view()),
     path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
     path('api/recent_donors',RecentDonors.as_view()),
     # path('api/recent_donor/<str:pk>',RecentDonors.as_view()),
-    path('api/admin/recent_campaigns/',RecentCampaigns.as_view()),
-    path('api/admin/categories/<str:pk>/',CategoryAdminApi.as_view()),
-    path('api/admin/categories/',CategoryAdminApi.as_view()),
-    path('api/admin/campaign/', CampaignAdminApi.as_view()),
-    path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
+    
+    
+    
     path('api/admin/campaign_edit_Approval/',CampaignEditApproval.as_view()),
     path('api/admin/campaign_edit_Approval/<str:pk>/',CampaignEditApproval.as_view()),
     path('api/admin/scholarship_campaigns/',ScholarshipCAmpaigns.as_view()),
@@ -53,6 +64,7 @@ urlpatterns = [
     # path('api/admin/withdrawal_inside/<str:pk>',WithdrawalInsideView.as_view()), #Admin panel existing Withdrawal
     # path('api/admin/ckb/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
     # path('api/admin/ckb/<str:pk>/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
+    # path('card/', CardAPIView.as_view()),
     ##############################################################################################################################
 
 

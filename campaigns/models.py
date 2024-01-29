@@ -72,3 +72,8 @@ class Documents(BaseModel):
     campaign = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents")
     doc_name = models.CharField(max_length=124)
     doc_file     = models.FileField(upload_to="static/media_files/",blank=True,null=True)
+
+class CampaignModification(BaseModel):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="modifications")
+    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    modification_date = models.DateTimeField(auto_now_add=True)

@@ -113,7 +113,6 @@ class UserSerializerCampaign(ModelSerializer):
         fields = ['email', 'mobile_number']
 
 class CampaignAdminSerializer1(ModelSerializer):
-    id = SequentialIntegerField()
     user_email = serializers.EmailField(source='user.email', read_only=True)
     user_mobile_number = serializers.CharField(source='user.mobile_number', read_only=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
@@ -122,17 +121,24 @@ class CampaignAdminSerializer1(ModelSerializer):
         model = Campaign
         fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
 
-class DocumentSerializer1(ModelSerializer):
-    models = Documents
-    fields = ['doc_file']
+# class DocumentSerializer1(ModelSerializer):
+#     model = Documents
+#     fields = ['doc_file']
 
 class CampaignAdminSerializer2(ModelSerializer):
 
-    doc_file = DocumentSerializer1(source='documents')
+    # documents = DocumentSerializer1(many=True)
 
-    class Meta :
-        model  = Campaign
-        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'doc_file','is_featured']
+    class Meta:
+        model = Campaign
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'is_featured']
+
+class CampaignModificationSerializer(serializers.ModelSerializer):
+    modification_history = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CampaignModification
+        fields = ['campaign_id', 'modification_history']
 
 class CampaignEditSerializer(ModelSerializer):
 
