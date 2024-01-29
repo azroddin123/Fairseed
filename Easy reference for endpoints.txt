@@ -37,10 +37,15 @@ path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
 
 (document is not getting uploaded thorugh postman)
 
-6) 
+Pending - View Revision and View Data need to ask Amaan
 
+6) Campaign Edit Approval (1 Api):
 
+* Get - "Changes Requested At": "29-01-2024 07:43:11", date is correct but timing is incorrect
+path('api/admin/campaign_edit_Approval/',CampaignEditApproval.as_view()),
+path('api/admin/campaign_edit_Approval/<str:pk>/',CampaignEditApproval.as_view()),
 
+7) 
 
 
 

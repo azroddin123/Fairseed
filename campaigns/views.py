@@ -302,14 +302,45 @@ class CardAPIViewPagination(APIView):
 class CardAPIView2(APIView):
     def get(self, request, pk):
         campaign = get_object_or_404(Campaign, id=pk)
-        formatted_date_time = campaign.created_on.strftime('%b %d, %Y %I:%M %p')
+        # formatted_date_time = campaign.created_on.strftime('%b %d, %Y %I:%M %p')
+        user = campaign.user
+
+        user_data = {
+            'username': user.username,
+        }
+
+        user_images = None
+        if user and hasattr(user, 'user_images') and user.user_images:
+            user_images = user.user_images.url
+
+        num_donors = campaign.donors.count()
+
+        today_date = timezone.now().date()
+        days_left_message = None
+
+        if campaign.end_date:
+            days_remaining = (campaign.end_date - today_date).days
+            if days_remaining >= 0:
+                days_left_message = f'{days_remaining} days left'
+            else:
+                days_left_message = 'Campaign ended'
+        else:
+            days_left_message = 'No end date'
+            
+        c1 = campaign
 
         data = {
             'Status': 'Campaign Ongoing' if campaign.end_date and campaign.end_date >= timezone.now().date() else 'Campaign Ended',
             'Fund Raised': campaign.fund_raised,
             'Goal Amount': campaign.goal_amount,
             'Zakah Eligible': campaign.zakat_eligible,
-            'Date Time': formatted_date_time,
+            'logo': user_images,
+            'user': user_data,
+            'title': campaign.title,
+            'num_donors': num_donors,
+            'days_left': days_left_message,
+            'location': c1.location,
+            # 'Date Time': formatted_date_time,
         }
 
         return Response(data, status=status.HTTP_200_OK)
@@ -487,12 +518,13 @@ class CampaignEditApproval(APIView):
         campaign_edit = Campaign.objects.all()
 
         formatted_data = []
-        for index, campaign in enumerate(campaign_edit, start=1):
+        for campaign in campaign_edit:
             formatted_campaign = {
-                'Id': index,
+                'Id': campaign.id,
                 'Campaign': campaign.title,
-                'Changes Requested At': campaign.created_on.strftime('%d-%m-%Y %H:%M:%S'),
+                'Changes Requested At': campaign.updated_on.strftime('%d-%m-%Y %H:%M:%S'),
                 'Goal': campaign.goal_amount,
+                'Campaign Created At': campaign.created_on.strftime('%d-%m-%Y %H:%M:%S'),
                 'Deadline': campaign.end_date.strftime('%d-%m-%Y')
             }
             formatted_data.append(formatted_campaign)

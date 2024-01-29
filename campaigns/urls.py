@@ -41,6 +41,10 @@ urlpatterns = [
     path('api/admin/campaign/<str:pk>/', CampaignAdminApi.as_view()),
     path('api/admin/modifications/<str:pk>/', CampaignModificationsApi.as_view()),
 
+    #Admin Panel Campaign Edit Approval
+    path('api/admin/campaign_edit_Approval/',CampaignEditApproval.as_view()),
+    path('api/admin/campaign_edit_Approval/<str:pk>/',CampaignEditApproval.as_view()),
+    
     path('api/campaign_category/',CampaignCategory1.as_view()),
     path('api/campaign_category/<str:pk>/',CampaignCategory1.as_view()),
     path('api/campaign_list/',CampaignDetailsApi1.as_view()),
@@ -49,11 +53,6 @@ urlpatterns = [
     path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
     path('api/recent_donors',RecentDonors.as_view()),
     # path('api/recent_donor/<str:pk>',RecentDonors.as_view()),
-    
-    
-    
-    path('api/admin/campaign_edit_Approval/',CampaignEditApproval.as_view()),
-    path('api/admin/campaign_edit_Approval/<str:pk>/',CampaignEditApproval.as_view()),
     path('api/admin/scholarship_campaigns/',ScholarshipCAmpaigns.as_view()),
     path('api/admin/scholarship_campaigns/<str:pk>/',ScholarshipCAmpaigns.as_view()),
     path('api/admin/reported_campaigns/',ReportedCampaigns.as_view()),
