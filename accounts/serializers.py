@@ -1,13 +1,12 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-
+from portals.choices import UserChoices,RoleChoices
 from .models import User,UserRole
 from rest_framework import serializers
 from django.db import models
 
 
 class UserSerializer(ModelSerializer):
-    # user_role = serializers.SerializerMethodField()
     class Meta :
         model = User
         exclude = ("last_login","created_on","updated_on","is_admin")
@@ -16,13 +15,14 @@ class UserSerializer(ModelSerializer):
         user = User(**self.validated_data)
         password = self.validated_data["password"]
         user.set_password(password)
+        role_name = UserRole.objects.get(role_name="Normal")
+        user.user_role = role_name
         if self.validated_data.get("user_role") == "Admin" :
             user.is_admin = True
         user.save()
         return user
     
-    # def get_user_role(self,obj):
-    #     return obj.userrole.role_name
+   
         
     
 class UserSerializer1(ModelSerializer):
@@ -32,7 +32,7 @@ class UserSerializer1(ModelSerializer):
         exclude = ("last_login","created_on","updated_on","is_admin","password")
 
     def get_user_role (self,obj):
-        return obj.user_role.role_name
+        return obj.user_role.role_name if obj.user_role else None
     
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

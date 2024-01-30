@@ -16,17 +16,13 @@ class UserApi(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
-    
-    
 
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
         try : 
             serializer = UserSerializer(data=request.data)
-            
             if  serializer.is_valid():
                 user = serializer.save()
-                print(user.id)
                 token = generate_token(user.email)
                 return Response({"message" : "User Created Succefully" , "data" : serializer.data , "token" : token},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
@@ -54,6 +50,7 @@ class LoginAPI(APIView):
             else :
                return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
 
+
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
         serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
@@ -61,6 +58,7 @@ class ChangePasswordApi(APIView):
             serializer.save()
             return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ForgotPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
@@ -89,4 +87,5 @@ class ResetPasswordAPI(APIView):
             user.save()
             return Response(data={'Success':'Password for Email ' +str(user) +' reset succesfull'},status=status.HTTP_200_OK)
         return Response(data = {'Error':'Email does not exists'})
+    
     

@@ -49,8 +49,6 @@ class GenericMethodsMixin:
     
 
     def get_paginated_data(self, request):
-        print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
-        print(request.GET.get('page'),"-----------------------------------page---------------------------->")
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)  
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 

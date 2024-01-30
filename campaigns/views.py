@@ -131,8 +131,6 @@ class AddCampaignApi(APIView):
                     print(request.data,"---------------------------------------")
                     # data._mutable = True
                     campaign = Campaign.objects.get(id=pk)
-                    # category  = data.get('category', {}).get('value')
-                    # request.data["category"] = category
                     c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
                     c_serializer.is_valid(raise_exception=True)
                     c_serializer.save()
@@ -161,20 +159,17 @@ class AddCampaignApi(APIView):
                     obj = Kyc.objects.get(campaign=campaign)
                     # request.data["adhar_card_front"] = upload_adhar[0]
                     # request.data["adhar_card_back"]  = upload_adhar[1]
-                    
                     kyc_serializer = KycSerializer(obj, data=request.data,partial=True)
                     kyc_serializer.is_valid(raise_exception=True)
                     kyc_serializer.save()
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
                 else :
                     data = request.data
-                    # data._mutable = True
                     print("---------------------")
                     print("camapign save")
                     # category  = data.get('category', {}).get('value')
                     # print(category,"---------------")
                     request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
-                    # request.data["category"] = category
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         print("serilaizer is valid")
@@ -193,7 +188,6 @@ class AddCampaignApi(APIView):
                         kyc_serializer = KycSerializer(data=request.data)
                         kyc_serializer.is_valid(raise_exception=True)
                         kyc_serializer.save()
-                        
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
                    
         except Exception as e :
