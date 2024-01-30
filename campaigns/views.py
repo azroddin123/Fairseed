@@ -123,73 +123,70 @@ class LandingPageApi(APIView):
 # Create campaign API
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
-        print(request.data,"------------------------")
         try : 
             with transaction.atomic():
                 if pk :
                     data = request.data
-                    print(request.data,"---------------------------------------")
-                    # data._mutable = True
+                    print("---------------------",request.data)
                     campaign = Campaign.objects.get(id=pk)
                     c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
                     c_serializer.is_valid(raise_exception=True)
                     c_serializer.save()
+                    print("------------------Updating Campaigns-----------------------")
                     print(campaign.id,campaign)
-                    # if Documents 
                     upload_adhar  = request.FILES.getlist("adhar")
-                    print(len(upload_adhar),"------------------->")
                     uploaded_docs = request.FILES.getlist("documents")
                     print(uploaded_docs)
-                    # Uodate Account 
                     if uploaded_docs:
                         print("deletting Docs")
                         Documents.objects.filter(campaign=campaign).delete()
-                        print("updating docs")
+                        print("------------------Updating Docs-----------------------")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                   
                     # Acocunt Details 
+                    print("----------------------Updating Accounts----------------------")
                     obj = AccountDetail.objects.get(campaign=campaign)
                     request.data["campaign"] = campaign.id
                     account_serializer = AccountDSerializer(obj, data=request.data,partial = True)
                     account_serializer.is_valid(raise_exception=True)
                     account_serializer.save()
-                    
                     # Kyc 
+                    print("----------------------Updating KYC----------------------------")
                     obj = Kyc.objects.get(campaign=campaign)
                     # request.data["adhar_card_front"] = upload_adhar[0]
                     # request.data["adhar_card_back"]  = upload_adhar[1]
                     kyc_serializer = KycSerializer(obj, data=request.data,partial=True)
                     kyc_serializer.is_valid(raise_exception=True)
                     kyc_serializer.save()
+                    
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
                 else :
                     data = request.data
-                    print("---------------------")
+                    print("---------------------",request.data)
                     print("camapign save")
-                    # category  = data.get('category', {}).get('value')
-                    # print(category,"---------------")
                     request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         print("serilaizer is valid")
                         campaign = campaign_serializer.save()
-                        print("Document save")
-                        # documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
-                        # Documents.objects.bulk_create(documents_to_create)
+                        print("---------------Document saved---------------------")
+                        uploaded_docs = request.FILES.getlist("documents")
+                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        Documents.objects.bulk_create(documents_to_create)
+                        print("---------------Account Saved ---------------------")
                         request.data["campaign"] = campaign.id
                         account_serializer = AccountDSerializer(data=data)
                         account_serializer.is_valid(raise_exception=True)
                         account_serializer.save()
-                        # code for Kyc Serializer 
-                        print("kyc save")
+                        print("---------------Account Saved ---------------------")
                         # request.data["adhar_card_front"] = upload_adhar[0]
                         # request.data["adhar_card_back"]  = upload_adhar[1]
+                     
                         kyc_serializer = KycSerializer(data=request.data)
                         kyc_serializer.is_valid(raise_exception=True)
                         kyc_serializer.save()
+                        print("---------------KYC Saved ---------------------")
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
-                   
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 

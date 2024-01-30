@@ -29,7 +29,6 @@ class RegisterUserApi(APIView):
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-
 class LoginAPI(APIView):
     def post(self,request,*args, **kwargs):
             email       = request.data.get('email')
@@ -50,7 +49,6 @@ class LoginAPI(APIView):
             else :
                return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
 
-
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
         serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
@@ -58,7 +56,6 @@ class ChangePasswordApi(APIView):
             serializer.save()
             return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ForgotPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
@@ -75,7 +72,6 @@ class ForgotPasswordAPI(APIView):
                 return Response(data = 'Error sending mail',status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(data="Email Does not exists",status=status.HTTP_400_BAD_REQUEST )
-
 
 class ResetPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
