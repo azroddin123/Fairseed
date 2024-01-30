@@ -20,13 +20,13 @@ class Campaigncategory(BaseModel):
         return str(self.name)
 
 class Campaign(BaseModel):
-    campaign_image  = models.ImageField(upload_to='campaign/campaign_images/', null=True, blank=True)
+    campaign_image  = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
     title           = models.CharField(max_length=124)
     category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user            = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
     goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(0, message="Value must be greater than or equal to 100"),
-                    MaxValueValidator(1000000, message="Value must be less than or equal to 1000000")])
+                    MaxValueValidator(1000000000, message="Value must be less than or equal to 1000000")])
     fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
                     MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
     zakat_eligible  = models.BooleanField(default=False)

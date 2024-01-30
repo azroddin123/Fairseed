@@ -123,60 +123,58 @@ class LandingPageApi(APIView):
 # Create campaign API
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
+        print(request.data,"------------------------")
         try : 
             with transaction.atomic():
                 if pk :
                     data = request.data
-                    data._mutable = True
+                    print(request.data,"---------------------------------------")
+                    # data._mutable = True
                     campaign = Campaign.objects.get(id=pk)
+                    # category  = data.get('category', {}).get('value')
+                    # request.data["category"] = category
                     c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
                     c_serializer.is_valid(raise_exception=True)
                     c_serializer.save()
-                    
                     print(campaign.id,campaign)
                     # if Documents 
                     upload_adhar  = request.FILES.getlist("adhar")
                     print(len(upload_adhar),"------------------->")
                     uploaded_docs = request.FILES.getlist("documents")
-                    
                     print(uploaded_docs)
-                        # Uodate Account 
+                    # Uodate Account 
                     if uploaded_docs:
                         print("deletting Docs")
                         Documents.objects.filter(campaign=campaign).delete()
                         print("updating docs")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                  
+                   
                     # Acocunt Details 
-                    AccountDetail.objects.get(campaign=campaign).delete()
-                    
+                    obj = AccountDetail.objects.get(campaign=campaign)
                     request.data["campaign"] = campaign.id
-                    account_serializer = AccountDSerializer(data=request.data)
+                    account_serializer = AccountDSerializer(obj, data=request.data,partial = True)
                     account_serializer.is_valid(raise_exception=True)
                     account_serializer.save()
                     
                     # Kyc 
-                    Kyc.objects.get(campaign=campaign).delete()
-                    
-                    request.data["adhar_card_front"] = upload_adhar[0]
+                    obj = Kyc.objects.get(campaign=campaign)
+                    # request.data["adhar_card_front"] = upload_adhar[0]
                     # request.data["adhar_card_back"]  = upload_adhar[1]
                     
-                    kyc_serializer = KycSerializer(data=request.data)
+                    kyc_serializer = KycSerializer(obj, data=request.data,partial=True)
                     kyc_serializer.is_valid(raise_exception=True)
                     kyc_serializer.save()
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
-              
                 else :
                     data = request.data
-                    data._mutable = True
-
-                    # uploaded_docs = request.FILES.getlist('documents')
-                    # upload_adhar  = request.FILES.getlist("adhar")
+                    # data._mutable = True
                     print("---------------------")
                     print("camapign save")
-                    
+                    # category  = data.get('category', {}).get('value')
+                    # print(category,"---------------")
                     request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
+                    # request.data["category"] = category
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         print("serilaizer is valid")
@@ -184,22 +182,19 @@ class AddCampaignApi(APIView):
                         print("Document save")
                         # documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         # Documents.objects.bulk_create(documents_to_create)
-                
                         request.data["campaign"] = campaign.id
                         account_serializer = AccountDSerializer(data=data)
                         account_serializer.is_valid(raise_exception=True)
                         account_serializer.save()
-
                         # code for Kyc Serializer 
                         print("kyc save")
                         # request.data["adhar_card_front"] = upload_adhar[0]
                         # request.data["adhar_card_back"]  = upload_adhar[1]
-                        
                         kyc_serializer = KycSerializer(data=request.data)
                         kyc_serializer.is_valid(raise_exception=True)
                         kyc_serializer.save()
                         
-                        return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data},status=status.HTTP_200_OK)
+                        return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
                    
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -215,23 +210,6 @@ class CampaignByCategoryApi2(APIView):
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
    
-            cat_id = request.GET.get('category')
-            print(request.GET.get('limit'), " --------------------------------limit---------------------------->")
-            print(request.GET.get('page'),"-----------------------------------page---------------------------->")
-            limit = max(int(request.GET.get('limit', 0)),1) 
-            page_number = max(int(request.GET.get('page', 0)), 1)  
-            data = Campaign.objects.filter(category=pk)
-            print(len(data))
-            paginator = Paginator(data, limit)
-            try:    
-                current_page_data = paginator.get_page(page_number)
-            except EmptyPage:
-                return Response({"error": True, "message": "Page not found"},status=status.HTTP_404_NOT_FOUND)
-            serializer = CampaignSerializer(current_page_data, many=True)
-            return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
-        except Exception as e :
-            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
-
 
 class CreateCampaignApi(APIView):
     def post(self,request,*args, **kwargs):
