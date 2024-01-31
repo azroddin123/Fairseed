@@ -124,6 +124,7 @@ class LandingPageApi(APIView):
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         try : 
+            # return Response(status=status.HTTP_400_BAD_REQUEST)
             with transaction.atomic():
                 if pk :
                     data = request.data
@@ -158,19 +159,20 @@ class AddCampaignApi(APIView):
                     kyc_serializer = KycSerializer(obj, data=request.data,partial=True)
                     kyc_serializer.is_valid(raise_exception=True)
                     kyc_serializer.save()
-                    
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
                 else :
                     data = request.data
+                    print(request.FILES,"====================>")
                     print("---------------------",request.data)
                     print("camapign save")
                     request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
-                        print("serilaizer is valid")
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
                         uploaded_docs = request.FILES.getlist("documents")
+                        for item in uploaded_docs : 
+                            print(item)
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                         print("---------------Account Saved ---------------------")

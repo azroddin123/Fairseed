@@ -8,9 +8,9 @@ from django.db import models
 
 class UserSerializer(ModelSerializer):
     class Meta :
-        model = User
-        exclude = ("last_login","created_on","updated_on","is_admin")
-
+        model  = User
+        fields = "__all__"
+        
     def save(self):
         user = User(**self.validated_data)
         password = self.validated_data["password"]
@@ -22,8 +22,6 @@ class UserSerializer(ModelSerializer):
         user.save()
         return user
     
-   
-        
     
 class UserSerializer1(ModelSerializer):
     user_role = serializers.SerializerMethodField(read_only=True)
@@ -74,7 +72,6 @@ class UserAdminSerializer(ModelSerializer):
     class Meta :
         model = User
         fields = ('username','email','mobile_number','profile_pic')
-
 
 class UserRoleSerializer(ModelSerializer):
     class Meta :
