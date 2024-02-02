@@ -11,6 +11,7 @@ class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     image  = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
+    slug = models.CharField(max_length=100, unique=True,blank=True,null=True)
 
     def __str__(self):
         return self.name

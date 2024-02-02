@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/DonationsAPApi',DonationsAPApi.as_view()),
     path('api/DashboardDonationsApi',DashboardDonationsApi.as_view()),
     path('api/MyDonationApi/<str:user_id>',MyDonationApi.as_view()),
+    path('api/DashboardDonationsViewApi',DashboardDonationsViewApi.as_view()),
     
 
 

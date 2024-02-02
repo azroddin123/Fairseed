@@ -31,7 +31,7 @@ class BankTransfer(BaseModel) :
 class RazorPay(BaseModel):
     razorpay_key    = models.CharField(max_length=154)
     razorpay_secret = models.CharField(max_length=154)
-    is_enabled          = models.BooleanField(default=False)
+    is_enabled      = models.BooleanField(default=False)
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
 

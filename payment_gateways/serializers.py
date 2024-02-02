@@ -70,3 +70,9 @@ class PhonePaySerializer1(ModelSerializer):
     class Meta:
         model = PhonePay
         fields = ['id', 'phonepay_key', 'phonepay_secret', 'fee_percent', 'fee_cents', 'is_enabled']
+
+
+class BankTransferSerializer1(ModelSerializer):
+    class Meta:
+        model = BankTransfer
+        fields = ['fee_percent', 'bank_details', 'is_enabled']

@@ -1,0 +1,103 @@
+Admin Panel Api's : 
+
+1) Categories:
+get --  {{campaign}}/api/CampaignCatagoriesGetApi 
+delete -- {{campaign}}/api/CamapaignActionApi/503709ee-bb63-445d-8084-ad05ea3866fa
+put --  {{campaign}}/api/CamapaignActionApi/cad101e3-1c56-4164-8b27-f96006702f17
+post -- {{campaign}}/api/CampaignCatagoriesGetApi   
+
+2) Pages
+put -- http://127.0.0.1:8000/admin-dashboard/pages-admin/3c27ce27-a05a-41a8-89da-1bc82c16417a
+post -- http://127.0.0.1:8000/admin-dashboard/PageCreate/
+delete -- http://127.0.0.1:8000/admin-dashboard/pages-admin/3fbd63f4-f5ca-44b1-9f6b-099ecfe96cda
+get -- http://127.0.0.1:8000/admin-dashboard/PageCreate/
+
+3) Campaign
+get -- localhost:8000/campaign/api/campaignsearch/?sort_with=Title&sort_by=A to Z
+put -- {{campaign}}/api/AdminPanelCampaignView/afc23076-dffe-4814-8387-012d8e2a9a54
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search Campaign:
+ # def get(self,request):
+    #     ongoing_campaign = Campaign.objects.all()
+    #     serializer = CampaignSerializer2(ongoing_campaign, many = True)
+    #     return Response(serializer.data , status=status.HTTP_200_OK)
+
+    # def get(self, request, *args, **kwargs):       
+    #     serializer = CamapaignSearchSeraializer(data=request.query_params)
+    #     serializer.is_valid(raise_exception=True)
+    #     queryset = Campaign.objects.all()
+
+    #     start_date = serializer.validated_data.get('start_date')
+    #     username= serializer.validated_data.get('username')
+    #     title = serializer.validated_data.get('title')
+    #     email = serializer.validated_data.get('email')
+    #     mobile_number= serializer.validated_data.get('mobile_number')
+    #     start_date = serializer.validated_data.get('start_date')
+    #     goal_amount = serializer.validated_data.get('goal_amount')
+    #     fund_raised = serializer.validated_data.get('fund_raised')
+    #     id = serializer.validated_data.get('id')
+
+    #     sort_with = serializer.validated_data.get('sort_with')
+    #     print(sort_with)
+    #     sort_by = serializer.validated_data.get('sort_by')  # get('sort_by','asc')
+    #     print(sort_by)
+
+    #     # Check if reset parameter is present
+    #     reset_query = self.request.query_params.get('reset', None)
+    #     if reset_query:
+    #         # Reset the queryset to its original state
+    #         queryset = Campaign.objects.all()
+
+
+    #     if username:
+    #         queryset = queryset.filter(user__username__icontains=username)
+    #     if title:
+    #         queryset= queryset.filter(title__icontains=title)
+    #     if mobile_number:
+    #         queryset = queryset.filter(user__mobile_number__icontains=mobile_number)
+    #     if email:
+    #         queryset = queryset.filter(user__email__icontains=email)
+    #     if start_date:
+    #         queryset = queryset.filter(start_date__icontains=start_date)
+    #     if goal_amount:
+    #         queryset = queryset.filter(goal_amount__icontains=goal_amount)
+    #     if fund_raised:
+    #         queryset = queryset.filter(fund_raised__icontains=fund_raised)
+    #     if id:
+    #         queryset = queryset.filter(user__id__icontains=id)
+
+    #     if sort_with:
+    #         print(sort_with)
+    #         # Map frontend field names to model field names for sorting
+    #         field_mapping = {'User': 'user__username', 'Date': 'start_date'}
+
+    #         if sort_with in field_mapping:
+    #             ordering_field = field_mapping[sort_with]
+
+    #             if sort_by == 'desc':
+    #                 ordering_field = '-' + ordering_field
+    #             queryset = queryset.order_by(ordering_field)
+
+    #         print(f'Sorting by {sort_with} in {sort_by} order')
+    #             # print(f'Final queryset: {queryset.query}')
+
+    #     serializer = CampaignSerializer2(queryset, many=True)
+
+    #     return Response(serializer.data)

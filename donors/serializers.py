@@ -4,7 +4,7 @@ from .models import Donor,Campaign
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
-
+from campaigns.models import Campaign
 
 class DonorSerializer(ModelSerializer):
     class Meta :
@@ -79,7 +79,7 @@ class DashboardDonorSerializer(ModelSerializer):
     created_on = DateTimeField(format="%d-%m-%Y %H:%M:%S")
     class Meta:
         model = Donor
-        fields = ['full_name','campaign','amount','created_on']
+        fields = ['id','full_name','campaign','amount','created_on']
 
 class DashboardDonorSerializer1(ModelSerializer):
     class Meta:
@@ -87,7 +87,7 @@ class DashboardDonorSerializer1(ModelSerializer):
         fields = ['id','full_name','pancard','campaign','amount','payment_type','comment','created_on','is_anonymous']
 
 class MyDonationSerializer(ModelSerializer):
-    created_on = DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    created_on = DateTimeField(format="%d %b, %Y")
     class Meta:
         model = Donor
         fields = ['full_name','campaign','email','amount','created_on']

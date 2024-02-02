@@ -92,6 +92,14 @@ urlpatterns = [
 
     path('api/DashboradCampaignViewApi/', DashboradCampaignViewApi.as_view()),
 
+    path('api/DashboardDonationsViewApi',DashboardDonationsViewApi.as_view()),
+
+    path('api/AdminCampaignKYCApi',AdminCampaignKYCApi.as_view()),
+
+    path('api/changed-campaigns/', ChangedCampaignsApi.as_view(), name='changed-campaigns'),
+    path('api/AdminPanelCampaignView/<str:campaign_id>', AdminPanelCampaignView.as_view()),
+
+    
 
 
 ]

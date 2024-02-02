@@ -45,6 +45,7 @@ class Donor(BaseModel):
     
 class BankTransfer(models.Model):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE)
+
 class BankTransaction(BaseModel):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE,related_name="bank_transaction")
     transaction_id   = models.CharField(max_length=124)

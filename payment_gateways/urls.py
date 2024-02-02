@@ -39,6 +39,9 @@ urlpatterns = [
     path('qrtransferapi/',QRTransferApi.as_view()),
 
     path('phonepayapi/',PhonePayApi.as_view()),
+    path('banktransferapi/',BankTransferApi.as_view()),
+
+    
 
 
 

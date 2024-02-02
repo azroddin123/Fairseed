@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.serializers import ValidationError
 from django.shortcuts import get_object_or_404
 from .email import *
+from django.db. models import Count, OuterRef, Subquery
 
 
 class UserApi(GenericMethodsMixin, APIView):
@@ -297,6 +298,18 @@ class LoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         
+
+from django.contrib.auth import logout
+
+class LogoutView(APIView):
+    def post(self, request):
+        # Call Django's logout function to logout the user
+        logout(request)
+        # print(request)
+        return Response({'message': 'Logged out successfully'})
+
+
+        
 class RegisterOTPApi(APIView):
     def post(self, request):
         try:
@@ -356,3 +369,49 @@ class VerifyOTPApi(APIView):
                 'message': 'Internal Server Error',
                 'data': str(e),
             })
+        
+
+###### Admin Panel Users #####
+        
+class User_AdminPanel(APIView):
+    def get(self, request):
+        search_query = request.query_params.get('search', None)
+        users = User.objects.all()
+
+        if search_query:
+            users = users.annotate(
+                campaigns_created_count=Subquery(
+                    Campaign.objects.filter(user=OuterRef('id')).values('user').annotate(count=Count('id')).values('count')
+                ),
+            )
+
+        serializer = UserSerializer_AdminPanel(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = AddUserSerializer_AdminPanel(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        user = get_object_or_404(User, id=pk)
+        serializer = EditUserSerializer_AdminPanel(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        user = get_object_or_404(User, id=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserEditCard_AdminPanel(APIView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = AddUserSerializer_AdminPanel(users, many=True)
+        return Response(serializer.data)

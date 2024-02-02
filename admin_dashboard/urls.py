@@ -34,6 +34,9 @@ urlpatterns = [
 ####################################################################
     path('pages-admin',PagesAPI.as_view()),
     path('pages-admin/<str:pk>',PagesAPI.as_view()),
+    path('PageCreate/',PageCreate.as_view()),
+
+    
 
 
 

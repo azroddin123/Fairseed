@@ -4,6 +4,9 @@ from .models import User,UserRole
 from rest_framework import serializers
 from django.db import models
 
+from campaigns.models import Campaign
+
+
 from django.contrib.auth.hashers import make_password
 
 
@@ -142,3 +145,84 @@ class ChangePasswordSerializer2(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(style={'input_type': 'password'})
+
+
+
+
+class UserSerializer_AdminPanel(serializers.ModelSerializer):
+    campaigns_created_count = serializers.SerializerMethodField()
+    registered_as = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'mobile_number', 'campaigns_created_count', 'user_type', 'registered_as']
+
+    def get_campaigns_created_count(self, user):
+        return Campaign.objects.filter(user=user).count()
+
+    def get_registered_as(self, user):
+        return user.created_on.strftime('%b %d, %Y') if user.created_on else None
+    
+class AddUserSerializer_AdminPanel(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'mobile_number', 'user_role', 'password', 'confirm_password', 'user_type']
+
+    def validate(self, data):
+        #Validate that the passwords match
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+        if password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
+
+    def create(self, validated_data):
+        #Create a new user with the validated data
+        confirm_password = validated_data.pop('confirm_password')
+        validated_data.pop('password', None)
+        user = User(**validated_data)
+        user.set_password(confirm_password)
+        user.save()
+        return user
+
+class EditUserSerializer_AdminPanel(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False, style={'input_type': 'password'})
+    confirm_password = serializers.CharField(write_only=True, required=False, style={'input_type': 'password'})
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'user_role', 'password', 'confirm_password']
+
+    def validate(self, data):
+        
+        password = data.get('password')
+        confirm_password = data.get('confirm_password')
+        if password and password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        validated_data.pop('confirm_password', None)
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+    
+class UserCardSerializer_AdminPanel(serializers.ModelSerializer):
+    campaigns_created_count = serializers.SerializerMethodField()
+    registered_as = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ['registered_as', 'country', 'campaigns_created_count']
+
+    def get_campaigns_created_count(self, user):
+        return Campaign.objects.filter(user=user).count()
+    
+    def get_registered_as(self, user):
+        return user.created_on.strftime('%b %d, %Y') if user.created_on else None

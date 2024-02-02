@@ -108,10 +108,6 @@ class LandingPageSettingApi(GenericMethodsMixin,APIView):
 ############################################################################################
     
 class PagesAPI(APIView):
-    # def get(self, request):
-    #     pg = Pages.objects.all()
-    #     serializer = PagesSerializer1(pg, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request,pk):
         page = get_object_or_404(Pages,id=pk)
@@ -120,5 +116,25 @@ class PagesAPI(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        try:
+            user = Pages.objects.get(pk=pk)
+            user.delete()
+            return Response({"message": "Page deleted successfully"})
+        except Pages.DoesNotExist:
+            return Response({"error": "Page not found"})
 
+class PageCreate(APIView):    
+    def post(self, request):
+        serializer = PagesSerializer2(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        pg = Pages.objects.all()
+        serializer = PagesSerializer1(pg, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 

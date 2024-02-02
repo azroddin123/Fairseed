@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer,SerializerMethodField
 from rest_framework import serializers
 from accounts.serializers import UserAdminSerializer, UserSerializer
 from donors.models import Donor
@@ -91,7 +91,7 @@ class CampaignCauseSerializer(ModelSerializer):
 class CampaigncategorySerializer1(ModelSerializer):
     class Meta:
         model  = Campaigncategory
-        exclude = ['created_on', 'updated_on', 'image'] 
+        exclude = ['created_on', 'updated_on'] 
 
 
 class CampaignSerializer2(ModelSerializer):
@@ -144,10 +144,10 @@ class CampaignAccSerailaizer(ModelSerializer):
         fields = ['rasing_for']
 
 class CamapaignAccountSerializer(ModelSerializer):
-    user_info = CampaignAccSerailaizer(source='user1')
+    # user_info = CampaignAccSerailaizer(source='user1')
     class Meta:
         model = CampaignKycBenificiary
-        fields = ['account_holder_name','account_number','bank_name','branch_name','ifsc_code','passbook_image','user_info']
+        fields = ['account_holder_name','account_number','bank_name','branch_name','ifsc_code','passbook_image']
 
 class CampaignDetailStorySerializer(ModelSerializer):
     doc = CampaignDocSerializer(source='campaign', read_only=True)
@@ -179,6 +179,12 @@ class CampaignAdminSerializer3(ModelSerializer):
         model  = Campaign
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'documents','is_featured']
 
+class CampaignAdminPSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = ['category', 'user', 'rasing_for', 'title', 'goal_amount', 'fund_raised', 'location', 'zakat_eligible', 'status', 'start_date', 'end_date', 'description', 'summary', 'is_featured', 'campaign_image' ]
+
+
 class CampaignAdminSerializer1(ModelSerializer):
     # id = SequentialIntegerField()
     user_email = serializers.EmailField(source='user.email', read_only=True)
@@ -203,3 +209,53 @@ class DashboradCampaignSerailaizer(ModelSerializer):
 #     class Meta :
 #         model  = Campaign
 #         fields = ('title','goal_amount','fund_raised','start_date','end_date','status','category','campaign_image','location','zakat_eligible','')
+
+
+class DashboardDonorSerializer1(serializers.ModelSerializer):
+    campaign_title = serializers.SerializerMethodField()
+    class Meta:
+        model = Donor
+        fields = ['id','full_name','pancard','campaign','amount','payment_type','comment','created_on','is_anonymous','campaign_title']
+
+    def get_campaign_title(self, obj):
+        # Access the campaign associated with the donor and get its title
+            if obj.campaign:
+                return obj.campaign.title
+            else:
+                return None 
+            
+class CamapaignKYCAPSerializer(ModelSerializer):
+    campaign_id = SerializerMethodField()
+    campaign_title = SerializerMethodField()
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['campaign_title','id','account_holder_name','account_number','campaign_id','bank_name','ifsc_code']
+
+    def get_campaign_id(self, obj):
+        if obj.campaign:
+            return obj.campaign.id
+        else:
+            return None
+    def get_campaign_title(self, obj):
+        if obj.campaign:
+            return obj.campaign.title
+        else:
+            return None
+        
+class CamapaignKYCViewSerializer(ModelSerializer):
+    campaign_raising_for = SerializerMethodField()
+    campaign_title = SerializerMethodField()
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['campaign_id','campaign', 'account_holder_name', 'account_number', 'bank_name', 'branch_name', 'ifsc_code', 'passbook_image', 'pan_card', 'pan_card_image', 'adhar_card', 'adhar_card_image', 'other_details', 'is_verified','campaign_raising_for','campaign_title']
+
+    def get_campaign_id(self, obj):
+        if obj.campaign:
+            return obj.campaign.rasing_for
+        else:
+            return None
+    def get_campaign_title(self, obj):
+        if obj.campaign:
+            return obj.campaign.title
+        else:
+            return None

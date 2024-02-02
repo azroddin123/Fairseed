@@ -160,6 +160,12 @@ class DashboardDonationsApi(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DashboardDonationsViewApi(APIView):
+    def get(self,request):
+        donor= Donor.objects.all()
+        serializer = DashboardDonorSerializer1(donor, many = True)
+        return Response(serializer.data , status=status.HTTP_200_OK)
     
 class MyDonationApi(APIView):
     def get(self, request, user_id):
