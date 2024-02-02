@@ -119,7 +119,7 @@ class CampaignAdminSerializer1(ModelSerializer):
 
     class Meta:
         model = Campaign
-        fields = ['id', 'title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
+        fields = ['title','user_username', 'user_email','user_mobile_number','goal_amount', 'fund_raised', 'status', 'start_date', 'end_date']
 
 # class DocumentSerializer1(ModelSerializer):
 #     model = Documents
@@ -134,17 +134,37 @@ class CampaignAdminSerializer2(ModelSerializer):
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'is_featured']
 
 class CampaignModificationSerializer(serializers.ModelSerializer):
-    modification_history = serializers.SerializerMethodField()
+    user_name = serializers.CharField(source='user.username', read_only=True)
+    class Meta:
+        model = Campaign
+        fields = ['updated_on', 'user_name']
+
+class DocumentEditSerializer(ModelSerializer):
 
     class Meta:
-        model = CampaignModification
-        fields = ['campaign_id', 'modification_history']
+        model=Documents
+        fields=['doc_file']
 
 class CampaignEditSerializer(ModelSerializer):
+    documents = DocumentEditSerializer(many=True, read_only=True)
 
     class Meta :
         model  = Campaign
-        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary']
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary', 'documents']
+
+        def update(self, instance, validated_data):
+            # Exclude 'documents' from the update
+            validated_data.pop('documents', None)
+
+            # Update Campaign model fields
+            instance.category = validated_data.get('category', instance.category)
+            instance.user = validated_data.get('user', instance.user)
+            # ... update other fields similarly
+
+            instance.save()
+
+            return instance
+
 
 class DonorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -183,7 +203,11 @@ class CampaignWithdrawalSerializer(serializers.ModelSerializer):
 #     payment_gateway = serializers.CharField(source='campaign.rasing_for')  # Change this based on your actual field
 #     date = serializers.DateField(source='campaign.end_date')
 #     status = serializers.CharField(source='campaign.status')
-        
+
+#***********************************************************************************************************#
+
+#To Get the KYC Details
+
 class CampaignCKB(serializers.ModelSerializer):
     class Meta:
         model = Campaign
@@ -207,7 +231,6 @@ class CombinedSerializer(serializers.ModelSerializer):
     campaign_id = serializers.UUIDField(source='campaign.id')
     campaign_title = serializers.CharField(source='campaign.title')
     campaign_status = serializers.CharField(source='campaign.status')
-
     class Meta:
         model = CampaignKycBenificiary
         fields = [
@@ -215,8 +238,18 @@ class CombinedSerializer(serializers.ModelSerializer):
             'campaign_id', 'campaign_title', 'campaign_status'
         ]
 
+#*****************************************************************************************************#
+#To Update the KYC details
+
+class CampaignCKB1(serializers.ModelSerializer):
+    class Meta:
+        model = Campaign
+        fields = [
+            'title', 'rasing_for', 'bank_details',
+        ]
+
 class CKBViewSerializer(serializers.Serializer):
-    campaign_details = CampaignCKB(source='campaign', read_only=True)
+    campaign_details = CampaignCKB1(source='campaign', read_only=True)
     kyc_details = CampaignKycSerializer(source='campaign.bank_details', read_only=True)
 
     class Meta:

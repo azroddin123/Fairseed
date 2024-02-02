@@ -24,6 +24,17 @@ class GeneralSetting(BaseModel):
     captcha_enabled             = models.BooleanField(default=False)
     input_field_enabled         = models.BooleanField(default=False)
    
+    date_format = models.CharField(
+        max_length=12,
+        choices=[
+            ('M d, Y', 'Feb 02, 2024'),
+            ('d M, Y', '02 Feb, 2024'),
+            ('Y-m-d', '2024-02-02'),
+            ('m/d/Y', '02/02/2024'),
+        ],
+        default='M d, Y',
+    )
+
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record
         count = GeneralSetting.objects.count()
@@ -40,8 +51,12 @@ class Keyword(BaseModel):
     name = models.CharField(max_length=50,unique=True)
    
 class Limit(BaseModel):
-    num_campaigns           = models.PositiveIntegerField()
-    max_file_size           = models.CharField(max_length=5)
+
+    VALID_NUM_CAMPAIGNS_OPTIONS = [4, 8, 12, 24, 36, 48, 60]
+    VALID_MAX_FILE_SIZE_OPTIONS = ['1 MB', '2 MB', '3 MB', '4 MB', '5 MB', '10 MB']
+
+    num_campaigns           = models.PositiveIntegerField(choices=[(option, option) for option in VALID_NUM_CAMPAIGNS_OPTIONS])
+    max_file_size           = models.CharField(max_length=5, choices=[(option, option) for option in VALID_MAX_FILE_SIZE_OPTIONS])
     campaign_min_amount     = models.PositiveIntegerField()
     donation_min_amount     = models.PositiveIntegerField()
     donation_max_amount     = models.PositiveIntegerField()
@@ -86,6 +101,18 @@ class LandingPage(BaseModel):
     avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
+
+    def save(self,*args, **kwargs):
+        # check the record count if it is one then update the existing one otherwise save the record
+        count = LandingPage.objects.count()
+        print(count)
+        if count == 0  :
+            return super(LandingPage,self).save(*args, **kwargs)
+        else :
+            obj = LandingPage.objects.all()
+            obj.delete()
+            return super(LandingPage,self).save(*args, **kwargs)
+
 
 class Pages(BaseModel):
     title       = models.CharField(max_length=50)

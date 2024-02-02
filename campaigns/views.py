@@ -227,6 +227,16 @@ class CampaignCategory1(APIView):
         serializer = CampaignCategorySerializer1(category, many = True)
         return Response(serializer.data)
     
+    def put(self, request, pk):
+        category = get_object_or_404(Campaigncategory, id=pk)
+        serializer = CampaignCategorySerializer1(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
 class CampaignDetailsApi1(APIView):
     def get(self, request):
         campaigns = Campaign.objects.all()
@@ -410,7 +420,7 @@ class CategoryAdminApi(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def put(self, request, pk):
         category = get_object_or_404(Campaigncategory, id=pk)
@@ -427,10 +437,9 @@ class CategoryAdminApi(APIView):
     
 #******************************************************************************#
     
-from django.contrib.auth.models import AnonymousUser
 
 class CampaignAdminApi(APIView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         search_query = self.request.query_params.get('search', None)
         reset_query = self.request.query_params.get('reset', None)
         sort_with = self.request.query_params.get('sort_with', None)
@@ -502,16 +511,17 @@ class CampaignAdminApi(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
 class CampaignModificationsApi(APIView):
     def get(self, request, pk):
         campaign = get_object_or_404(Campaign, id=pk)
-        modifications = campaign.modifications.all()
-        serializer = CampaignModificationSerializer(modifications, many=True)
+        serializer = CampaignModificationSerializer(campaign)
         return Response(serializer.data)
-
-#******************************************************************************#
+    
+#************************************************************************************************************************************************#
+    
+#Admin Panel --> CampaignEditApproval
+    
 class CampaignEditApproval(APIView):
     
     def get(self, request):
@@ -519,8 +529,12 @@ class CampaignEditApproval(APIView):
 
         formatted_data = []
         for campaign in campaign_edit:
+            campaign_image_url = campaign.campaign_image.url if campaign.campaign_image else None
+
             formatted_campaign = {
                 'Id': campaign.id,
+                'Campaign Image': campaign_image_url,
+                'User': campaign.user.username,
                 'Campaign': campaign.title,
                 'Changes Requested At': campaign.updated_on.strftime('%d-%m-%Y %H:%M:%S'),
                 'Goal': campaign.goal_amount,
@@ -534,60 +548,87 @@ class CampaignEditApproval(APIView):
         campaign_edit = get_object_or_404(Campaign, id=pk)
         serializer = CampaignEditSerializer(campaign_edit, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(is_reported=False)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#******************************************************************************#
+
+#************************************************************************************************************************************************#
+
+#Admin Panel --> Scholarship 
+
 class ScholarshipCAmpaigns(APIView):
 
-        def get(self, request, *args, **kwargs):
-            search_query = self.request.query_params.get('search', None)
-            reset_query = self.request.query_params.get('reset', None)
-            sort_with = self.request.query_params.get('sort_with', None)
-            sort_by = self.request.query_params.get('sort_by', None)
+    def get(self, request):
+        search_query = self.request.query_params.get('search', None)
+        reset_query = self.request.query_params.get('reset', None)
+        sort_with = self.request.query_params.get('sort_with', None)
+        sort_by = self.request.query_params.get('sort_by', None)
+        campaigns = Campaign.objects.all()
 
+        if reset_query:
+            pass
+        elif search_query:
+            campaigns = campaigns.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(user__username__icontains=search_query) |
+                Q(user__email__icontains=search_query) |
+                Q(user__mobile_number__icontains=search_query) |
+                Q(goal_amount__icontains=search_query) |
+                Q(fund_raised__icontains=search_query) |
+                Q(status__icontains=search_query) |
+                Q(start_date__icontains=search_query) |
+                Q(end_date__icontains=search_query)
+            )
+        if sort_with:
+            if sort_with == 'Sort With':
+                if sort_by == 'Lower to High':
+                    campaigns = campaigns.order_by('id')
+                elif sort_by == 'High to Low':
+                    campaigns = campaigns.order_by('-id')
+                else:
+                    campaigns = campaigns.order_by('id')
+            elif sort_with == 'Date':
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('start_date')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-start_date')
+            elif sort_with == 'Title':
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('title')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-title')
+            elif sort_with == 'User':
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('user__username')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-user__username')
+            elif sort_with == 'Status':
+                if sort_by == 'Active':
+                    campaigns = campaigns.filter(status='Active')
+                elif sort_by == 'Pending':
+                    campaigns = campaigns.filter(status='Pending')
+                elif sort_by == 'Rejected':
+                    campaigns = campaigns.filter(status='Rejected')
+                elif sort_by == 'Completed':
+                    campaigns = campaigns.filter(status='Completed')
+                if sort_by in ['Ascending', 'Lower to High', 'A to Z']:
+                    campaigns = campaigns.order_by('status')
+                elif sort_by in ['Descending', 'High to Low', 'Z to A']:
+                    campaigns = campaigns.order_by('-status')
+
+        if sort_by == 'Sort By':
             campaigns = Campaign.objects.all()
 
-            if reset_query:
-                pass
+        scholarship_campaigns = campaigns.filter(category__name='Scholarship')
+        serializer = CampaignAdminSerializer1(scholarship_campaigns, many=True)
+        return Response(serializer.data)
+    
+#************************************************************************************************************************************************#
 
-            if search_query:
-                campaigns = campaigns.filter(
-                    Q(title__icontains=search_query) |
-                    Q(description__icontains=search_query) |
-                    Q(user__username__icontains=search_query) |
-                    Q(user__email__icontains=search_query) |
-                    Q(user__mobile_number__icontains=search_query) |
-                    Q(goal_amount__icontains=search_query) |
-                    Q(fund_raised__icontains=search_query) |
-                    Q(status__icontains=search_query) |
-                    Q(start_date__icontains=search_query) |
-                    Q(end_date__icontains=search_query)
-                )
+#Admin Panel --> Reported Campaign
 
-            if sort_with:
-                if sort_with == 'Date':
-                    campaigns = campaigns.order_by('start_date')
-                elif sort_with == 'User':
-                    campaigns = campaigns.order_by('user__username')
-                elif sort_with == 'Title':
-                    campaigns = campaigns.order_by('-title')
-                elif sort_with == 'Status':
-                    campaigns = campaigns.order_by('status')
-
-            if sort_by:
-                if sort_by == 'Lower to High':
-                    campaigns = campaigns.order_by('goal_amount')
-                elif sort_by == 'High to Low':
-                    campaigns = campaigns.order_by('-goal_amount')
-
-            scholarship_campaigns = campaigns.filter(category__name='Scholarship')
-            counter = 1
-            serializer = CampaignAdminSerializer1(scholarship_campaigns, many=True, context={'counter': counter})
-            return Response(serializer.data)
-
-#******************************************************************************#
 class ReportedCampaigns(APIView):
 
     def get(self, request):
@@ -745,20 +786,34 @@ class WithdrawalCampaignView(APIView):
     
 #******************************************************************************#
 #working on this
-# class CampaignKycBenificiaryAPI(APIView):
-#     parser_classes = [FileUploadParser]
+class CampaignKycBenificiaryAPI(APIView):
+    parser_classes = [FileUploadParser]
 
-#     def get(self, request):
-#         ckb = CampaignKycBenificiary.objects.all()
-#         serializer = CombinedSerializer(ckb, many=True)
-#         return Response(serializer.data)
+    def get(self, request):
+        ckb = CampaignKycBenificiary.objects.all()
+        serializer = CombinedSerializer(ckb, many=True)
+        return Response(serializer.data)
     
-#     def patch(self, request, *args, **kwargs):
-#         u2 = get_object_or_404(CampaignKycBenificiary, id=kwargs.get('pk'))
-#         serializer = CKBViewSerializer(u2, data=request.data, partial=True)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk):
+        campaign_kyc = get_object_or_404(CampaignKycBenificiary, id=pk)
 
+        # Separate data for Campaign and CampaignKycBenificiary
+        campaign_data = request.data.get('campaign_details', {})
+        kyc_data = request.data.get('kyc_details', {})
+
+        # Validate and update Campaign data
+        ckb_serializer = CampaignCKB1(campaign_kyc.campaign, data=campaign_data, partial=True)
+        if not ckb_serializer.is_valid():
+            return Response({'campaign_details': ckb_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        ckb_serializer.save()
+
+        # Validate and update CampaignKycBenificiary data
+        kyc_serializer = CampaignKycSerializer(campaign_kyc, data=kyc_data, partial=True)
+        if not kyc_serializer.is_valid():
+            return Response({'kyc_details': kyc_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        kyc_serializer.save()
+
+        # Serialize the updated object using CKBViewSerializer
+        updated_serializer = CKBViewSerializer(campaign_kyc)
+        return Response(updated_serializer.data)
 ###############################################################################################################################################

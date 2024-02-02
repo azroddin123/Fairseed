@@ -69,6 +69,13 @@ class PageSerializer(ModelSerializer):
         fields = "__all__"
 
 ########################################################################################################################
+class LimitSerializer1(ModelSerializer):
+    class Meta :
+        model = Limit
+        exclude = ('created_on', 'updated_on')
+
+#***********************************************************************************************************************#
+
 class LandingPageSerializer1(ModelSerializer):
     class Meta:
         model=LandingPage

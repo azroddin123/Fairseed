@@ -5,9 +5,12 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
+
 from portals.GM2 import GenericMethodsMixin
+
 from .models import *
 from .serializers import *
+
 
 class PagesAPi(APIView):
     model = Pages
@@ -46,9 +49,17 @@ class LandingPageSettingApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-#####################################################################################################
+####################################################################################################################################################################################
+    
+from django.shortcuts import get_object_or_404
+
+#***************************************************************************************************************************************************************#
+
+#Admin Panel --> Landing PAge
+
 class LandingPageAPI(APIView):
     def get(self, request):
+        print("v")
         landing_pages = LandingPage.objects.all()
 
         if not landing_pages:
@@ -76,20 +87,32 @@ class LandingPageAPI(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#***************************************************************************************************************************************************************#
+    
+#Admin Panel --> General Settings
+    
 class GeneralSettingApi1(APIView):
-    def get(self,request):
+    def get(self, request):
         general = GeneralSetting.objects.all()
-        serializer = GSSerializer(general, many = True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = GSSerializer(general, many=True)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         serializer = GSSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    def put(self, request, pk):
+        general = get_object_or_404(GeneralSetting, id=pk)
+        serializer = GSSerializer(general, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#Admin Panel -- > Keyword(FK) --> General setting
 class KeywordsApi1(APIView):
     def post(self, request):
         serializer = KeywordSerializer(data=request.data)
@@ -98,34 +121,63 @@ class KeywordsApi1(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         keywords = Keyword.objects.all()
         serializer = KeywordSerializer(keywords, many=True)
         return Response(serializer.data)
 
+    def delete(self, request, pk):
+        keyword = get_object_or_404(Keyword, id=pk)
+        keyword.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+#***************************************************************************************************************************************************************#
+
+#Admin Panel --> General Settings --> Limit
+    
 class LimitApi1(APIView):
-    #No need to restrict the data through backend, you have to change this code for now leave this api
-    VALID_NUM_CAMPAIGNS_OPTIONS = [4, 8, 12, 24, 36, 48, 60]
-    VALID_MAX_FILE_SIZE_OPTIONS = ['1 MB', '2 MB', '3 MB', '4 MB', '5 MB', '10 MB']
+    def get(self, request):
+        limits = Limit.objects.all()
+        serializer = LimitSerializer1(limits, many=True)
+        return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        if 'num_campaigns' in data and data['num_campaigns'] not in self.VALID_NUM_CAMPAIGNS_OPTIONS:
-            return Response({'num_campaigns': ['Invalid value']}, status=status.HTTP_400_BAD_REQUEST)
-
-        if 'max_file_size' in data and data['max_file_size'] not in self.VALID_MAX_FILE_SIZE_OPTIONS:
-            return Response({'max_file_size': ['Invalid value']}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = LimitSerializer(data=data)
-
+        serializer = LimitSerializer1(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        limit = get_object_or_404(Limit, id=pk)
+        serializer = LimitSerializer1(limit, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#***************************************************************************************************************************************************************#
 
+#Admin Panel --> General Settings --> Social Profiles
+    
+class SocialProfile1(APIView):
     def get(self, request):
-        keywords = Limit.objects.all()
-        serializer = LimitSerializer(keywords, many=True)
+        social_profile = SocialProfile.objects.all().delete()
+        serializer = SocialProfileSerializer(social_profile, many = True)
         return Response(serializer.data)
     
-############################################################################################################
+    def post(self, request, *args, **kwargs):
+        serializer = SocialProfileSerializer(data=request.data)
+
+        if serializer.is_valid():
+            SocialProfile.objects.all().delete()
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def put(self, request, pk):
+        sp = get_object_or_404(SocialProfile, id=pk)
+        serializer = SocialProfileSerializer(sp, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+######################################################################################################################################################################################

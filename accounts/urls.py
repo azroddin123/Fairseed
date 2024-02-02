@@ -15,6 +15,11 @@ urlpatterns = [
     #Admin Panel Dashboard latest members(rest 2 api's in campaign urls.py)
     path('api/admin/latest-members/',LatestMembers.as_view()),
     
+    #Admin Panel --> Users
+    path('api/admin/user/',User_AdminPanel.as_view()), #Admin Panel
+    path('api/admin/user/<str:pk>/',User_AdminPanel.as_view()), #Admin Panel
+    path('api/admin/user_card/',UserEditCard_AdminPanel.as_view()),
+
     path('api/send-email/', RegisterOTPApi.as_view()),
     path('api/verify-otp/',VerifyOTPApi.as_view()),
     path('api/login/',LoginView.as_view()),
@@ -24,11 +29,8 @@ urlpatterns = [
     path('api/forgot-password/', ForgotPasswordApi.as_view()),
     path('api/verification-password/', VerificationOtpApi.as_view()),
     path('api/set-new-password/', SetNewPasswordApi.as_view()),
-    path('api/admin/user/',User_AdminPanel.as_view()), #Admin Panel
-    path('api/admin/user/<str:pk>/',User_AdminPanel.as_view()), #Admin Panel
     path('api/change-password/', UserChangePasswordSettingView.as_view(), name='change-password'),
     path('api/change-password/<str:pk>/', UserChangePasswordSettingView.as_view(), name='change-password'),
-    path('api/admin/user_card/',UserEditCard_AdminPanel.as_view()),
     ###########################################################################
     
 ]

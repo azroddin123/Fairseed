@@ -256,8 +256,8 @@ class AddUserSerializer_AdminPanel(serializers.ModelSerializer):
         return user
 
 class EditUserSerializer_AdminPanel(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=False, style={'input_type': 'password'})
-    confirm_password = serializers.CharField(write_only=True, required=False, style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User

@@ -45,24 +45,30 @@ urlpatterns = [
     path('api/admin/campaign_edit_Approval/',CampaignEditApproval.as_view()),
     path('api/admin/campaign_edit_Approval/<str:pk>/',CampaignEditApproval.as_view()),
     
+    #Admin Panel --> Category
     path('api/campaign_category/',CampaignCategory1.as_view()),
     path('api/campaign_category/<str:pk>/',CampaignCategory1.as_view()),
+
+    #Admin Panel Reported Campaigns
+    path('api/admin/reported_campaigns/',ReportedCampaigns.as_view()),
+    path('api/admin/reported_campaigns/<uuid:pk>/',ReportedCampaigns.as_view()),
+
+    #Admin Panel Scholarship
+    path('api/admin/scholarship_campaigns/',ScholarshipCAmpaigns.as_view()),
+    path('api/admin/scholarship_campaigns/<str:pk>/',ScholarshipCAmpaigns.as_view()),
+
     path('api/campaign_list/',CampaignDetailsApi1.as_view()),
     path('api/landing_page/causes_by_category/',CausesbyCategoryAPI.as_view()),
     path('api/landing_page/card/', CardAPIViewPagination.as_view()),
     path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
     path('api/recent_donors',RecentDonors.as_view()),
     # path('api/recent_donor/<str:pk>',RecentDonors.as_view()),
-    path('api/admin/scholarship_campaigns/',ScholarshipCAmpaigns.as_view()),
-    path('api/admin/scholarship_campaigns/<str:pk>/',ScholarshipCAmpaigns.as_view()),
-    path('api/admin/reported_campaigns/',ReportedCampaigns.as_view()),
-    path('api/admin/reported_campaigns/<uuid:pk>/',ReportedCampaigns.as_view()),
     path('api/donate_page_card/<str:pk>/',DonateToCampaignCard.as_view()), #Donate To Campaign Page Card
     path('api/successful_campaigns/',CampaignBycategory.as_view()), #Successful campaign page
     path('api/admin/withdrawal/',WithdrawalCampaignView.as_view()), #Admin panel existing Withdrawal
     # path('api/admin/withdrawal_inside/<str:pk>',WithdrawalInsideView.as_view()), #Admin panel existing Withdrawal
-    # path('api/admin/ckb/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
-    # path('api/admin/ckb/<str:pk>/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
+    path('api/admin/ckb/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
+    path('api/admin/ckb/<str:pk>/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
     # path('card/', CardAPIView.as_view()),
     ##############################################################################################################################
 

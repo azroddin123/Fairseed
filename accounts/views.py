@@ -1,5 +1,6 @@
 import random
-
+from portals.services import generate_token,my_mail
+from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
@@ -61,6 +62,7 @@ import logging
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Subquery, OuterRef, Count
+
 class RegisterOTPApi(APIView):
     def post(self, request):
         try:
@@ -225,6 +227,32 @@ class LoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+# class LoginView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+
+#         user = User.objects.filter(email=email).first()
+
+#         if user is None:
+#             return Response({"error": False, "data": "User Not Exists"}, status=status.HTTP_404_NOT_FOUND)
+
+#         # Use check_password for secure password comparison
+#         password_match = check_password(password, user.password)
+
+#         if password_match:
+#             token = generate_token(user.email)
+#             serializer = UserSerializer1(user)
+#             data = {
+#                 "error": True,
+#                 "message": "User logged in successfully",
+#                 "user_info": serializer.data,
+#                 "token": token
+#             }
+#             return Response(data, status=status.HTTP_200_OK)
+#         else:
+#             return Response({"error": True, "message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
 #******************************************************************************#
 class EmailSMTP(APIView):
     def post(self, request, *args, **kwargs):
@@ -315,15 +343,11 @@ class LatestMembers(APIView):
 #******************************************************************************#
 class UserChangePasswordSettingView(APIView):
     def put(self, request, pk):
-        # Use get_object_or_404 to get the user based on the provided pk
         user = get_object_or_404(User, pk=pk)
-
-        # Check if the user is authenticated
         if request.user.is_authenticated and request.user == user:
             serializer = UserChangePasswordSerializer(data=request.data, context={'request': request})
 
             if serializer.is_valid():
-                # Set the user_id in the serializer to the correct user's id
                 serializer.validated_data['user_id'] = str(user.id)
                 serializer.save()
                 return Response({'detail': 'Password changed successfully.'}, status=status.HTTP_200_OK)
@@ -332,7 +356,10 @@ class UserChangePasswordSettingView(APIView):
         else:
             return Response({'detail': 'Unauthorized to change password for this user.'}, status=status.HTTP_403_FORBIDDEN)
 
-#******************************************************************************#
+#************************************************************************************************************************************************#
+
+#Admin Panel --> USers
+        
 class User_AdminPanel(APIView):
     def get(self, request):
         search_query = request.query_params.get('search', None)

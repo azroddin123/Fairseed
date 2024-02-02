@@ -55,10 +55,25 @@ urlpatterns = [
     # CRUD API for General Setting
    
 ####################################################################################################
+    
+#Admin Panel --> Landing PAge
 path('api/admin/landing-page/',LandingPageAPI.as_view()),
-# path('api/admin/general/',GeneralSettingApi1.as_view()),  #no such column: admin_dashboard_generalsetting.new_registration_enabled
+
+#Admin Panel --> General Settings
+path('api/admin/general-settings/',GeneralSettingApi1.as_view()),
+path('api/admin/general-settings/<str:pk>/',GeneralSettingApi1.as_view()),
+
+#Admin Panel -- > Keyword(FK) --> General setting
 path('api/admin/keyword/',KeywordsApi1.as_view()),
-path('api/limit/',LimitApi1.as_view()),
+
+#Admin Panel --> General Settings --> Limit
+path('api/admin/limit/',LimitApi1.as_view()),
+path('api/admin/limit/<str:pk>/',LimitApi1.as_view()),
+
+#Admin Panel --> General Settings --> Social Profiles
+path('api/admin/social_profile/',SocialProfile1.as_view()),
+path('api/admin/social_profile/<str:pk>/',SocialProfile1.as_view()),
+
 ####################################################################################################
 ]
 
