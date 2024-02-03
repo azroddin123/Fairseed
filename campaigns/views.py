@@ -216,8 +216,10 @@ class CreateCampaignApi(APIView):
                         print("adding docs")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
+                       
                         account = request.data.get('account_details')
                         obj = AccountDetail.objects.create(campaign=campaign,account_holder_name = account["account_holder_name"],account_number=account["account_number"],bank_name=account["bank_name"],branch_name=account["branch_name"],ifsc_code = account["ifsc_code"]) 
+                    
                     # return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
                     # account_details = request.data.get('account_details')
                     # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
@@ -258,3 +260,61 @@ class CampaignFilterAPI(APIView):
 
 
 # Days left 
+
+class AddCampaignApi2(APIView):
+    def post(self,request,pk=None,*args, **kwargs):
+        try : 
+            # return Response(status=status.HTTP_400_BAD_REQUEST)
+            with transaction.atomic():
+                if pk :
+                    data = request.data
+                    print("---------------------",request.data)
+                    campaign = Campaign.objects.get(id=pk)
+                    c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
+                    c_serializer.is_valid(raise_exception=True)
+                    c_serializer.save()
+                    print("------------------Updating Campaigns-----------------------")
+                    print(campaign.id,campaign)
+                    upload_adhar  = request.FILES.getlist("adhar")
+                    uploaded_docs = request.FILES.getlist("documents")
+                    print(uploaded_docs)
+                    if uploaded_docs:
+                        print("deletting Docs")
+                        Documents.objects.filter(campaign=campaign).delete()
+                        print("------------------Updating Docs-----------------------")
+                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        Documents.objects.bulk_create(documents_to_create)
+                    # Acocunt Details 
+                    print("----------------------Updating Accounts----------------------")
+                    obj = BankKYC.objects.get(campaign=campaign)
+                    request.data["campaign"] = campaign.id
+                    bkc_serializer = BankKYCSerializer(obj, data=request.data,partial = True)
+                    bkc_serializer.is_valid(raise_exception=True)
+                    bkc_serializer.save()
+                    return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
+                else :
+                    data = request.data
+                    print(request.FILES,"====================>")
+                    print("---------------------",request.data)
+                    print("camapign save")
+                    request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
+                    campaign_serializer = CampaignSerializer(data=request.data)
+                    if campaign_serializer.is_valid(raise_exception=True):
+                        campaign = campaign_serializer.save()
+                        print("---------------Document saved---------------------")
+                        uploaded_docs = request.FILES.getlist("documents")
+                        for item in uploaded_docs : 
+                            print(item)
+                        
+                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        Documents.objects.bulk_create(documents_to_create)
+                       
+                        print("---------------Bank KYC Saving---------------------")
+                        request.data["campaign"] = campaign.id
+                        bkc_serializer = BankKYCSerializer(data=data)
+                        bkc_serializer.is_valid(raise_exception=True)
+                        bkc_serializer.save()
+                        print("---------------Bank KYC  Saved ---------------------")
+                        return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

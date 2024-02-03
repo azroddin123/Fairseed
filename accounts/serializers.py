@@ -22,7 +22,6 @@ class UserSerializer(ModelSerializer):
         user.save()
         return user
     
-    
 class UserSerializer1(ModelSerializer):
     user_role = serializers.SerializerMethodField(read_only=True)
     class Meta :
