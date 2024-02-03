@@ -9,6 +9,9 @@ class CustomAuthentication:
         self.get_response = get_response
 
     def __call__(self, request):
+        print("--------------------------------------------->")
+        print(request.headers)
+        print("--------------------------------------------->")
         if request.path.startswith("/admin/") or request.path.endswith("nt/") :
             request.thisUser = None
             response = self.get_response(request)
