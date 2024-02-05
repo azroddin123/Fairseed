@@ -94,14 +94,20 @@ class CampaigncategorySerializer1(ModelSerializer):
         exclude = ['created_on', 'updated_on'] 
 
 
+class CampaigncategorySerializer2(ModelSerializer):
+    class Meta:
+        model  = Campaigncategory
+        fields = ['id','name','is_active']
+
+
 class CampaignSerializer2(ModelSerializer):
     user_info = UserAdminSerializer(source='user', read_only=True)
     class Meta:
         model = Campaign
         fields = ('id','title','goal_amount','fund_raised','start_date','end_date','status','user','user_info')
 
-class CamapaignSearchSeraializer(serializers.Serializer):
-    id= serializers.UUIDField(required=False)
+class CampaignSearchSerializer(serializers.Serializer):
+    id = serializers.UUIDField(required=False)
     username = serializers.CharField(required=False)
     title = serializers.CharField(required=False)
     email = serializers.CharField(required=False)
@@ -109,8 +115,7 @@ class CamapaignSearchSeraializer(serializers.Serializer):
     goal_amount = serializers.CharField(required=False)
     fund_raised = serializers.CharField(required=False)
     status = serializers.CharField(required=False)
-    start_date = serializers.CharField(required=False)
-
+    start_date = serializers.DateField(required=False)
     # sort_by = serializers.CharField(allow_blank=True, required=False)
     # sort_order = serializers.ChoiceField(choices=[('asc', 'Ascending'), ('desc','Descending')], allow_blank=True, required=False)
 
@@ -182,8 +187,13 @@ class CampaignAdminSerializer3(ModelSerializer):
 class CampaignAdminPSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
-        fields = ['category', 'user', 'rasing_for', 'title', 'goal_amount', 'fund_raised', 'location', 'zakat_eligible', 'status', 'start_date', 'end_date', 'description', 'summary', 'is_featured', 'campaign_image' ]
+        fields = ['category', 'title', 'goal_amount', 'location', 'zakat_eligible', 'status', 'end_date', 'description', 'summary', 'is_featured', 'campaign_image' ]
 
+class CampaignModificationSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.username', read_only=True)
+    class Meta:
+        model = Campaign
+        fields = ['updated_on', 'user_name']
 
 class CampaignAdminSerializer1(ModelSerializer):
     # id = SequentialIntegerField()
@@ -229,7 +239,7 @@ class CamapaignKYCAPSerializer(ModelSerializer):
     campaign_title = SerializerMethodField()
     class Meta:
         model = CampaignKycBenificiary
-        fields = ['campaign_title','id','account_holder_name','account_number','campaign_id','bank_name','ifsc_code']
+        fields = ['campaign_title','id','account_holder_name','account_number','campaign_id','bank_name','ifsc_code','is_verified']
 
     def get_campaign_id(self, obj):
         if obj.campaign:
@@ -249,13 +259,64 @@ class CamapaignKYCViewSerializer(ModelSerializer):
         model = CampaignKycBenificiary
         fields = ['campaign_id','campaign', 'account_holder_name', 'account_number', 'bank_name', 'branch_name', 'ifsc_code', 'passbook_image', 'pan_card', 'pan_card_image', 'adhar_card', 'adhar_card_image', 'other_details', 'is_verified','campaign_raising_for','campaign_title']
 
-    def get_campaign_id(self, obj):
+    def get_campaign_raising_for(self, obj):
         if obj.campaign:
             return obj.campaign.rasing_for
         else:
             return None
+        
+    def get_campaign_id(self, obj):
+        if obj.campaign:
+            return obj.campaign.id
+        else:
+            return None
+
     def get_campaign_title(self, obj):
         if obj.campaign:
             return obj.campaign.title
         else:
             return None
+        
+class CamapaignViewKYCViewSerializer(ModelSerializer):
+    campaign_raising_for = SerializerMethodField()
+    updated_on = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['campaign_id', 'account_holder_name', 'account_number', 'bank_name', 'branch_name', 'ifsc_code', 'passbook_image', 'pan_card', 'pan_card_image', 'adhar_card', 'adhar_card_image', 'other_details', 'is_verified','updated_on','campaign_raising_for']
+
+    def get_campaign_raising_for(self, obj):
+        if obj.campaign:
+            return obj.campaign.rasing_for
+        else:
+            return None
+            
+    def get_updated_on(self, obj):
+        if obj.updated_on:
+            return obj.updated_on.strftime('%d-%m-%Y')  # Format the datetime as 'dd-mm-yyyy'
+        else:
+            return None
+        
+class CamapaignAdminPKYCSerializer(ModelSerializer):
+    campaign_raising_for = SerializerMethodField()
+    campaign_title = SerializerMethodField()
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['account_holder_name', 'account_number', 'bank_name', 'branch_name', 'ifsc_code', 'passbook_image', 'pan_card', 'pan_card_image', 'adhar_card', 'adhar_card_image', 'other_details', 'is_verified','campaign_raising_for','campaign_title']
+
+    def get_campaign_raising_for(self, obj):
+        if obj.campaign:
+            return obj.campaign.rasing_for
+        else:
+            return None
+
+    def get_campaign_title(self, obj):
+        if obj.campaign:
+            return obj.campaign.title
+        else:
+            return None       
+    # def get_campaign_id(self, obj):
+    #     if obj.campaign:
+    #         return obj.campaign.id
+    #     else:
+    #         return None

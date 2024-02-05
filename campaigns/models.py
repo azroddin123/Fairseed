@@ -4,6 +4,7 @@ from accounts.models import User
 
 from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
+import reversion
 
 
 
@@ -54,6 +55,8 @@ class Campaign(BaseModel):
     campaign_image  = models.ImageField('static/media_files/campaign_images/', null=True, blank=True)
     campaign_view = models.OneToOneField(CampaignView, on_delete=models.SET_NULL, null=True, related_name='associated_campaign')
 
+from django.utils import timezone
+
 # want to combine these two models 
 class CampaignKycBenificiary(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_details')
@@ -70,6 +73,15 @@ class CampaignKycBenificiary(BaseModel):
     adhar_card_image    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
+    updated_on          = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:  # If the instance already exists in the database
+            original_instance = CampaignKycBenificiary.objects.get(pk=self.pk)
+            if original_instance.is_verified != self.is_verified:  # Check if is_verified field has changed
+                self.updated_on = timezone.now()  # Update updated_on field only if is_verified has changed
+        super().save(*args, **kwargs)
+    
 
 
 # class KycDetails(BaseModel):

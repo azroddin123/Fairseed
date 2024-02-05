@@ -85,7 +85,7 @@ urlpatterns = [
 
     path('api/ReportedCampaignApi', ReportedCampaignApi.as_view()),
 
-    path('api/admin/campaign/', CampaignAdminApi.as_view()),
+    # path('api/admin/campaign/', CampaignAdminApi.as_view()),
     path('api/RecordCampaignView/<str:campaign_id>', RecordCampaignView.as_view()),
 
     path('api/DashboradCampaignApi/', DashboradCampaignApi.as_view()),
@@ -98,8 +98,17 @@ urlpatterns = [
 
     path('api/changed-campaigns/', ChangedCampaignsApi.as_view(), name='changed-campaigns'),
     path('api/AdminPanelCampaignView/<str:campaign_id>', AdminPanelCampaignView.as_view()),
-
     
+    path('api/CampaignRevisionApi/<str:pk>', CampaignRevisionApi.as_view()),
+
+    path('api/AdminCampaignViewBankKYCApi',AdminCampaignViewBankKYCApi.as_view()),
+
+    path('verify-kyc/<str:pk>/', VerifyKYCAPI.as_view(), name='verify_kyc'),
+
+    path('api/AdminPCampaignKYCEditApi/<str:pk>/', AdminPCampaignKYCEditApi.as_view()),
+
+
+
 
 
 ]

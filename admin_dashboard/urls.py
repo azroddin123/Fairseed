@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import * 
-from campaigns.views import CampaignAdminApi
+# from campaigns.views import CampaignAdminApi
 urlpatterns = [
     # add general setting in the project 
     path('gs',GeneralSettingApi.as_view()),
@@ -28,8 +28,8 @@ urlpatterns = [
     path('landing-page/<str:pk>',LandingPageSettingApi.as_view()),
 
 
-    path('campaign-admin',CampaignAdminApi.as_view()),
-    path('campaign-admin/<str:pk>',CampaignAdminApi.as_view()),
+    # path('campaign-admin',CampaignAdminApi.as_view()),
+    # path('campaign-admin/<str:pk>',CampaignAdminApi.as_view()),
 
 ####################################################################
     path('pages-admin',PagesAPI.as_view()),

@@ -109,16 +109,23 @@ class DashboardAPI(APIView):
         return Response(serialized_data, status=status.HTTP_200_OK)
     
 class DonationsAPApi(APIView):
-    def get(self,request):
-        ongoing_campaign = Donor.objects.all()
-        serializer = DonorSerializer2(ongoing_campaign, many = True)
-        return Response(serializer.data , status=status.HTTP_200_OK)
+    # def get(self, request):
+    #     # Retrieve all donors
+    #     ongoing_campaign = Donor.objects.all()
+    #     # Serialize the donor data
+    #     serializer = DonorSerializer2(ongoing_campaign, many=True)
+    #     # Return serialized data in the response
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get(self, request, *args, **kwargs):
+        # Instantiate the serializer with the query parameters
         serializer = DonorSerializer2(data=request.query_params)
+        # Validate the serializer
         serializer.is_valid(raise_exception=True)
+        # Get all donors
         queryset = Donor.objects.all()
 
+        # Extract validated data from the serializer
         full_name = serializer.validated_data.get('full_name')
         amount = serializer.validated_data.get('amount')
         email = serializer.validated_data.get('email')
@@ -143,9 +150,9 @@ class DonationsAPApi(APIView):
         if country:
             queryset = queryset.filter(country__icontains=country)
 
-
+        # Serialize the filtered donor data
         serializer = DonorSerializer2(queryset, many=True)
-
+        # Return serialized data in the response
         return Response(serializer.data)
     
 class DashboardDonationsApi(APIView):

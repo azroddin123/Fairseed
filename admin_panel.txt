@@ -15,6 +15,44 @@ get -- http://127.0.0.1:8000/admin-dashboard/PageCreate/
 3) Campaign
 get -- localhost:8000/campaign/api/campaignsearch/?sort_with=Title&sort_by=A to Z
 put -- {{campaign}}/api/AdminPanelCampaignView/afc23076-dffe-4814-8387-012d8e2a9a54
+search date --- localhost:8000/campaign/api/campaignsearch/?start_date=2024-01-02&end_date=2024-06-01
+
+
+4) PG Setting
+general : (Choices -- pending)
+paypal : 
+get / post -- {{payment_gateway}}paypalapi/
+stripe : 
+get / post  -- {{payment_gateway}}stripeapi/
+
+Like this all options :)
+
+5) Campaign KYC
+get -- {{campaign}}/api/AdminCampaignKYCApi
+put(edit) -- {{campaign}}/api/AdminPCampaignKYCEditApi/0fa54fc9-8ddf-4234-a0f7-c7e26454b1ca/
+
+6) Withdrawl
+
+
+Dashboard Api :
+
+1) My Donation
+get -- {{donor}}MyDonationApi/5461cad4-8fd0-4a3b-bc04-b1fd96b1c13a
+
+2) Campaign
+get -- {{campaign}}/api/DashboradCampaignApi
+put (edit) -- {{campaign}}/api/AdminPanelCampaignView/afc23076-dffe-4814-8387-012d8e2a9a54
+put (edit bank and kyc) -- {{campaign}}/api/AdminCampaignKYCApi
+put (finalize camaign) --  {{campaign}}/verify-kyc/0fa54fc9-8ddf-4234-a0f7-c7e26454b1ca/
+
+
+
+
+
+
+for updating only specifc field...
+pip install django-dirtyfields
+
 
 
 
