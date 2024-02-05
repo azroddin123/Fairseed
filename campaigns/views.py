@@ -4,6 +4,7 @@ import uuid
 from datetime import timedelta
 
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import F, Q, Sum
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
@@ -16,6 +17,10 @@ from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import os
+from django.conf import settings
 
 from donors.models import Donor
 from portals.GM1 import GenericMethodsMixin
@@ -250,6 +255,13 @@ class CampaignDetailsApi1(APIView):
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
     
+    def put(self, request, pk):
+        campaigns = get_object_or_404(Campaign, id=pk)
+        serializer = CampaignSerializer(campaigns, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 #******************************************************************************#
 class CardAPIViewPagination(APIView):
    
@@ -523,15 +535,14 @@ class CampaignModificationsApi(APIView):
 #Admin Panel --> CampaignEditApproval
     
 class CampaignEditApproval(APIView):
-    
     def get(self, request):
-        campaign_edit = Campaign.objects.all()
+        campaign_edit = Campaign.objects.filter(updated_on__gt=F('created_on'))
 
-        formatted_data = []
+        cea = []
         for campaign in campaign_edit:
             campaign_image_url = campaign.campaign_image.url if campaign.campaign_image else None
 
-            formatted_campaign = {
+            campaign_data = {
                 'Id': campaign.id,
                 'Campaign Image': campaign_image_url,
                 'User': campaign.user.username,
@@ -541,21 +552,31 @@ class CampaignEditApproval(APIView):
                 'Campaign Created At': campaign.created_on.strftime('%d-%m-%Y %H:%M:%S'),
                 'Deadline': campaign.end_date.strftime('%d-%m-%Y')
             }
-            formatted_data.append(formatted_campaign)
-        return Response(formatted_data)
+            cea.append(campaign_data)
+
+        return Response(cea)
     
     def put(self, request, pk):
         campaign_edit = get_object_or_404(Campaign, id=pk)
         serializer = CampaignEditSerializer(campaign_edit, data=request.data)
-        if serializer.is_valid():
-            serializer.save(is_reported=False)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        action = request.data.get('action')
 
+        with transaction.atomic():
+            if action == 'save_and_approve':
+                print("SaveApprovalWorking")
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+            elif action == 'reject_modifications':
+                print("RejectWorking")
+                return Response(CampaignEditSerializer(campaign_edit).data)
+            else:
+                return Response({'error': 'Invalid action specified'}, status=status.HTTP_400_BAD_REQUEST)
 #************************************************************************************************************************************************#
 
-#Admin Panel --> Scholarship 
+#Admin Panel --> Scholarship
 
 class ScholarshipCAmpaigns(APIView):
 
@@ -631,33 +652,71 @@ class ScholarshipCAmpaigns(APIView):
 
 class ReportedCampaigns(APIView):
 
-    def get(self, request):
-            reported_campaigns = Campaign.objects.filter(is_reported=True)
-            formatted_data = []
-            for index, campaign in enumerate(reported_campaigns, start=1):
-                formatted_campaign = {
-                    'Id': index,
-                    'User': campaign.user.username,
-                    'Campaign': campaign.title,
-                    'Date': campaign.end_date.strftime('%b %d, %Y')
-                }
-                formatted_data.append(formatted_campaign)
+    parser_classes = [MultiPartParser, FormParser]
 
-            return Response(formatted_data)
+    def get(self, request):
+        reported_campaigns = Campaign.objects.filter(is_reported=True)
+        formatted_data = []
+
+        for campaign in reported_campaigns:
+            formatted_campaign = {
+                'User': campaign.user.username,
+                'Campaign': campaign.title,
+                'Date': campaign.updated_on.strftime('%b %d, %Y')
+            }
+            formatted_data.append(formatted_campaign)
+
+        return Response(formatted_data)
+
     
+    parser_classes = [MultiPartParser, FormParser]
+
     def put(self, request, pk):
         campaign_edit = get_object_or_404(Campaign, id=pk)
-        serializer = CampaignEditSerializer(campaign_edit, data=request.data)
+        documents_data = request.data.pop('documents', [])
+
+    
+        for doc_data in documents_data:
+            doc_name = doc_data.name
+            doc_file = doc_data
+
+            if isinstance(doc_file, InMemoryUploadedFile):
+                file_path = save_uploaded_file(doc_file)
+                Documents.objects.create(campaign=campaign_edit, doc_name=doc_name, doc_file=file_path)
+            else:
+                Documents.objects.create(campaign=campaign_edit, doc_name=doc_name, doc_file=doc_file)
+
+        status_value = request.data.get('status', campaign_edit.status)
+        commentbox = request.data.get('commentbox', campaign_edit.commentbox)
+
+        if status_value == 'rejected' and not commentbox:
+            return Response({"detail": "Comment is required when the status is 'rejected'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if status_value == 'rejected' and commentbox:
+            return Response({"detail": "Invalid request. Cannot update with status 'rejected' and non-empty commentbox."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = CampaignReportSerializer(campaign_edit, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk):
         delete_reported_campaign = get_object_or_404(Campaign, id=pk)
         delete_reported_campaign.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def save_uploaded_file(uploaded_file):
+    file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
+    with open(file_path, 'wb+') as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+    return file_path
     
+    #For revision address consider class CampaignModificationsApi
+
 #******************************************************************************#
 class DonateToCampaignCard(APIView):
 
@@ -753,67 +812,44 @@ class CampaignBycategory(APIView):
     
 #working on this
     
-# class WithdrawalCampaignView(APIView):
-    # def get(self, request, pk=None):
-    #     if pk is not None:
-    #         campaign = Campaign.objects.filter(pk=pk).first()
-    #         if not campaign:
-    #             return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    #         serializer = WithdrawalCampaignSerializer(campaign)
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     else:
-    #         campaigns = Campaign.objects.all()
-    #         serializer = CampaignWithdrawalSerializer(campaigns, many=True)
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-
 class WithdrawalCampaignView(APIView):
     def get(self, request):
-        withdrawal_campaign = Campaign.objects.all()
-        serializer = CampaignWithdrawalSerializer(withdrawal_campaign, many = True)
+        current_date = timezone.now().date()
+        withdrawal_campaign = Campaign.objects.filter(end_date__lt=current_date)
+        serializer = CampaignWithdrawalSerializer(withdrawal_campaign, many=True)
         return Response(serializer.data)
     
-# class WithdrawalInsideView(APIView):
-#     def get(self, request, pk):
-#         try:
-#             campaign = Campaign.objects.get(id=pk)
-#         except Campaign.DoesNotExist:
-#             return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+class WithdrawalInsideView(APIView):
+    def get(self, request, pk):
+        try:
+            campaign = Campaign.objects.get(id=pk)
+        except Campaign.DoesNotExist:
+            return Response({"error": "Campaign not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#         serializer = WithdrawalDetailsSerializer(campaign)
+        serializer = WithdrawalViewSerializer(campaign)
 
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 #******************************************************************************#
 #working on this
 class CampaignKycBenificiaryAPI(APIView):
-    parser_classes = [FileUploadParser]
+    # parser_classes = [FileUploadParser, MultiPartParser, FormParser]
 
     def get(self, request):
         ckb = CampaignKycBenificiary.objects.all()
         serializer = CombinedSerializer(ckb, many=True)
         return Response(serializer.data)
     
-    def put(self, request, pk):
-        campaign_kyc = get_object_or_404(CampaignKycBenificiary, id=pk)
-
-        # Separate data for Campaign and CampaignKycBenificiary
-        campaign_data = request.data.get('campaign_details', {})
-        kyc_data = request.data.get('kyc_details', {})
-
-        # Validate and update Campaign data
-        ckb_serializer = CampaignCKB1(campaign_kyc.campaign, data=campaign_data, partial=True)
-        if not ckb_serializer.is_valid():
-            return Response({'campaign_details': ckb_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        ckb_serializer.save()
-
-        # Validate and update CampaignKycBenificiary data
-        kyc_serializer = CampaignKycSerializer(campaign_kyc, data=kyc_data, partial=True)
-        if not kyc_serializer.is_valid():
-            return Response({'kyc_details': kyc_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        kyc_serializer.save()
-
-        # Serialize the updated object using CKBViewSerializer
-        updated_serializer = CKBViewSerializer(campaign_kyc)
-        return Response(updated_serializer.data)
+    def put(self, request,pk):
+        try:
+            instance = CampaignKycBenificiary.objects.get(pk=pk)
+        except CampaignKycBenificiary.DoesNotExist:
+            return Response({"error": "campaign not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CampaignKycSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 ###############################################################################################################################################

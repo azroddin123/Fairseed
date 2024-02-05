@@ -366,11 +366,19 @@ class User_AdminPanel(APIView):
         users = User.objects.all()
 
         if search_query:
-            users = users.annotate(
-                campaigns_created_count=Subquery(
-                    Campaign.objects.filter(user=OuterRef('id')).values('user').annotate(count=Count('id')).values('count')
-                ),
-            )
+            searching = [
+                Q(username__icontains=search_query),
+                Q(email__icontains=search_query),
+                Q(mobile_number__icontains=search_query),
+                Q(user_type__icontains=search_query),
+                Q(created_on__icontains=search_query),
+            ]
+
+            search_condition = searching.pop()
+            for search1 in searching:
+                search_condition |= search1
+
+            users = users.filter(search_condition)
 
         serializer = UserSerializer_AdminPanel(users, many=True)
         return Response(serializer.data)
@@ -400,6 +408,6 @@ class User_AdminPanel(APIView):
 class UserEditCard_AdminPanel(APIView):
     def get(self, request, *args, **kwargs):
         users = User.objects.all()
-        serializer = AddUserSerializer_AdminPanel(users, many=True)
+        serializer = UserCardSerializer_AdminPanel(users, many=True)
         return Response(serializer.data)
 ##################################################################################################################

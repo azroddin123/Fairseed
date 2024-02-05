@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import *
 
-urlpatterns = [   
+urlpatterns = [
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
 
@@ -57,7 +57,10 @@ urlpatterns = [
     path('api/admin/scholarship_campaigns/',ScholarshipCAmpaigns.as_view()),
     path('api/admin/scholarship_campaigns/<str:pk>/',ScholarshipCAmpaigns.as_view()),
 
+    #Campaign
     path('api/campaign_list/',CampaignDetailsApi1.as_view()),
+    path('api/campaign_list/<str:pk>/',CampaignDetailsApi1.as_view()),
+
     path('api/landing_page/causes_by_category/',CausesbyCategoryAPI.as_view()),
     path('api/landing_page/card/', CardAPIViewPagination.as_view()),
     path('api/cardview2/<str:pk>/',CardAPIView2.as_view()),
@@ -66,7 +69,7 @@ urlpatterns = [
     path('api/donate_page_card/<str:pk>/',DonateToCampaignCard.as_view()), #Donate To Campaign Page Card
     path('api/successful_campaigns/',CampaignBycategory.as_view()), #Successful campaign page
     path('api/admin/withdrawal/',WithdrawalCampaignView.as_view()), #Admin panel existing Withdrawal
-    # path('api/admin/withdrawal_inside/<str:pk>',WithdrawalInsideView.as_view()), #Admin panel existing Withdrawal
+    path('api/admin/withdrawal_inside/<str:pk>/',WithdrawalInsideView.as_view()), #Admin panel existing Withdrawal
     path('api/admin/ckb/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
     path('api/admin/ckb/<str:pk>/',CampaignKycBenificiaryAPI.as_view()), # Admin Panel
     # path('card/', CardAPIView.as_view()),

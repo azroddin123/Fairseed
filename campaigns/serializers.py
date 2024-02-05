@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from accounts.serializers import UserAdminSerializer
 from donors.models import Donor
 from donors.serializers import DonorSerializer1
 from payment_gateways.models import BankTransfer
+
 from .models import *
 
 
@@ -132,12 +133,14 @@ class CampaignAdminSerializer2(ModelSerializer):
     class Meta:
         model = Campaign
         fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'status', 'summary', 'is_featured']
+#*****************************************************************************************************#
 
 class CampaignModificationSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
     class Meta:
         model = Campaign
         fields = ['updated_on', 'user_name']
+#*****************************************************************************************************#
 
 class DocumentEditSerializer(ModelSerializer):
 
@@ -146,30 +149,76 @@ class DocumentEditSerializer(ModelSerializer):
         fields=['doc_file']
 
 class CampaignEditSerializer(ModelSerializer):
-    documents = DocumentEditSerializer(many=True, read_only=True)
+    # documents = DocumentEditSerializer(many=True, read_only=True)
 
     class Meta :
         model  = Campaign
-        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary', 'documents']
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary']
+        # fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary','documents]
 
-        def update(self, instance, validated_data):
-            # Exclude 'documents' from the update
-            validated_data.pop('documents', None)
+        # def update(self, instance, validated_data):
+        #     validated_data.pop('documents', None)
+        #     instance.save()
+        #     return instance
+#*****************************************************************************************************#
 
-            # Update Campaign model fields
-            instance.category = validated_data.get('category', instance.category)
-            instance.user = validated_data.get('user', instance.user)
-            # ... update other fields similarly
+class CampaignReportSerializer(ModelSerializer):
+    documents = DocumentEditSerializer(many=True, read_only=True)
 
-            instance.save()
+    def validate(self, data):
+            status = data.get('status')
+            commentbox = data.get('commentbox')
 
-            return instance
+            if status == 'Rejected' and not commentbox:
+                raise serializers.ValidationError("Comment box is required when the status is 'Rejected'.")
 
+            return data
+
+    class Meta:
+        model = Campaign
+        fields = ['title', 'category', 'goal_amount', 'location', 'zakat_eligible', 'end_date', 'description', 'summary', 'documents', 'status', 'is_featured', 'commentbox']
+        print(fields)
+        
+#***********************************************************************************************************#
+
+#To Get the KYC Details
+
+class CampaignKycSerializer(ModelSerializer):
+    campaign_raising_for = SerializerMethodField()
+    campaign_title = SerializerMethodField()
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = ['account_holder_name', 'account_number', 'bank_name', 'branch_name', 'ifsc_code', 'passbook_image', 'pan_card', 'pan_card_image', 'adhar_card', 'adhar_card_image', 'other_details', 'is_verified','campaign_raising_for','campaign_title']
+
+    def get_campaign_raising_for(self, obj):
+            if obj.campaign:
+                return obj.campaign.rasing_for
+            else:
+                return None
+
+    def get_campaign_title(self, obj):
+            if obj.campaign:
+                return obj.campaign.title
+            else:
+                return None
+        
+class CombinedSerializer(serializers.ModelSerializer):
+    campaign_id = serializers.UUIDField(source='campaign.id')
+    campaign_title = serializers.CharField(source='campaign.title')
+    class Meta:
+        model = CampaignKycBenificiary
+        fields = [
+            'id', 'account_holder_name', 'account_number', 'ifsc_code', 'bank_name',
+            'campaign_id', 'campaign_title', 'is_verified'
+        ]
+
+#*****************************************************************************************************#
+#To get Withdrawal
 
 class DonorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donor
-        fields = ('payment_type',)
+        fields = ('payment_type')
 
 class UserWithdrawalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -183,76 +232,24 @@ class CampaignWithdrawalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
         fields = ('id', 'title', 'fund_raised', 'status', 'end_date', 'user')
+        # fields = ('id', 'title', 'fund_raised', 'status', 'end_date', 'user', 'payment_type)
 
-# class WithdrawalInsideSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = BankTransfer
-#         fields = ('id', 'title', 'bank_details', 'fund_raised', 'payment_gateway', 'end_date', 'status')
+class BankTransferWithdrawal(ModelSerializer):
+    class Meta:
+        model = BankTransfer
+        fields=('bank_details')
 
-# class CampaignKycSerializer(serializers.ModelSerializer):
+# class WithdrawalViewSerializer(ModelSerializer):
+#     # campaign = CampaignWithdrawal(many=True, source='bank_details')
+
 #     class Meta:
 #         model = CampaignKycBenificiary
-#         fields = ('account_holder_name', 'account_number', 'bank_name', 'ifsc_code', 'other_details')
+#         fields = ( 'account_holder_name', 'account_number', 'bank_name', 'ifsc_code', 'other_details')
 
-# class WithdrawalDetailsSerializer(serializers.Serializer):
-#     id = serializers.IntegerField()
-#     # campaign = CampaignWithdrawalSerializer()
-#     bank_details = CampaignKycSerializer(source='campaign.bank_details')
-#     amount = serializers.DecimalField(max_digits=10, decimal_places=2, source='campaign.fund_raised')
-#     payment_gateway = serializers.CharField(source='campaign.rasing_for')  # Change this based on your actual field
-#     date = serializers.DateField(source='campaign.end_date')
-#     status = serializers.CharField(source='campaign.status')
 
-#***********************************************************************************************************#
-
-#To Get the KYC Details
-
-class CampaignCKB(serializers.ModelSerializer):
-    class Meta:
-        model = Campaign
-        fields = [
-            'title', 'rasing_for', 'adhar_card', 'bank_details',
-            'goal_amount', 'fund_raised', 'location', 'zakat_eligible',
-            'status', 'start_date', 'end_date', 'description', 'summary'
-        ]
-
-class CampaignKycSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CampaignKycBenificiary
-        fields = [
-            'account_holder_name', 'account_number', 'bank_name',
-            'branch_name', 'ifsc_code', 'passbook_image',
-            'pan_card', 'pan_card_image', 'adhar_card',
-            'adhar_card_image', 'other_details', 'is_verified'
-        ]
-
-class CombinedSerializer(serializers.ModelSerializer):
-    campaign_id = serializers.UUIDField(source='campaign.id')
-    campaign_title = serializers.CharField(source='campaign.title')
-    campaign_status = serializers.CharField(source='campaign.status')
-    class Meta:
-        model = CampaignKycBenificiary
-        fields = [
-            'id', 'account_holder_name', 'account_number', 'ifsc_code', 'bank_name',
-            'campaign_id', 'campaign_title', 'campaign_status'
-        ]
-
-#*****************************************************************************************************#
-#To Update the KYC details
-
-class CampaignCKB1(serializers.ModelSerializer):
-    class Meta:
-        model = Campaign
-        fields = [
-            'title', 'rasing_for', 'bank_details',
-        ]
-
-class CKBViewSerializer(serializers.Serializer):
-    campaign_details = CampaignCKB1(source='campaign', read_only=True)
-    kyc_details = CampaignKycSerializer(source='campaign.bank_details', read_only=True)
-
-    class Meta:
-        model = CampaignKycBenificiary
-        fields = ['campaign_details', 'kyc_details']
+# class CampaignWithdrawal(ModelSerializer):
+#     campaign =WithdrawalViewSerializer(many=True, source='bank_details')
+#     class Meta:
+#         model = Campaign
+#         fields = ('campaign','id', 'title', 'fund_raised', 'end_date')
 #############################################################################################################################################################

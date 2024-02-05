@@ -218,17 +218,15 @@ class UserChangePasswordSerializer(serializers.Serializer):
         
 class UserSerializer_AdminPanel(serializers.ModelSerializer):
     campaigns_created_count = serializers.SerializerMethodField()
-    registered_as = serializers.SerializerMethodField()
+    created_on = serializers.DateTimeField(format='%b %d, %Y', read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'mobile_number', 'campaigns_created_count', 'user_type', 'registered_as']
+        fields = ['id', 'username', 'email', 'mobile_number', 'campaigns_created_count', 'user_type', 'created_on']
 
     def get_campaigns_created_count(self, user):
         return Campaign.objects.filter(user=user).count()
 
-    def get_registered_as(self, user):
-        return user.created_on.strftime('%b %d, %Y') if user.created_on else None
     
 class AddUserSerializer_AdminPanel(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
