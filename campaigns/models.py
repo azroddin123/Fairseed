@@ -98,7 +98,6 @@ class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
 
-
 class BankKYC(BaseModel):
 # Bank Details
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='bank_kyc')
@@ -108,14 +107,11 @@ class BankKYC(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-
 # kyc Details
     pan_card            = models.CharField(max_length=10)
     pan_card_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     adhar_card          = models.CharField(max_length=16)
-    adhar_card_front    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    adhar_card_back     = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    
+    adhar_card_image    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
     tandc_accept        = models.BooleanField(default=False)
