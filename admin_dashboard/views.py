@@ -58,7 +58,7 @@ class AdminDonationApi(APIView):
     def get(self,request,*args, **kwargs):
         end_date = timezone.now()
         start_date = end_date - timedelta(days=30)
-        fundraise_data = Campaign.objects.filter(donors__date__range=(start_date,end_date),user=request.thisUser).values('donors__date').annotate(
+        fundraise_data = Campaign.objects.filter(donors__date__range=(start_date,end_date)).values('donors__date').annotate(
         total_amount=Sum('donors__amount')
         ).order_by('donors__date')
         date_list = [start_date + timedelta(days=x) for x in range(30)]
@@ -67,7 +67,6 @@ class AdminDonationApi(APIView):
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
-
 
 class UserUpdateApi(APIView):
     def put(self,request,pk,*args, **kwargs):
@@ -81,8 +80,8 @@ class UserUpdateApi(APIView):
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-                
-
+            
+            
 # user role and authentication.
 # user update api.
 # update the data when admin approve it.

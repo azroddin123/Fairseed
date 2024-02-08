@@ -81,7 +81,7 @@ class SuccessfulCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-# Camapign By Catagory : ---> 
+# Camapign By Catagory
 class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
@@ -297,7 +297,7 @@ class AddCampaignApi2(APIView):
                     print(request.FILES,"====================>")
                     print("---------------------",request.data)
                     print("camapign save")
-                    request.data["user"] = "574db924-d56a-4978-a56c-97727bdadacf"
+                    request.data["user"]  = "06d25e20-35d2-46db-8914-7973a54a23b7"
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()
