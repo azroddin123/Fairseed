@@ -24,6 +24,11 @@ class GeneralSettingApi(GenericMethodsMixin,APIView):
     serializer_class = GSSerializer
     lookup_field = "id"
 
+    def get(self,request,*args, **kwargs):
+        data = GeneralSetting.objects.first()
+        serializer = GSSerializer(data)
+        return Response({"data":serializer.data},status=status.HTTP_200_OK)
+
 class KeywordSApi(GenericMethodsMixin,APIView):
     model = Keyword
     serializer_class = KeywordSerializer
