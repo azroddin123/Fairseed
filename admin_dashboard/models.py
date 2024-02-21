@@ -10,7 +10,6 @@ from portals.models import BaseModel
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
     welcome_text                = models.CharField(max_length=32)
-    welcome_subtitle            = models.CharField(max_length=32)
     description                 = models.CharField(max_length=124)
     email_admin                 = models.EmailField(max_length=254)
     tandc_url                   = models.CharField(max_length=254)
@@ -47,8 +46,7 @@ class Limit(BaseModel):
     donation_min_amount     = models.PositiveIntegerField()
     donation_max_amount     = models.PositiveIntegerField()
     campaign_max_amount     = models.PositiveIntegerField()
-    max_donation_amount     = models.PositiveIntegerField()
-    
+
     
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 

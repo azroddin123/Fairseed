@@ -118,7 +118,6 @@ WSGI_APPLICATION = 'fairseed.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',
@@ -129,7 +128,6 @@ DATABASES = {
 		'PORT':'3306',
 	}
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -150,18 +148,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 LANGUAGE_CODE = 'en-us'
 # settings.py
-
-TIME_ZONE = 'Asia/Kolkata'
-USE_TZ = True
-
-# TIME_ZONE = 'UTC'
 USE_I18N = True
 # USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR.joinpath("media/")
