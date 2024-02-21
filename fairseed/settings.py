@@ -122,7 +122,7 @@ DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',
 		'NAME': 'fairseed_db',
-		'USER': 'fairseed_user',
+		'USER': 'root',
 		'PASSWORD': 'password',
 		'HOST':'localhost',
 		'PORT':'3306',
