@@ -77,7 +77,7 @@ class Campaign(BaseModel):
 class AccountDetail(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='account_details')
     account_holder_name = models.CharField(max_length=124)
-    account_number      = models.PositiveIntegerField()
+    account_number      = models.CharField(max_length=124)
     bank_name           = models.CharField(max_length=124)
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
