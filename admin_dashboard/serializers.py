@@ -29,7 +29,7 @@ class GSSerializer(serializers.ModelSerializer):
     keywords_data = KS(source="keyword_set",many=True,read_only=True)
     class Meta:
         model = GeneralSetting
-        fields = ('id','namesite','welcome_text','welcome_subtitle','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled','keywords','keywords_data')
+        fields = ('id','namesite','welcome_text','description','email_admin','tandc_url','privacy_policy_url','email_no_reply','new_registration_enabled','auto_approve_enabled','email_verification_enabled','facebook_login_enabled','google_login_enabled','keywords','keywords_data')
     
     def create(self, validated_data):
         keywords_data = validated_data.pop('keywords', [])
