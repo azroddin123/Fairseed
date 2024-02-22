@@ -23,6 +23,7 @@ PENDING             = "Pending"
 ACTIVE              = "Active"
 COMPLETED           = "Completed"
 REJECTED            = "Rejected"
+APPROVED            = "Approved"
 
 # Course Choices 
 UNDERGRADUATE       = "Undergraduate"
@@ -37,6 +38,7 @@ INTEREST_OFFLOADING = "Interest_Offloading"
 # Payment Choices 
 BANK_TRANSFER       = "Bank_Transfer"
 UPI                 = "UPI"
+
 
 
 # Admin  Request Choices 

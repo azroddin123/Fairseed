@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 from portals.models import BaseModel
-from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices
+from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 # from django.core.exceptions import ValidationError
@@ -113,4 +113,5 @@ class BankKYC(BaseModel):
     adhar_card_image    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
     is_verified         = models.BooleanField(default=False)
+    status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)

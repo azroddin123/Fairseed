@@ -46,3 +46,8 @@ class DonationChoices(models.TextChoices):
 class PaymentChoices(models.TextChoices):
     BANK_TRANSFER = BANK_TRANSFER,BANK_TRANSFER
     UPI = UPI,UPI
+
+
+class KycChoices(models.TextChoices):
+    PENDING    = PENDING,PENDING
+    APPROVED   = APPROVED,APPROVED

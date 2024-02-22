@@ -93,7 +93,6 @@ class CampaignDetailSerializer(ModelSerializer):
     category    = serializers.SerializerMethodField(read_only=True)
     donor       = DonorSerializer1(source="donors",many=True,read_only=True)
     donor_count = serializers.SerializerMethodField(read_only=True)
-    
     class Meta :
         model   = Campaign
         fields  = ('id','title','campaign_image','story','summary','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')

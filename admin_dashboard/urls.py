@@ -39,6 +39,8 @@ urlpatterns = [
     path('reported-campaign',ReportedCauseApi.as_view()),
     path('successful-campaign',SuccessfulCauseApi.as_view()),
     
+    path('campaign-kyc',CampaignKycAPI.as_view()),
+    
     path('dashboard-api',AdminDashboardApi.as_view()),
     path('donation-api',AdminDonationApi.as_view()),
     

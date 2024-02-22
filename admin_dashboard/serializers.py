@@ -1,6 +1,21 @@
 from .models import * 
 from rest_framework.serializers import ModelSerializer 
 from rest_framework import serializers
+
+from campaigns.models import * 
+from campaigns.serializers import * 
+
+class CampSerializer(ModelSerializer):
+    class Meta :
+        model = Campaign
+        fields = ('id','title')
+
+class CampBankKycSerializer(ModelSerializer):
+    campaign = CampSerializer(read_only=True)
+    class Meta :
+        model = BankKYC
+        fields = ('id','account_holder_name','account_number','bank_name','branch_name','ifsc_code','campaign')   
+
 # class GSSerializer(ModelSerializer):
 #     keywords = serializers.ListField(child=serializers.CharField(),write_only=True)
 #     class Meta :
