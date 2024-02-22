@@ -95,7 +95,7 @@ class CampaignDetailSerializer(ModelSerializer):
     donor_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model   = Campaign
-        fields  = ('id','title','campaign_image','story','summary','goal_amount','fund_raised','end_date','status','user','category','donor','donor_count')
+        fields  = ('id','title','campaign_image','story','summary','goal_amount','fund_raised','end_date','location','days_left','status','user','category','donor','donor_count')
     
     def get_user(self,obj):
         return obj.user.username
