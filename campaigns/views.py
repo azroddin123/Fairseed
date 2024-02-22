@@ -121,7 +121,7 @@ class LandingPageApi(APIView):
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 # Create campaign API
-class AddCampaignApi(APIView):
+class AddCampaignApi2(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         try : 
             # return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -145,6 +145,7 @@ class AddCampaignApi(APIView):
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                     # Acocunt Details 
+                    
                     print("----------------------Updating Accounts----------------------")
                     obj = AccountDetail.objects.get(campaign=campaign)
                     request.data["campaign"] = campaign.id
@@ -220,7 +221,7 @@ class CreateCampaignApi(APIView):
                         account = request.data.get('account_details')
                         obj = AccountDetail.objects.create(campaign=campaign,account_holder_name = account["account_holder_name"],account_number=account["account_number"],bank_name=account["bank_name"],branch_name=account["branch_name"],ifsc_code = account["ifsc_code"]) 
                     
-                    # return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
+                    return Response({"error" : True, "message" : "Campaign create successfully"},status=status.HTTP_200_OK)
                     # account_details = request.data.get('account_details')
                     # obj = AccountDetail(campaign=campaign,account_holder_name=account_details["account_holder_name"])
         except Exception as e:
@@ -261,7 +262,7 @@ class CampaignFilterAPI(APIView):
 
 # Days left 
 
-class AddCampaignApi2(APIView):
+class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         try : 
             # return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -275,7 +276,6 @@ class AddCampaignApi2(APIView):
                     c_serializer.save()
                     print("------------------Updating Campaigns-----------------------")
                     print(campaign.id,campaign)
-                    upload_adhar  = request.FILES.getlist("adhar")
                     uploaded_docs = request.FILES.getlist("documents")
                     print(uploaded_docs)
                     if uploaded_docs:
@@ -284,6 +284,7 @@ class AddCampaignApi2(APIView):
                         print("------------------Updating Docs-----------------------")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
+                    
                     # Acocunt Details 
                     print("----------------------Updating Accounts----------------------")
                     obj = BankKYC.objects.get(campaign=campaign)
@@ -293,25 +294,21 @@ class AddCampaignApi2(APIView):
                     bkc_serializer.save()
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
                 else :
-                    data = request.data
                     print(request.FILES,"====================>")
                     print("---------------------",request.data)
                     print("camapign save")
-                    request.data["user"]  = "06d25e20-35d2-46db-8914-7973a54a23b7"
+                    request.data["user"]  = "1ecbd36f-8d31-4ebc-afc6-ef4a867953e0"
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
                         uploaded_docs = request.FILES.getlist("documents")
-                        for item in uploaded_docs : 
-                            print(item)
-                        
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                        
                         print("---------------Bank KYC Saving---------------------")
                         request.data["campaign"] = campaign.id
-                        bkc_serializer = BankKYCSerializer(data=data)
+                        bkc_serializer = BankKYCSerializer(data = request.data)
                         bkc_serializer.is_valid(raise_exception=True)
                         bkc_serializer.save()
                         print("---------------Bank KYC  Saved ---------------------")

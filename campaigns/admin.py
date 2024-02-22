@@ -5,6 +5,7 @@ from .models import *
 
 class CCAdmin(admin.ModelAdmin):
     list_display = ('name','image','is_active','id')
+
     
 
 # class CampaignAdmin(admin.ModelAdmin):
@@ -20,8 +21,7 @@ class CCAdmin(admin.ModelAdmin):
 admin.site.register(Campaign)
 admin.site.register(Campaigncategory,CCAdmin)
 admin.site.register(Documents)
-admin.site.register(AccountDetail)
-admin.site.register(Kyc)
+admin.site.register(BankKYC)
 # admin.site.register(Campaign,CampaignAdmin)
 # admin.site.register(CampaignKycBenificiary,BBAdmin)
 # admin.site.register(KycDetails,KycAdmin)

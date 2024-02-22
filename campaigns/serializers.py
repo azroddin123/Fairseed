@@ -82,7 +82,7 @@ class CampaignDocumentSerializer(ModelSerializer):
     category    = CampaignCategorySerializer(read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','campaign_image','story','summary','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","documents",'donor_count')
+        fields = ('id','title','campaign_image','story','summary','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","documents",'category','donor_count')
 
     def get_donor_count(self, obj):
         return obj.donors.count()
