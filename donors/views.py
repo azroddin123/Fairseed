@@ -44,7 +44,6 @@ class DonorApi(GenericMethodsMixin,APIView):
 
     def post(self,request,pk=None,*args, **kwargs):
         if pk == str(0) or pk is None :
-            
             serializer = DonorSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()

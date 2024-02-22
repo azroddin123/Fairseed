@@ -11,7 +11,7 @@ class DonorSerializer(ModelSerializer):
     class Meta:
         model = Donor
         fields = "__all__"
-
+        
     def get_campaign(self, obj):
         return obj.campaign.title
         # return obj.campaign.campaign_name if obj.campaign else None

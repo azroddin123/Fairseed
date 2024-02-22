@@ -297,7 +297,7 @@ class AddCampaignApi(APIView):
                     print(request.FILES,"====================>")
                     print("---------------------",request.data)
                     print("camapign save")
-                    request.data["user"]  = "1ecbd36f-8d31-4ebc-afc6-ef4a867953e0"
+                    request.data["user"]  = "e5477dc6-2ae9-4622-93f3-ae68162b7007"
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()

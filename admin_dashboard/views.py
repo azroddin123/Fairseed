@@ -3,6 +3,7 @@ from .serializers import *
 from .models import *
 from campaigns.models import *
 from donors.models import *
+from donors.serializers import * 
 from django.utils import timezone
 from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
@@ -68,6 +69,7 @@ class AdminDonationApi(APIView):
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
 
+
 class UserUpdateApi(APIView):
     def put(self,request,pk,*args, **kwargs):
         try : 
@@ -81,11 +83,16 @@ class UserUpdateApi(APIView):
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
             
-class CampaignKycAPI(APIView):
+class CampaignKycAPI(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = CampBankKycSerializer
     lookup_field = "id"
                
+               
+class DonorsApi(GenericMethodsMixin,APIView):
+    model = Donor
+    serializer_class = DonorSerializer
+    lookup_field = "id"
 # user role and authentication.
 # user update api.
 # update the data when admin approve it.
