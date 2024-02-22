@@ -14,11 +14,10 @@ from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
 
-class PagesAPi(APIView):
+class PagesAPi(GenericMethodsMixin,APIView):
     model = Pages
     serializer_class = PageSerializer
     lookup_field = "id"
-    permission_classes = [IsAdminUser]
 
 class GeneralSettingApi(GenericMethodsMixin,APIView):
     model = GeneralSetting
@@ -94,11 +93,10 @@ class DonorsApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
     
-class RevisionHistory(GenericMethodsMixin,APIView):
+class RevisionHistoryAPI(GenericMethodsMixin,APIView):
     model = RevisionHistory
     serializer_class = RHSerializer
     lookup_field = "id"
-    
 
 
 class RevisionHistoryAPi(APIView):
