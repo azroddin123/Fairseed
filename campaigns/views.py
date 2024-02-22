@@ -43,7 +43,7 @@ class KycApi(GenericMethodsMixin,APIView):
 
 class CampaignAdminApi(GenericMethodsMixin,APIView):
     model = Campaign
-    serializer_class = CampaignAdminSerializer
+    serializer_class = CampaignDocumentSerializer
     create_serializer_class = CampaignSerializer
     lookup_field  = "id"
 

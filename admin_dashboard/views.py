@@ -81,6 +81,16 @@ class UserUpdateApi(APIView):
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
             
+# Reported Campaign API
+class ReportedCampaignApi(APIView):
+    def get(self,request,*args, **kwargs):
+        try : 
+            data = Campaign.objects.filter(is_reported=True)
+            serializer = CampaignAdminSerializer(data)
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+      
             
 # user role and authentication.
 # user update api.

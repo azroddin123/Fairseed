@@ -31,4 +31,7 @@ urlpatterns = [
     
     # create campaign API View
     path('create-campaign',CreateCampaignApi.as_view())
+    
+    # Donation API
+    
 ]

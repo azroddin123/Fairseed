@@ -41,6 +41,11 @@ class KycSerializer(ModelSerializer):
         model = Kyc
         fields = "__all__"
 
+class DocumentSerializer1(ModelSerializer):
+    class Meta :
+        model   = Documents
+        fields  = ('id','doc_file','campaign')
+        
 class DocumentSerializer(ModelSerializer):
     class Meta :
         model   = Documents
@@ -69,6 +74,19 @@ class CampaignAdminSerializer(ModelSerializer):
 
     def get_donor_count(self, obj):
           return obj.donors.count()
+
+class CampaignDocumentSerializer(ModelSerializer):
+    user        = UserAdminSerializer(read_only=True)
+    documents   = DocumentSerializer1(many=True, read_only=True)
+    donor_count = serializers.SerializerMethodField(read_only=True)
+    category    = CampaignCategorySerializer(read_only=True)
+    class Meta :
+        model  = Campaign
+        fields = ('id','title','campaign_image','story','summary','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","documents",'donor_count')
+
+    def get_donor_count(self, obj):
+        return obj.donors.count()
+
 
 class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)

@@ -20,33 +20,33 @@ class Campaigncategory(BaseModel):
         return str(self.name)
 
 class Campaign(BaseModel):
-    campaign_image  = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    title           = models.CharField(max_length=124)
-    category        = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
-    user            = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
-    rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
-    goal_amount     = models.PositiveIntegerField(validators=[MinValueValidator(0, message="Value must be greater than or equal to 100"),
-                    MaxValueValidator(1000000000, message="Value must be less than or equal to 1000000")])
-    fund_raised     = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
-                    MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
-    zakat_eligible  = models.BooleanField(default=False)
-    rasing_for      = models.CharField(choices=RaiseChoices.choices,max_length=124)
-    location        = models.CharField(max_length=124)
-    story           = models.TextField(blank=True,null=True)
-    summary         = models.TextField(blank=True,null=True)
-    status          = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
-    end_date        = models.DateField()
-    days_left       = models.IntegerField(default=0)
-    is_successful   = models.BooleanField(default=False)
-    is_featured     = models.BooleanField(default=False)
-    is_reported     = models.BooleanField(default=False)
-    is_withdrawal   = models.BooleanField(default=False)
-    campaign_data   = models.JSONField(null=True,blank=True)
+    campaign_image    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
+    title             = models.CharField(max_length=124)
+    category          = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
+    user              = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    rasing_for        = models.CharField(choices=RaiseChoices.choices,max_length=124)
+    goal_amount       = models.PositiveIntegerField(validators=[MinValueValidator(0, message="Value must be greater than or equal to 100"),
+                      MaxValueValidator(1000000000, message="Value must be less than or equal to 1000000")])
+    fund_raised       = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
+                        MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
+    zakat_eligible    = models.BooleanField(default=False)
+    rasing_for        = models.CharField(choices=RaiseChoices.choices,max_length=124)
+    location          = models.CharField(max_length=124)
+    story             = models.TextField(blank=True,null=True)
+    summary           = models.TextField(blank=True,null=True)
+    status            = models.CharField(max_length=124,choices=CampaignChoices.choices,default=CampaignChoices.PENDING)
+    end_date          = models.DateField()
+    days_left         = models.IntegerField(default=0)
+    is_successful     = models.BooleanField(default=False)
+    is_featured       = models.BooleanField(default=False)
+    is_reported       = models.BooleanField(default=False)
+    is_withdrawal     = models.BooleanField(default=False)
+    campaign_data     = models.JSONField(null=True,blank=True)
     is_admin_approved = models.BooleanField(default=False)
-    
+    notes             = models.TextField(blank=True,null=True)
     def __str__(self) -> str:
         return self.title
-    
+   
     def get_rendered_text(self):
         return markdown.markdown(self.story)
     
@@ -72,7 +72,6 @@ class Campaign(BaseModel):
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
     
-
 # want to combine these two models 
 class AccountDetail(BaseModel):
     campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='account_details')
