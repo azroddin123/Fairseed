@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -46,7 +45,6 @@ class Limit(BaseModel):
     donation_min_amount     = models.PositiveIntegerField()
     donation_max_amount     = models.PositiveIntegerField()
     campaign_max_amount     = models.PositiveIntegerField()
-
     
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 
@@ -64,7 +62,6 @@ class SocialProfile(BaseModel):
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
-
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 
         count = SocialProfile.objects.count()
@@ -85,6 +82,17 @@ class LandingPage(BaseModel):
     avtar             = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
     image_category    = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
+    
+    def save(self,*args, **kwargs):
+    # check the record count if it is one then update the existing one otherwise save the record 
+        count = LandingPage.objects.count()
+        print(count)
+        if count == 0  :
+            return super(LandingPage,self).save(*args, **kwargs)
+        else :
+            obj = LandingPage.objects.all()
+            obj.delete()
+            return super(LandingPage,self).save(*args, **kwargs)
 
 class Pages(BaseModel):
     title       = models.CharField(max_length=50)
