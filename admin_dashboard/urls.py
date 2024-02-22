@@ -48,7 +48,10 @@ urlpatterns = [
     path('user-update/<str:pk>',UserUpdateApi.as_view()),
     
     path('donors',DonorsApi.as_view()),
-    path('donors/<str:pk>',DonorsApi.as_view())
+    path('donors/<str:pk>',DonorsApi.as_view()),
+    
+    path('revision-history',RevisionHistoryAPi.as_view()),
+    path('revision-history/<str:pk>',RevisionHistoryAPi.as_view())
     
     
 ]

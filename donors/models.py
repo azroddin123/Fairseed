@@ -11,20 +11,19 @@ class Donor(BaseModel):
     user          = models.ForeignKey("accounts.User",on_delete=models.CASCADE,null=True,blank=True)
    
     donation_type = models.CharField(choices=DonationChoices.choices,max_length=124)
-    full_name     = models.CharField(max_length=124)
+    full_name     = models.CharField(max_length=124,blank=True,null=True)
     amount        = models.DecimalField(max_digits=10, decimal_places=2)
-    email         = models.CharField(max_length=124)
-    city          = models.CharField(max_length=124)
-    country       = models.CharField(max_length=124)
-    mobile        = models.CharField(max_length=124)
+    email         = models.CharField(max_length=124,blank=True,null=True)
+    city          = models.CharField(max_length=124,blank=True,null=True)
+    country       = models.CharField(max_length=124,blank=True,null=True)
+    mobile        = models.CharField(max_length=124,blank=True,null=True)
     pancard       = models.CharField(max_length=124,blank=True,null=True)
-    comment       = models.TextField()
+    comment       = models.TextField(blank=True,null=True)
     date          = models.DateField(null=True,blank=True)
     payment_type  = models.CharField(choices=PaymentChoices.choices,max_length=124)
     is_anonymous  = models.BooleanField(default=False)
     status        = models.BooleanField(default=True)
     is_approved   = models.BooleanField(default=False)
-
 
 class BankTransaction(BaseModel):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE,related_name="bank_transaction")

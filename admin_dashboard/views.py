@@ -93,6 +93,16 @@ class DonorsApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
     lookup_field = "id"
+    
+class RevisionHistory(GenericMethodsMixin,APIView):
+    model = RevisionHistory
+    serializer_class = RHSerializer
+    lookup_field = "id"
+    
+
+
+class RevisionHistoryAPi(APIView):
+    pass
 # user role and authentication.
 # user update api.
 # update the data when admin approve it.

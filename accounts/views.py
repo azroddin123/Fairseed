@@ -76,7 +76,7 @@ class ForgotPasswordAPI(APIView):
             else:
                 return Response(data = 'Error sending mail',status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response(data="Email Does not exists",status=status.HTTP_400_BAD_REQUEST )
+            return Response(data="User Email Does not exists",status=status.HTTP_400_BAD_REQUEST )
 
 
 class ResetPasswordAPI(APIView):
@@ -89,4 +89,5 @@ class ResetPasswordAPI(APIView):
             user.save()
             return Response(data={'Success':'Password for Email ' +str(user) +' reset succesfull'},status=status.HTTP_200_OK)
         return Response(data = {'Error':'Email does not exists'})
-    
+
+

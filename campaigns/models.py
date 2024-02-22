@@ -115,3 +115,11 @@ class BankKYC(BaseModel):
     is_verified         = models.BooleanField(default=False)
     status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)
+
+
+class RevisionHistory(BaseModel):
+    modeified_by  = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    campaign_data = models.JSONField(null=True,blank=True)
+    
+    
