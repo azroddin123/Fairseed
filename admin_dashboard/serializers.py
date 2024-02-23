@@ -88,7 +88,11 @@ class UserAdminSerializer1(ModelSerializer):
     # campaign_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = User
-        fields = ('id','username','email','mobile_number','created_on','user_type','user_role','password')
-    
+        fields = ('id','username','email','mobile_number','created_on','user_type','user_role','password','is_active','country')
+
+class UserSerializer(ModelSerializer):
+    class Meta :
+        model = User 
+        fields = "__all__"
     # def get_campaign_count(self, obj):
     #       return obj.campaigns.count()

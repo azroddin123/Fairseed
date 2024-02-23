@@ -13,7 +13,7 @@ from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
-from accounts.serializers import UserSerializer
+
 
 class PagesAPi(GenericMethodsMixin,APIView):
     model = Pages
