@@ -44,7 +44,6 @@ class DonationCountApi(APIView):
             ]
         return Response({"donation_data" : result},status=status.HTTP_200_OK)
 
-
 # FundRaised API
 class FundRaisedApi(APIView):
     def get(self,request):
@@ -94,11 +93,10 @@ class RecivedDonationApi(APIView):
         serializer = DonorSerializer(data,many=True)
         return Response({"data": serializer.data},status=status.HTTP_200_OK)
 
-
-# class BankKycApi(GenericMethodsMixin,APIView):
-#     model = BankKYC
-#     serializer_class = BankKYCSerializer
-#     lookup_field = "id"
+class BankKycApi(GenericMethodsMixin,APIView):
+    model = BankKYC
+    serializer_class = BankKYCSerializer
+    lookup_field = "id"
     
 # user --> Campaign --> Donation 
 # User = request.thisUser 
