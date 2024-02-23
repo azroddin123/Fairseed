@@ -91,3 +91,6 @@ class ResetPasswordAPI(APIView):
         return Response(data = {'Error':'Email does not exists'})
 
 
+class PageNotFoundAPI(APIView):
+    def get(self,request,*args, **kwargs):
+        return Response({"error" : True, "message" : "This API Does not exists in this Application"},status=status.HTTP_404_NOT_FOUND)

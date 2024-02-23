@@ -13,6 +13,7 @@ from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
+from accounts.serializers import UserSerializer
 
 class PagesAPi(GenericMethodsMixin,APIView):
     model = Pages
@@ -93,14 +94,31 @@ class DonorsApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
     
-class RevisionHistoryAPI(GenericMethodsMixin,APIView):
-    model = RevisionHistory
-    serializer_class = RHSerializer
-    lookup_field = "id"
+# class RevisionHistoryAPI(GenericMethodsMixin,APIView):
+#     model = RevisionHistory
+#     serializer_class = RHSerializer
+#     lookup_field = "id"
 
 
-class RevisionHistoryAPi(APIView):
-    pass
+class RevisionHistoryApi(APIView):
+    def get(self,request,pk,*args, **kwargs):
+        try :
+            data = RevisionHistory.objects.filter(campaign=pk)
+            print(len(data),"this much objectr")
+            serializer = RHSerializer(data,many=True)
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+            
+            
+class UserApi(GenericMethodsMixin,APIView):
+    model = User
+    serializer_class = UserAdminSerializer1
+    create_serializer_class = UserSerializer
+    lookup_field="id"
+    
+        
+
 # user role and authentication.
 # user update api.
 # update the data when admin approve it.

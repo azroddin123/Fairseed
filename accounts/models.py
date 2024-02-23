@@ -23,7 +23,7 @@ class User(AbstractBaseUser):
     mobile_number    = models.CharField(max_length=20,unique=True,blank=True,null=True)
     city             = models.CharField(max_length = 50 ,blank=True, null=True)
     country          = models.CharField(max_length=50, blank=True, null=True)
-    user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
+    user_type        = models.CharField(choices=UserChoices.choices,max_length=25,default=UserChoices.INDIVIDUAL)
     accepted_policy  = models.BooleanField(default=False)
 
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)

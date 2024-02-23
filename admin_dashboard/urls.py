@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import * 
 from campaigns.views import CampaignAdminApi,CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
-
+from payment_gateways.views import PhonepayApi
 urlpatterns = [
     
     # add general setting in the project 
@@ -50,8 +50,16 @@ urlpatterns = [
     path('donors',DonorsApi.as_view()),
     path('donors/<str:pk>',DonorsApi.as_view()),
     
-    path('revision-history',RevisionHistoryAPi.as_view()),
-    path('revision-history/<str:pk>',RevisionHistoryAPi.as_view())
+    # path('revision-history',RevisionHistoryAPi.as_view()),
+    # path('revision-history/<str:pk>',RevisionHistoryAPi.as_view()),
+    
+    path('revise-history/<str:pk>',RevisionHistoryApi.as_view()),
+    
+    path('users',UserApi.as_view()),
+    path('users/<str:pk>',UserApi.as_view()),
+    
+    path('phonepay',PhonepayApi.as_view()),
+    path('phonepay/<str:pk>',UserApi.as_view()),
     
     
 ]
