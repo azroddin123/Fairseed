@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset OTP</title>
+    <style>
+        /* Reset styles */
+        body, h1, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Header styles */
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Content styles */
+        .content {
+            padding: 20px;
+        }
+
+        /* Link styles */
+        .link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        /* Button styles */
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Password Reset OTP</h1>
+        </div>
+        <div class="content">
+            <p>Hello,</p>
+            <p>You have requested to reset your password for Fairseed.</p>
+            <p>Your one-time password (OTP) for resetting the password is:</p>
+            <p><strong>{{ otp }}</strong></p>
+            <p>Please do not share this with anyone.</p>
+            <p>If you didn't request this, you can safely ignore this email.</p>
+            <p>Thank you.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,6 +3,8 @@ import jwt
 from django.core.mail import send_mail
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.mail import EmailMultiAlternatives
+
 def generate_token(email):
     payload = {
         "email" :email
@@ -13,17 +15,37 @@ def generate_token(email):
 
 
 # Forget Password API
-def my_mail(mail,otp):  
-        subject = "One Time Password for Fairseed  password reset"  
-        msg     = "Your one time password for resetting the password at Fairseed  is as follows : "+str(otp)+"\nPlease do not share this with anyone."  
-        res     = send_mail(subject, msg,'33azharoddin@gmail.com', [mail],fail_silently=False)  
-        if(res == 1):  
-            msg = 1  
-        else:  
+# def my_mail(mail,otp):  
+#         subject = "Fairseed Password Reset OTP"  
+#         msg     = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong>\nPlease do not share this with anyone.".format(otp)
+#         res     = send_mail(subject, msg,'33azharoddin@gmail.com', [mail],fail_silently=False)  
+#         if(res == 1):  
+#             msg = 1  
+#         else:  
+#             print("no")
+#             msg = 0
+#         return msg  
+
+
+def my_mail(mail, otp):
+    subject = "Fairseed Password Reset OTP"
+    msg = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong> <br>\nPlease do not share this with anyone.".format(otp)
+    # Create an EmailMultiAlternatives object to support HTML content
+    email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
+    email.attach_alternative(msg, "text/html")  # Specify HTML content type
+    
+    try:
+        res = email.send()
+        if res == 1:
+            msg = 1
+        else:
             print("no")
             msg = 0
-        return msg  
-
+    except Exception as e:
+        print(e)
+        msg = 0
+    
+    return msg
 from django.core.paginator import Paginator, EmptyPage
 
 def paginate_model_data(model, serializer, request, filter_key=None):
@@ -86,3 +108,5 @@ def paginate_model_data(model, serializer, request, filter_key=None):
 
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    

@@ -69,12 +69,17 @@ class CampaignApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
     
     def put(self,request,pk,*args, **kwargs):
-        print(request.data)
-        campaign = Campaign.objects.get(id=pk)
-        print(request.data)
-        campaign.campaign_data=request.data
-        campaign.save()
-        return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
+        try :
+            print(request.data)
+            campaign = Campaign.objects.get(id=pk)
+            print(request.data)
+            campaign.campaign_data=request.data
+            campaign.save()
+            return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
 # Donor API Donation Done By MySelf 
 class MyDonationApi(GenericMethodsMixin,APIView):
     model= Donor
