@@ -9,7 +9,7 @@ from datetime import datetime
 class CampaignCategorySerializer(ModelSerializer):
     class Meta:
         model  = Campaigncategory
-        fields = ("name","image","is_active","id")
+        fields = ("name","image","slug","is_active","id")
 
 class CampaignSerializer(ModelSerializer):
     class Meta :
