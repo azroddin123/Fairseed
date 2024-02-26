@@ -94,3 +94,20 @@ class ResetPasswordAPI(APIView):
 class PageNotFoundAPI(APIView):
     def get(self,request,*args, **kwargs):
         return Response({"error" : True, "message" : "This API Does not exists in this Application"},status=status.HTTP_404_NOT_FOUND)
+
+
+from django.db.models import Count
+
+# Assuming you have already imported the User model
+users = User.objects.values('country')
+print(users)
+
+for item in users :
+    print(item)
+    
+# Query to get country-wise user count
+country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
+
+# Print the results
+for item in country_user_count:
+    print("Country:", item['country'], "User Count:", item['user_count'])

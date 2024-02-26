@@ -66,7 +66,6 @@ class ChangePasswordSerializer(serializers.Serializer):
             user.save()
         return user
 
-
 class UserAdminSerializer(ModelSerializer):
     class Meta :
         model = User

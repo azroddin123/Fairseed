@@ -27,10 +27,9 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# CORS_ALLOW_HEADERS = [
-#     "*",
-# ]
-
+CORS_ALLOW_HEADERS = [
+    "*",
+]
 ALLOWED_HOSTS = ["*",]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -158,20 +157,14 @@ MEDIA_ROOT = BASE_DIR.joinpath("media/")
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR.joinpath('static/')
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os 
-
 # STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
-
 CORS_ORIGIN_ALLOW_ALL = True
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = '33azharoddin@gmail.com'

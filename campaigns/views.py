@@ -248,8 +248,6 @@ class CampaignFilterAPI(APIView):
         # newly added logic 
         if key == "newly_added" : 
             Campaign.objects.filter().order_by('-created_on')
-
-    
         # response =paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
 
 # Need's love ---> donor count is less 

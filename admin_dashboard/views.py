@@ -69,6 +69,9 @@ class AdminDonationApi(APIView):
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
 
+class AdminCountryApi(APIView):
+    def get(self,request,*args, **kwargs):
+        pass
 
 class UserUpdateApi(APIView):
     def put(self,request,pk,*args, **kwargs):

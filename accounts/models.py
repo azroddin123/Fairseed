@@ -22,7 +22,7 @@ class User(AbstractBaseUser):
     profile_pic      = models.ImageField(upload_to="user/",null=True,blank=True)
     mobile_number    = models.CharField(max_length=20,unique=True,blank=True,null=True)
     city             = models.CharField(max_length = 50 ,blank=True, null=True)
-    country          = models.CharField(max_length=50, blank=True, null=True)
+    country          = models.CharField(max_length=50,default="India")
     user_type        = models.CharField(choices=UserChoices.choices,max_length=25,default=UserChoices.INDIVIDUAL)
     accepted_policy  = models.BooleanField(default=False)
 

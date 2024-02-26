@@ -13,8 +13,11 @@ urlpatterns = [
     path('my-donations/<str:pk>',MyDonationApi.as_view()),
     
     #Get Bank And Kyc Details 
-    
-    # path("bank-kyc",BankKycApi.as_view()),
+    path("bank-kyc",BankKycApi.as_view()),
+    path("bank-kyc/<str:pk>",BankKycApi.as_view()),
+   
+    # Edit bank and kyc API
+    path('edit-bankkyc',ViewBankAndKycAPi.as_view()),
     
     # Get Receieved Donation 
     path('donations',RecivedDonationApi.as_view()),
