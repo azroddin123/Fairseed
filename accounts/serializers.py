@@ -73,5 +73,5 @@ class UserAdminSerializer(ModelSerializer):
 
 class UserRoleSerializer(ModelSerializer):
     class Meta :
-        model = User 
+        model = UserRole 
         fields = "__all__"

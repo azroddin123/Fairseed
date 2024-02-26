@@ -75,6 +75,7 @@ class CampaignAdminSerializer(ModelSerializer):
     def get_donor_count(self, obj):
           return obj.donors.count()
     
+    
 class RHSerializer(ModelSerializer):
     class Meta:
         model = RevisionHistory

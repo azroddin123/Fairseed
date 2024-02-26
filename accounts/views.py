@@ -12,13 +12,17 @@ from random import randint
 from django.core.mail import send_mail
 
 
+class UserRolesAPi(GenericMethodsMixin,APIView):
+    model = UserRole
+    serializer_class = UserRoleSerializer
+    lookup_field = "id"
+
+
 class UserApi(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserSerializer1
     lookup_field = "id"
     
-    
-
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
         try : 
