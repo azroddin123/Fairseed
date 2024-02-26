@@ -2,7 +2,7 @@ from django.db import models
 # from campaigns.models import Campaign
 from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel
-from portals.choices import DonationChoices,PaymentChoices
+from portals.choices import DonationChoices,PaymentChoices,StatusChoices
 
 
 # Create your models here.
@@ -19,10 +19,9 @@ class Donor(BaseModel):
     mobile        = models.CharField(max_length=124,blank=True,null=True)
     pancard       = models.CharField(max_length=124,blank=True,null=True)
     comment       = models.TextField(blank=True,null=True)
-    date          = models.DateField(null=True,blank=True)
     payment_type  = models.CharField(choices=PaymentChoices.choices,max_length=124)
     is_anonymous  = models.BooleanField(default=False)
-    status        = models.BooleanField(default=True)
+    status        = models.CharField(max_length=124,choices=StatusChoices.choices,default=StatusChoices.PENDING)
     is_approved   = models.BooleanField(default=False)
 
 class BankTransaction(BaseModel):

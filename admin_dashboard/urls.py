@@ -29,6 +29,10 @@ urlpatterns = [
     path('social-media/<str:pk>',SocialProfileApi.as_view()),
 
     # Add landing Page API
+    path('cause-edit',CampaignEditApproval.as_view()),
+    path('cause-edit/<str:pk>',CampaignEditApproval.as_view()),
+    
+    
     path('landing-page',LandingPageSettingApi.as_view()),
     path('landing-page/<str:pk>',LandingPageSettingApi.as_view()),
 

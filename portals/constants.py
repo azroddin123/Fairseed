@@ -24,7 +24,8 @@ ACTIVE              = "Active"
 COMPLETED           = "Completed"
 REJECTED            = "Rejected"
 APPROVED            = "Approved"
-
+INACTIVE            = "INACTIVE"
+NO_REQUEST          = "No_Request"
 # Course Choices 
 UNDERGRADUATE       = "Undergraduate"
 POSTGRADUATE        = "Postgraduate"

@@ -48,7 +48,7 @@ class LoginAPI(APIView):
             password_match = check_password(password,user.password)
             print("password match",password_match)
             serializer = UserSerializer1(user)
-            data = {"error" : True, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
+            data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
                 return Response(data,status=status.HTTP_200_OK)
             else :
@@ -78,7 +78,20 @@ class ForgotPasswordAPI(APIView):
         except:
             return Response(data="User Email Does not exists",status=status.HTTP_400_BAD_REQUEST )
 
+class UpdateUserAPI(APIView):
+    def put(self,request,*args, **kwargs):
+        try :
+            user = User.objects.get(id=request.thisUser)
+            serializer = UserSerializer1(user, data=request.data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"error" : False, "message": "User updated successfully",},status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
+
+    
 class ResetPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
         email = request.data.get('email')
@@ -96,18 +109,17 @@ class PageNotFoundAPI(APIView):
         return Response({"error" : True, "message" : "This API Does not exists in this Application"},status=status.HTTP_404_NOT_FOUND)
 
 
-from django.db.models import Count
 
 # Assuming you have already imported the User model
-users = User.objects.values('country')
-print(users)
+# users = User.objects.values('country')
+# print(users)
 
-for item in users :
-    print(item)
+# for item in users :
+#     print(item)
     
-# Query to get country-wise user count
-country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
+# # Query to get country-wise user count
+# country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
 
-# Print the results
-for item in country_user_count:
-    print("Country:", item['country'], "User Count:", item['user_count'])
+# # Print the results
+# for item in country_user_count:
+#     print("Country:", item['country'], "User Count:", item['user_count'])

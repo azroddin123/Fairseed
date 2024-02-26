@@ -13,6 +13,8 @@ from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
+from django.db import transaction
+from accounts.serializers import * 
 
 
 class PagesAPi(GenericMethodsMixin,APIView):
@@ -68,20 +70,21 @@ class AdminDonationApi(APIView):
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
+from django.db.models import Count
 
 class AdminCountryApi(APIView):
     def get(self,request,*args, **kwargs):
-        pass
+        country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
+        for item in country_user_count:
+            print("Country:", item['country'], "User Count:", item['user_count'])
 
 class UserUpdateApi(APIView):
     def put(self,request,pk,*args, **kwargs):
         try : 
-            campaign = Campaign.objects.get(id=pk)
-            data = campaign.campaign_data
-            serializer  = CampaignSerializer(campaign,data=data,partial=True)
+            user = User.objects.get(id=pk)
+            serializer  = UserSerializer1(user,data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
-                campaign.is_admin_approved = True
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -90,8 +93,21 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = CampBankKycSerializer
     lookup_field = "id"
-               
-               
+    
+    def put(self,request,pk,*args, **kwargs):
+        try :
+            data = BankKYC.objects.get(id=pk)
+            data.bank_data["approval_status"] = "Approved"
+            serializer = BankKYCSerializer(data,data=data.bank_data,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                data.bank_data = {}
+                data.save()
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+      
+
 class DonorsApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
@@ -120,11 +136,37 @@ class UserApi(GenericMethodsMixin,APIView):
     create_serializer_class = UserSerializer
     lookup_field="id"
     
-        
 
-# user role and authentication.
-# user update api.
-# update the data when admin approve it.
-# add admin authentication
-# add user authentication
-# 
+class CampaignEditApproval(GenericMethodsMixin,APIView):
+    model = Campaign
+    serializer_class = CampaignSerializer
+    lookup_field="id"
+    
+    def get(self,request,*args, **kwargs):
+        try :
+            data = Campaign.objects.filter(approval_status="Pending")
+            print(len(data),"this much objectr")
+            serializer = CampaignDocumentSerializer(data,many=True)
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+      
+    def put(self,request,pk,*args, **kwargs):
+        # try :
+            # we have to import all the data in the rh history also 
+            with transaction.atomic():
+                campaign = Campaign.objects.get(id=pk)
+                serializer = CampaignSerializer(campaign,data=campaign.campaign_data,partial=True)
+                campaign.campaign_data['approval_status'] = "Approved"
+                if serializer.is_valid():
+                    serializer.save()
+                    campaign.campaign_data = {}
+                    campaign.save()
+                    RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
+                return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        # except Exception as e :
+        #     return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+# country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
+# for item in country_user_count:
+#     print("Country:", item['country'], "User Count:", item['user_count'])

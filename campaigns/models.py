@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 from portals.models import BaseModel
-from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices
+from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices,ApprovalChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 # from django.core.exceptions import ValidationError
@@ -42,6 +42,7 @@ class Campaign(BaseModel):
     is_featured       = models.BooleanField(default=False)
     is_reported       = models.BooleanField(default=False)
     is_withdrawal     = models.BooleanField(default=False)
+    approval_status   = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
     campaign_data     = models.JSONField(null=True,blank=True)
     is_admin_approved = models.BooleanField(default=False)
     notes             = models.TextField(blank=True,null=True)
@@ -116,7 +117,10 @@ class BankKYC(BaseModel):
     is_verified         = models.BooleanField(default=False)
     status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)
-
+    # For Approval Proces 
+    bank_data           = models.JSONField(null=True,blank=True)
+    approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+    
 
 class RevisionHistory(BaseModel):
     modeified_by  = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)

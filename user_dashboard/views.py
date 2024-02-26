@@ -1,4 +1,3 @@
-
 # Create your views here.
 # from django.shortcuts import render
 from django.db.models import Sum
@@ -7,11 +6,13 @@ from campaigns.serializers import *
 from donors.serializers import * 
 from campaigns.models import * 
 from rest_framework.views import APIView
-from portals.GM2 import GenericMethodsMixin
+from portals.GM import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 
 # User Dasboard API
@@ -69,15 +70,13 @@ class CampaignApi(GenericMethodsMixin,APIView):
     
     def put(self,request,pk,*args, **kwargs):
         try :
-            print(request.data)
             campaign = Campaign.objects.get(id=pk)
-            print(request.data)
-            campaign.campaign_data=request.data
+            campaign.campaign_data = request.data
+            campaign.approval_status = "Pending"
             campaign.save()
             return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 # Donor API Donation Done By MySelf 
 class MyDonationApi(GenericMethodsMixin,APIView):
@@ -85,11 +84,10 @@ class MyDonationApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
     
-    
 # Recieved Donation For my Campaign 
 class RecivedDonationApi(APIView):
     def get(self,request,*args, **kwargs):
-        data = Donor.objects.filter(campaign__user="bee9ed7f-ade9-4dd3-a136-d043dd4b9a52")
+        data = Donor.objects.filter(campaign__user=request.thisUser)
         serializer = DonorSerializer(data,many=True)
         return Response({"data": serializer.data},status=status.HTTP_200_OK)
 
@@ -97,39 +95,35 @@ class BankKycApi(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = BankKYCSerializer
     lookup_field = "id"
-    
-# user --> Campaign --> Donation 
-# User = request.thisUser 
+    def put(self,request,pk,*args, **kwargs):
+        try :
+            campaign = BankKYC.objects.get(id=pk)
+            campaign.campaign_data = request.data
+            campaign.approval_status = "Pending"
+            campaign.save()
+            return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ViewBankAndKycAPi(APIView):
     def get(self,request,pk,*args, **kwargs):
         try : 
-            bank_data = AccountDetail.objects.get(campaign=pk)
-            kyc_data  = Kyc.objects.get(campaign=pk)
-            
-            serializer      = AccountDSerializer(bank_data)
-            kyc_serializer  = KycSerializer(kyc_data)
-            return Response({ "error" : False , "bank_data" : serializer.data ,
-                "kyc_data" : kyc_serializer.data
+            bank_data       = BankKYC.objects.get(campaign=pk)
+            serializer      = BankKYCSerializer(bank_data)
+            return Response({ "error" : False , "data" : serializer.data ,
             },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
+    
     def put(self,request,pk,*args, **kwargs):
         try :
-            bank_data = AccountDetail.objects.get(campaign=pk)
-            kyc_data  = Kyc.objects.get(campaign=pk)
-
-            bank_serializer = AccountDSerializer(bank_data,data=request.data,partial=True)
-            if bank_serializer.is_valid():
-                bank_serializer.save()
-            
-            kyc_serializer = KycSerializer(kyc_data,data=request.data,partial=True)
-            if kyc_serializer.is_valid():
-                kyc_serializer.save()
-            
-            return Response({"error" : False ,"message" : "Your Request sent to admin for verification"})
-        except Exception as e :
+            kyc = BankKYC.objects.get(id=pk)
+            kyc.bank_data = request.data
+            kyc.approval_status = "Pending"
+            kyc.save()
+            return Response({"error" : False , "message" : " Your changes has been recorded and is sent for approval to Admin "},status=status.HTTP_200_OK)
+        except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
 
-                
+        

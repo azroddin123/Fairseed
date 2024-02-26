@@ -51,3 +51,14 @@ class PaymentChoices(models.TextChoices):
 class KycChoices(models.TextChoices):
     PENDING    = PENDING,PENDING
     APPROVED   = APPROVED,APPROVED
+    
+
+class ApprovalChoices(models.TextChoices):
+    NO_REQUEST = NO_REQUEST,NO_REQUEST
+    PENDING    = PENDING,PENDING
+    APPROVED   = APPROVED,APPROVED
+    REJECTED   = REJECTED,REJECTED
+
+class StatusChoices(models.TextChoices):
+    PENDING    = PENDING,PENDING
+    APPROVED   = APPROVED,APPROVED
