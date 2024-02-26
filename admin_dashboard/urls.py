@@ -49,6 +49,8 @@ urlpatterns = [
     path('dashboard-api',AdminDashboardApi.as_view()),
     path('donation-api',AdminDonationApi.as_view()),
     
+    path('countrywise-users',AdminCountryApi.as_view()),
+    
     path('user-update/<str:pk>',UserUpdateApi.as_view()),
     
     path('donors',DonorsApi.as_view()),

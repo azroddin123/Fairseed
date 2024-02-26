@@ -85,11 +85,14 @@ class PageSerializer(ModelSerializer):
         fields = "__all__"
         
 class UserAdminSerializer1(ModelSerializer):
-    # campaign_count = serializers.SerializerMethodField(read_only=True)
+    user_role = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model  = User
-        fields = ('id','username','email','mobile_number','created_on','user_type','user_role','password','is_active','country')
+        fields = ('id','username','email','mobile_number','created_on','user_type','user_role','password','is_active','country','password')
 
+    def get_user_role (self,obj):
+        return obj.user_role.role_name if obj.user_role else None
+    
 class UserSerializer(ModelSerializer):
     class Meta :
         model = User 

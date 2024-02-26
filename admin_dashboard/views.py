@@ -74,9 +74,17 @@ from django.db.models import Count
 
 class AdminCountryApi(APIView):
     def get(self,request,*args, **kwargs):
+        user_data =  [
+        {
+            "country": "India",
+            "user_count": 4
+        },
+        {
+            "country": "Australia",
+            "user_count": 3
+        }]
         country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
-        for item in country_user_count:
-            print("Country:", item['country'], "User Count:", item['user_count'])
+        return Response({"error" : False, "user_data" :user_data },status=status.HTTP_200_OK)
 
 class UserUpdateApi(APIView):
     def put(self,request,pk,*args, **kwargs):
