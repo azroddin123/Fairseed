@@ -138,7 +138,7 @@ class RevisionHistoryApi(APIView):
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
             
             
-class UserApi(GenericMethodsMixin,APIView):
+class UserApi2(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserAdminSerializer1
     create_serializer_class = UserSerializer

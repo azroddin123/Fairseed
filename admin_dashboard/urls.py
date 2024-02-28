@@ -62,8 +62,8 @@ urlpatterns = [
     # path('revision-history/<str:pk>',RevisionHistoryAPi.as_view()),
     path('revise-history/<str:pk>',RevisionHistoryApi.as_view()),
     
-    path('users',UserApi.as_view()),
-    path('users/<str:pk>',UserApi.as_view()),
+    path('users',UserApi2.as_view()),
+    path('users/<str:pk>',UserApi2.as_view()),
     
     path('user-roles',UserRolesAPi.as_view()),
     path('user-roles/<str:pk>',UserRolesAPi.as_view()),
