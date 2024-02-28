@@ -160,7 +160,7 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
       
     def put(self,request,pk,*args, **kwargs):
-        # try :
+        try :
             # we have to import all the data in the rh history also 
             with transaction.atomic():
                 campaign = Campaign.objects.get(id=pk)
@@ -172,9 +172,12 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                     campaign.save()
                     RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
-        # except Exception as e :
-        #     return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-# country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
-# for item in country_user_count:
-#     print("Country:", item['country'], "User Count:", item['user_count'])
+
+class DocumentAPI(GenericMethodsMixin,APIView):
+    model = Documents
+    serializer_class = DocumentSerializer
+    lookup_field = "id"
+    

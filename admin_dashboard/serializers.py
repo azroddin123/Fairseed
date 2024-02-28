@@ -14,7 +14,7 @@ class CampBankKycSerializer(ModelSerializer):
     campaign = CampSerializer(read_only=True)
     class Meta :
         model = BankKYC
-        fields = ('id','account_holder_name','account_number','bank_name','branch_name','ifsc_code','status','campaign','bank_data')   
+        fields = "__all__"
 
 # class GSSerializer(ModelSerializer):
 #     keywords = serializers.ListField(child=serializers.CharField(),write_only=True)

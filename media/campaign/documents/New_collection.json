@@ -1,0 +1,2483 @@
+{
+	"info": {
+		"_postman_id": "c72b15c0-5ee9-4042-8b9b-db5561a7abc6",
+		"name": "Fairseed_Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10335906",
+		"_collection_link": "https://www.postman.com/universal-station-425631/workspace/bms/collection/10335906-c72b15c0-5ee9-4042-8b9b-db5561a7abc6?action=share&source=collection_link&creator=10335906"
+	},
+	"item": [
+		{
+			"name": "Landing page",
+			"item": [
+				{
+					"name": "Landing_Page(Statistics_API)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/campaign/landing-page",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"landing-page"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Campaign",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/campaign/campaign?page=1&limit=20",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"campaign"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign Catagegories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/campaign/campaign-category?page=1&limit=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"campaign-category"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CampaignDetailApi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/campaign/campaign-details/dcee59c8-3a00-495f-a18a-2da562c29e7e",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"campaign-details",
+								"dcee59c8-3a00-495f-a18a-2da562c29e7e"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "6",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "4",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign By Catagory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/campaign/category?category=6d5a6f11-871d-4335-b6cb-c6d0e798c930&page=1&limit=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"category"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "6d5a6f11-871d-4335-b6cb-c6d0e798c930"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Campaign API Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjMzYXpoYXJvZGRpbkBnbWFpbC5jb20ifQ.M2EOCsTN-986vgwN9LRLnSJC-Ks4-8ig3tttNemxiOs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "rasing_for",
+									"value": "Self",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Help Huzaifa (BCA-III) raise funds 2.",
+									"type": "text"
+								},
+								{
+									"key": "goal_amount",
+									"value": "15000",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Pune",
+									"type": "text"
+								},
+								{
+									"key": "zakat_eligible",
+									"value": "Yes",
+									"type": "text"
+								},
+								{
+									"key": "story",
+									"value": "Dear kind people,\n\nThis cause is being raised to pay the due fees of a very talented 3rd-year BCA student - Huzaifa who aspires to become a great techie & serve his family & society in the future.\n\nHuzaifa, 21, hails from Pune & is a meritorious IT student who studies at Abeda Inamdar College, Kondhwa, Pune.\n\nHuzaifa belongs to a low-income group. His father, who on his daily wages could hardly make ends meet, was diagnosed with Wallenberg Syndrome last year. Moreover, the ongoing pandemic destroyed all sources of his livelihood & the family exhausted all their savings in paying the hospital bill. Consequently, bearing the expenses of the education of the children & the medication of the father became a challenge.\n\nDespite all the unfavourable circumstances, Huzaifa has maintained academic consistency & scored brilliantly.\n\nWhat the student has to say:\n\n\"Assalamu alaikum, I have always dreamt of being an IT professional & I stand a great chance to build my career in the software industry.\nBy the grace of Allah & support from kind people, I have paid my full fees for 2nd year, Alhamdulillah.\nI request you to help me in this tough situation. I shall never forget any donations that I receive & will help the needy by giving back to society when I become self-dependent, Insha Allah!\"\n",
+									"type": "text"
+								},
+								{
+									"key": "summary",
+									"value": "test summary",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "37b974f0-af39-4e1c-aae3-75273b96a60b",
+									"type": "text"
+								},
+								{
+									"key": "end_date",
+									"value": "2024-01-31",
+									"type": "text"
+								},
+								{
+									"key": "kyc_details",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "documents",
+									"type": "file",
+									"src": [
+										"/home/lenovo/Downloads/c1.png",
+										"/home/lenovo/Downloads/c2.png"
+									]
+								},
+								{
+									"key": "account_holder_name",
+									"value": "test name",
+									"type": "text"
+								},
+								{
+									"key": "account_number ",
+									"value": "123456789012",
+									"type": "text"
+								},
+								{
+									"key": "bank_name",
+									"value": "SBI",
+									"type": "text"
+								},
+								{
+									"key": "ifsc_code",
+									"value": "SBI0006787",
+									"type": "text"
+								},
+								{
+									"key": "passbook_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/Robotics Club.jpeg"
+								},
+								{
+									"key": "branch_name ",
+									"value": "Kondhwa ",
+									"type": "text"
+								},
+								{
+									"key": "adhar",
+									"type": "file",
+									"src": [
+										"postman-cloud:///1eebebc4-b23c-4ab0-8223-cbfd37f848b0",
+										"/home/lenovo/Downloads/a2.jpg"
+									]
+								},
+								{
+									"key": "pan_card",
+									"value": "DKCPM7691N",
+									"type": "text"
+								},
+								{
+									"key": "pan_card_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/childhood.jpeg"
+								},
+								{
+									"key": "adhar_card",
+									"value": "491885733144",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/campaign/add-campaign",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"add-campaign"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User API",
+			"item": [
+				{
+					"name": "CreateUser[CreateUserApi]",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "Sameer Shaikh",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "sammea12@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "mobile_number",
+									"value": "12345678876",
+									"type": "text"
+								},
+								{
+									"key": "user_type",
+									"value": "Individual",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Azhar@123",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Hyderabad",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "India",
+									"type": "text"
+								},
+								{
+									"key": "profile_pic",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/c3.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/accounts/register/nt/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"accounts",
+								"register",
+								"nt",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetIndividualUser",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/accounts/user/1bc672d3-7a95-44b1-bf37-71c865025f62",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"user",
+								"1bc672d3-7a95-44b1-bf37-71c865025f62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginApi(GenrateToken)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMTU1MDU4LCJpYXQiOjE3MDExNTQ3NTgsImp0aSI6ImM5ZmUwNjdkYjg5NDRhNmVhNjc2NTVjMTA2Y2I0MTdhIiwidXNlcl9pZCI6MX0.Ov-9hstFRefX74ofaz3zYoEwIgbfr7hBjsUs4CPUyDc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"33azharoddin@gmail.com\",    \n    \"password\" : \"Azhar@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/accounts/login/nt/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"login",
+								"nt",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllUsers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/accounts/user?page=1&limit=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"user"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "Ovez Patel",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "mobile_number",
+									"value": "8412045463",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "city",
+									"value": "Pune",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "country",
+									"value": "India",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "user_type",
+									"value": "NGO",
+									"type": "text"
+								},
+								{
+									"key": "profile_pic",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/c4.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8000/accounts/user/a5aacc8c-be1d-4888-9f99-2ed4b3c1d5b1",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"accounts",
+								"user",
+								"a5aacc8c-be1d-4888-9f99-2ed4b3c1d5b1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/accounts/user/e7e23db7-5140-4421-afb4-5a8c77a15f59",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"user",
+								"e7e23db7-5140-4421-afb4-5a8c77a15f59"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChangePassword",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"Azhar@123\",\n    \"new_password\": \"123456\",\n    \"confirm_password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/accounts/change_password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"change_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgetPassword API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n       \"email\": \"33azharoddin@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/accounts/forgetpassword",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"forgetpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "{{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n       \"email\": \"33azharoddin@gmail.com\",\n       \"password\" : \"Azhar@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/accounts/reset-pass",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"reset-pass"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This folder contain the information about creating the user and adding the user as well as admin .  \ncreate user,set password , change password and all these things."
+		},
+		{
+			"name": "Campaign",
+			"item": [
+				{
+					"name": "Create  Campaign API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "JvZGRpbkBnbWFpbC5jb20ifQ.M2EOCsTN-986vgwN9LRLnSJC-Ks4-8ig3tttNemxiOs",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "rasing_for",
+									"value": "Self",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Campaign 4",
+									"type": "text"
+								},
+								{
+									"key": "goal_amount",
+									"value": "15000",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Pune",
+									"type": "text"
+								},
+								{
+									"key": "zakat_eligible",
+									"value": "Yes",
+									"type": "text"
+								},
+								{
+									"key": "story",
+									"value": "Dear kind people,\n\nThis cause is being raised to pay the due fees of a very talented 3rd-year BCA student - Huzaifa who aspires to become a great techie & serve his family & society in the future.\n\nHuzaifa, 21, hails from Pune & is a meritorious IT student who studies at Abeda Inamdar College, Kondhwa, Pune.\n\nHuzaifa belongs to a low-income group. His father, who on his daily wages could hardly make ends meet, was diagnosed with Wallenberg Syndrome last year. Moreover, the ongoing pandemic destroyed all sources of his livelihood & the family exhausted all their savings in paying the hospital bill. Consequently, bearing the expenses of the education of the children & the medication of the father became a challenge.\n\nDespite all the unfavourable circumstances, Huzaifa has maintained academic consistency & scored brilliantly.\n\nWhat the student has to say:\n\n\"Assalamu alaikum, I have always dreamt of being an IT professional & I stand a great chance to build my career in the software industry.\nBy the grace of Allah & support from kind people, I have paid my full fees for 2nd year, Alhamdulillah.\nI request you to help me in this tough situation. I shall never forget any donations that I receive & will help the needy by giving back to society when I become self-dependent, Insha Allah!\"\n",
+									"type": "text"
+								},
+								{
+									"key": "summary",
+									"value": "test summary",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "745972e0-70df-4582-8def-669e5db10404",
+									"type": "text"
+								},
+								{
+									"key": "end_date",
+									"value": "2024-01-31",
+									"type": "text"
+								},
+								{
+									"key": "kyc_details",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "documents",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/islam.jpg"
+								},
+								{
+									"key": "account_holder_name",
+									"value": "test name",
+									"type": "text"
+								},
+								{
+									"key": "account_number ",
+									"value": "1234567890",
+									"type": "text"
+								},
+								{
+									"key": "bank_name",
+									"value": "SBI",
+									"type": "text"
+								},
+								{
+									"key": "ifsc_code",
+									"value": "SBI0006787",
+									"type": "text"
+								},
+								{
+									"key": "passbook_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/Robotics Club.jpeg"
+								},
+								{
+									"key": "branch_name ",
+									"value": "Kondhwa ",
+									"type": "text"
+								},
+								{
+									"key": "adhar_card_image",
+									"type": "file",
+									"src": "postman-cloud:///1eebebc4-b23c-4ab0-8223-cbfd37f848b0"
+								},
+								{
+									"key": "pan_card",
+									"value": "DKCPM7691N",
+									"type": "text"
+								},
+								{
+									"key": "pan_card_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/childhood.jpeg"
+								},
+								{
+									"key": "adhar_card",
+									"value": "491885733144",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/campaign/add-campaign",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"add-campaign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Campaign API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjMzYXpoYXJvZGRpbkBnbWFpbC5jb20ifQ.M2EOCsTN-986vgwN9LRLnSJC-Ks4-8ig3tttNemxiOs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "rasing_for",
+									"value": "Self",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "Help Huzaifa (BCA-III) raise funds 2.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "goal_amount",
+									"value": "15000",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "Pune",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "zakat_eligible",
+									"value": "Yes",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "story",
+									"value": "Dear kind people,\n\nThis cause is being raised to pay the due fees of a very talented 3rd-year BCA student - Huzaifa who aspires to become a great techie & serve his family & society in the future.\n\nHuzaifa, 21, hails from Pune & is a meritorious IT student who studies at Abeda Inamdar College, Kondhwa, Pune.\n\nHuzaifa belongs to a low-income group. His father, who on his daily wages could hardly make ends meet, was diagnosed with Wallenberg Syndrome last year. Moreover, the ongoing pandemic destroyed all sources of his livelihood & the family exhausted all their savings in paying the hospital bill. Consequently, bearing the expenses of the education of the children & the medication of the father became a challenge.\n\nDespite all the unfavourable circumstances, Huzaifa has maintained academic consistency & scored brilliantly.\n\nWhat the student has to say:\n\n\"Assalamu alaikum, I have always dreamt of being an IT professional & I stand a great chance to build my career in the software industry.\nBy the grace of Allah & support from kind people, I have paid my full fees for 2nd year, Alhamdulillah.\nI request you to help me in this tough situation. I shall never forget any donations that I receive & will help the needy by giving back to society when I become self-dependent, Insha Allah!\"\n",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "summary",
+									"value": "test summary 2",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "37b974f0-af39-4e1c-aae3-75273b96a60b",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2024-01-31",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "kyc_details",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "documents",
+									"type": "file",
+									"src": [
+										"/home/lenovo/Downloads/c1.png",
+										"/home/lenovo/Downloads/c2.png"
+									],
+									"disabled": true
+								},
+								{
+									"key": "account_holder_name",
+									"value": "test name 2",
+									"type": "text"
+								},
+								{
+									"key": "account_number ",
+									"value": "123456789012",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "bank_name",
+									"value": "SBI2",
+									"type": "text"
+								},
+								{
+									"key": "ifsc_code",
+									"value": "SBI0006787",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "passbook_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/Robotics Club.jpeg",
+									"disabled": true
+								},
+								{
+									"key": "branch_name ",
+									"value": "Kondhwa ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "adhar",
+									"type": "file",
+									"src": [
+										"postman-cloud:///1eebebc4-b23c-4ab0-8223-cbfd37f848b0",
+										"/home/lenovo/Downloads/a2.jpg"
+									],
+									"disabled": true
+								},
+								{
+									"key": "pan_card",
+									"value": "DKCPM7691N",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "pan_card_image",
+									"type": "file",
+									"src": "/home/lenovo/Downloads/childhood.jpeg",
+									"disabled": true
+								},
+								{
+									"key": "adhar_card",
+									"value": "49188573311212",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/campaign/add-campaign/c18689c4-55f3-45bc-94f9-aac2a15f8dc6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"campaign",
+								"add-campaign",
+								"c18689c4-55f3-45bc-94f9-aac2a15f8dc6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Panel",
+			"item": [
+				{
+					"name": "Dashboard",
+					"item": [
+						{
+							"name": "DashboardAPI",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/dashboard-api",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"dashboard-api"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Donation Last 30 days API",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/donation-api",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"donation-api"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "General Settings",
+					"item": [
+						{
+							"name": "Get Genaral Setting",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/gs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"gs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add General Setting",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n \"namesite\":\"New _name_site\",\n \"welcome_text\":\"welcome text\",\n\n \"description\": \"description text\",\n\"email_admin\": \"email_admin@gmail.com\",\n \"tandc_url\": \"sonme usrl\",\n\"privacy_policy_url\": \n            \"This field is required.\",\n\"email_no_reply\":\"norepay@gmail.com\",\n\"new_registration_enabled\" : \"True\",\n\"auto_approve_enabled\": \"False\",\n\"email_verification_enabled\" : \"False\",\n\"facebook_login_enabled\" : \"False\",\n\"google_login_enabled\" : \"False\",\n\"captcha_enabled\" : \"True\",\n\"input_field_enabled\": \"False\",\n\"keywords\" : [\"new\" ,\"fairseed\",\"fundraise\",\"donations\"]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/gs",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"gs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Limit Data",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/limit",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"limit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Limit Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n            \"num_campaigns\": 13,\n            \"max_file_size\": 5,\n            \"campaign_min_amount\": 1200,\n            \"donation_min_amount\": 4000,\n            \"donation_max_amount\": 3000,\n            \"campaign_max_amount\": 10030\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://143.110.253.227:8000/admin-dashboard/limit",
+									"protocol": "http",
+									"host": [
+										"143",
+										"110",
+										"253",
+										"227"
+									],
+									"port": "8000",
+									"path": [
+										"admin-dashboard",
+										"limit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Social Media Api Links",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/social-media",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"social-media"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Social Media Api Links",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"facebook_url\": \"https://www.sfacebook.com/azhar.mujawar.5836\",\n   \"twitter_url\": \"https://twitter.com/AzroddinMujawar\",\n   \"instagram_url\": \"https://www.instagram.com/itsazhar786/\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/social-media",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"social-media"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Landing Page",
+					"item": [
+						{
+							"name": "Get Landing Page Data",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "logo ",
+											"type": "file",
+											"src": "/home/lenovo/React_Course/01basicreactapp/public/logo192.png"
+										},
+										{
+											"key": "logo_footer",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "favicon",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_header",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_bottom",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "avtar",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_catagory",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "default_link_color",
+											"value": "#234343",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/landing-page?page=1&limit=4",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"landing-page"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Landing Page Data",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "logo ",
+											"type": "file",
+											"src": "/home/lenovo/React_Course/01basicreactapp/public/logo192.png"
+										},
+										{
+											"key": "logo_footer",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "favicon",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_header",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_bottom",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "avtar",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_catagory",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "default_link_color",
+											"value": "#234343",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/landing-page",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"landing-page"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image_header",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_bottom",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "avtar",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_catagory",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "default_link_color",
+											"value": "#234343",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/landing-page/1da751b7-12b1-4134-92a6-fa12bdd01a9f",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"landing-page",
+										"1da751b7-12b1-4134-92a6-fa12bdd01a9f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "Get Categories",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/category?page=1&limit=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"category"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New Category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "New1",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/islam.jpg"
+										},
+										{
+											"key": "is_active",
+											"value": "True",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/category",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"category"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Campaign Category",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Religious Study",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/category/1f7800d4-3d24-416b-abb1-2f9232f7e9f8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"category",
+										"1f7800d4-3d24-416b-abb1-2f9232f7e9f8"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Religious Studies",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Campaign Category",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/category/1f7800d4-3d24-416b-abb1-2f9232f7e9f8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"category",
+										"1f7800d4-3d24-416b-abb1-2f9232f7e9f8"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Campaign",
+					"item": [
+						{
+							"name": "Get All Campaign",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/admin-dashboard/campaign",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"admin-dashboard",
+										"campaign"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reported Campaign",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/reported-campaign",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"reported-campaign"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Updatte Campaign",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "status",
+											"value": "Active",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/campaign/44190797-143d-4ed3-8bed-a1d25364690f",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"campaign",
+										"44190797-143d-4ed3-8bed-a1d25364690f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CampaignKYC",
+					"item": [
+						{
+							"name": "Get campaign Kyc",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/campaign-kyc?page=1&limit=4",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"campaign-kyc"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get campaign Kyc Copy",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "status",
+											"value": "Approved",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/campaign-kyc/679e8e6c-014c-4e2b-bb06-61811464fec3",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"campaign-kyc",
+										"679e8e6c-014c-4e2b-bb06-61811464fec3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Donation",
+					"item": [
+						{
+							"name": "Get Donation API",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "logo ",
+											"type": "file",
+											"src": "/home/lenovo/React_Course/01basicreactapp/public/logo192.png"
+										},
+										{
+											"key": "logo_footer",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "favicon",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_header",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_bottom",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "avtar",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "image_catagory",
+											"type": "file",
+											"src": "/home/lenovo/Downloads/banner.jpeg"
+										},
+										{
+											"key": "default_link_color",
+											"value": "#234343",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/donors?page=1&limit=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"donors"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/admin-dashboard/donation-api",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"admin-dashboard",
+										"donation-api"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User API",
+					"item": [
+						{
+							"name": "Get Users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/users?paage=1&limit=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"users"
+									],
+									"query": [
+										{
+											"key": "paage",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\" : \"AK\",\n  \"email\" : \"azhar@mail.com\",\n  \"password\" : \"Azhar@123\",\n  \"mobile_number\":1234567890\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/users",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update users",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"is_active\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/users/1ecbd36f-8d31-4ebc-afc6-ef4a867953e0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"users",
+										"1ecbd36f-8d31-4ebc-afc6-ef4a867953e0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header Updated \",\n    \"slug\":\"pageurlhere\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/users/1ecbd36f-8d31-4ebc-afc6-ef4a867953e0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"users",
+										"1ecbd36f-8d31-4ebc-afc6-ef4a867953e0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Pages",
+					"item": [
+						{
+							"name": "Get Pages",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Pages",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header\",\n    \"slug\":\"pageurlhere\",\n    \"show_navbar\" : \"True\",\n    \"show_footer\":\"False\",\n    \"show_page\":\"True\",\n    \"content\": \"Content is here \"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Pages",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header Updated \",\n    \"slug\":\"pageurlhere\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages/e4e1cfc8-af64-4537-8066-4af9442c60f7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages",
+										"e4e1cfc8-af64-4537-8066-4af9442c60f7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Pages",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header Updated \",\n    \"slug\":\"pageurlhere\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages/e4e1cfc8-af64-4537-8066-4af9442c60f7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages",
+										"e4e1cfc8-af64-4537-8066-4af9442c60f7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PhonePay API",
+					"item": [
+						{
+							"name": "Get PhonePay Data",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/phonepay",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"phonepay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add PhonePay Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "  {\n        \"fee_percent\" : 5,\n        \"fee_cents\" : 5,\n        \"phonepay_key\": \" P Public Key Here\",\n        \"phonepay_secret\" : \"P Secret Key Here\"\n  }\n  ",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/phonepay",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"phonepay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update PhonePay Data",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "  {\n        \"fee_percent\": 2,\n        \"fee_cents\": 3,\n         \"phonepay_key\": \" Updated Public Key Here \",\n        \"phonepay_secret\" : \" Updated  Secret Key Here\"\n     \n      \n  }\n  \n  ",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/phonepay/5c36933b-b35f-4c93-9e59-a899aea2e7ba",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"phonepay",
+										"5c36933b-b35f-4c93-9e59-a899aea2e7ba"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete PhonePay Data",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/admin-dashboard/phonepay/5c36933b-b35f-4c93-9e59-a899aea2e7ba",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"phonepay",
+										"5c36933b-b35f-4c93-9e59-a899aea2e7ba"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Payment Gateway PhonePay",
+					"item": [
+						{
+							"name": "Get Pages",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/admin-dashboard/revise-history/270ffbb7-05ed-4a46-ac0b-a9932f5e82ca",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"admin-dashboard",
+										"revise-history",
+										"270ffbb7-05ed-4a46-ac0b-a9932f5e82ca"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Pages",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header\",\n    \"slug\":\"pageurlhere\",\n    \"show_navbar\" : \"True\",\n    \"show_footer\":\"False\",\n    \"show_page\":\"True\",\n    \"content\": \"Content is here \"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Pages",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header Updated \",\n    \"slug\":\"pageurlhere\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages/e4e1cfc8-af64-4537-8066-4af9442c60f7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages",
+										"e4e1cfc8-af64-4537-8066-4af9442c60f7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Pages",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\":\"Header Updated \",\n    \"slug\":\"pageurlhere\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/pages/e4e1cfc8-af64-4537-8066-4af9442c60f7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"pages",
+										"e4e1cfc8-af64-4537-8066-4af9442c60f7"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User Dashboard API",
+			"item": [
+				{
+					"name": "User Dashboard",
+					"item": [
+						{
+							"name": "User FundRaise Graph API",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user-dashboard/fundraise-data",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"fundraise-data"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User dashbioard API",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user-dashboard/dashboard-api",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"dashboard-api"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Donation Graph API",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user-dashboard/donation-data",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"donation-data"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Donation Graph API Copy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:8000/user-dashboard/donation-data",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"user-dashboard",
+										"donation-data"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Campaign",
+					"item": [
+						{
+							"name": "Get Campaign",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user-dashboard/campaign?page=2&limit=20",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"campaign"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										},
+										{
+											"key": "limit",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Cause/Campaign",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/admin-dashboard/campaign/61d79da3-b888-4bae-b0cd-b991fb580520",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"admin-dashboard",
+										"campaign",
+										"61d79da3-b888-4bae-b0cd-b991fb580520"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Campaign",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "summary ",
+											"value": "Update Summary of this campaign ",
+											"type": "text"
+										},
+										{
+											"key": "goal_amount",
+											"value": "5000",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/user-dashboard/my-campaign/c830cf8e-6aa7-411d-8ccc-f00997bf7adf",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"my-campaign",
+										"c830cf8e-6aa7-411d-8ccc-f00997bf7adf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Donation",
+					"item": []
+				},
+				{
+					"name": "My Donation",
+					"item": [
+						{
+							"name": "Get My Donation API",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-token",
+										"value": "{{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/user-dashboard/my-donations?page=1&limit=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user-dashboard",
+										"my-donations"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Withdrawals",
+					"item": []
+				},
+				{
+					"name": "Update Cause/Campaign",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"goal_amount\" : 3000,\n    \"status\" : \"Active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin-dashboard/campaign/8e3b4700-7db3-442e-a84b-66e54ac60e23",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-dashboard",
+								"campaign",
+								"8e3b4700-7db3-442e-a84b-66e54ac60e23"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

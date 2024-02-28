@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import * 
+from accounts.views import * 
 from campaigns.views import CampaignAdminApi,CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
 from payment_gateways.views import PhonepayApi
 urlpatterns = [
@@ -32,7 +33,6 @@ urlpatterns = [
     path('cause-edit',CampaignEditApproval.as_view()),
     path('cause-edit/<str:pk>',CampaignEditApproval.as_view()),
     
-    
     path('landing-page',LandingPageSettingApi.as_view()),
     path('landing-page/<str:pk>',LandingPageSettingApi.as_view()),
 
@@ -56,16 +56,18 @@ urlpatterns = [
     path('donors',DonorsApi.as_view()),
     path('donors/<str:pk>',DonorsApi.as_view()),
     
+    path('documents',DocumentAPI.as_view()),
+    path('documents/<str:pk>',DocumentAPI.as_view()),
     # path('revision-history',RevisionHistoryAPi.as_view()),
     # path('revision-history/<str:pk>',RevisionHistoryAPi.as_view()),
-    
     path('revise-history/<str:pk>',RevisionHistoryApi.as_view()),
     
     path('users',UserApi.as_view()),
     path('users/<str:pk>',UserApi.as_view()),
     
+    path('user-roles',UserRolesAPi.as_view()),
+    path('user-roles/<str:pk>',UserRolesAPi.as_view()),
+    
     path('phonepay',PhonepayApi.as_view()),
     path('phonepay/<str:pk>',UserApi.as_view()),
-    
-    
 ]

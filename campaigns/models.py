@@ -24,7 +24,7 @@ class Campaign(BaseModel):
     campaign_image    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
     title             = models.CharField(max_length=124)
     category          = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
-    user              = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    user              = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True,related_name="campaigns")
     rasing_for        = models.CharField(choices=RaiseChoices.choices,max_length=124)
     goal_amount       = models.PositiveIntegerField(validators=[MinValueValidator(0, message="Value must be greater than or equal to 100"),
                       MaxValueValidator(1000000000, message="Value must be less than or equal to 1000000")])
