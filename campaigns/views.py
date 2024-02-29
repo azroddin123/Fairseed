@@ -26,17 +26,17 @@ class CampaignApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field = "id"
     
-    def get(self,request,pk=None,*args, **kwargs):
-        try : 
-            if pk:
-                data = Campaign.objects.get(id=pk)
-                serializer = CampaignAdminSerializer(data=data)
-                return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+    # def get(self,request,pk=None,*args, **kwargs):
+    #     try : 
+    #         if pk:
+    #             data = Campaign.objects.get(id=pk)
+    #             serializer = CampaignAdminSerializer(data=data)
+    #             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
             
-            response = paginate_model_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,filter_key='category')
-            return Response(response,status=status.HTTP_200_OK)
-        except Exception as e :
-            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
+    #         response = paginate_model_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,filter_key='category')
+    #         return Response(response,status=status.HTTP_200_OK)
+    #     except Exception as e :
+    #         return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
    
 
 class  CampaigncategoryApi(GenericMethodsMixin,APIView):

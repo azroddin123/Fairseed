@@ -155,12 +155,13 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
     serializer_class = CampaignSerializer
     lookup_field="id"
     
-    def get(self,request,*args, **kwargs):
+    def get(self,request,pk=None,*args, **kwargs):
         try :
-            data = Campaign.objects.filter(approval_status="Pending")
-            print(len(data),"this much objectr")
-            serializer = CampaignDocumentSerializer(data,many=True)
-            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+            if pk==None : 
+                data = Campaign.objects.filter(approval_status="Pending")
+                print(len(data),"this much objectr")
+                serializer = CampaignDocumentSerializer(data,many=True)
+                return Response({"error" : False , "rows" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
       
@@ -174,8 +175,9 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                 if serializer.is_valid():
                     serializer.save()
                     campaign.campaign_data = {}
+                    campaign.approval_status="Approved"
                     campaign.save()
-                    RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
+                    # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
