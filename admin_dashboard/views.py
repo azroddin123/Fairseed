@@ -61,12 +61,12 @@ class AdminDonationApi(APIView):
     def get(self,request,*args, **kwargs):
         end_date = timezone.now()
         start_date = end_date - timedelta(days=30)
-        fundraise_data = Campaign.objects.filter(donors__date__range=(start_date,end_date)).values('donors__date').annotate(
+        fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date)).values('donors__created_on').annotate(
         total_amount=Sum('donors__amount')
-        ).order_by('donors__date')
+        ).order_by('donors__created_on')
         date_list = [start_date + timedelta(days=x) for x in range(30)]
         result = [
-                {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__date"] == date.date()), 0)}
+                {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
