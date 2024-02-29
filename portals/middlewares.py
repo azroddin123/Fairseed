@@ -13,7 +13,7 @@ class CustomAuthentication:
         print(request.headers)
         print()
         print("--------------------------------------------->")
-        if request.path.startswith("/admin/") or request.path.endswith("nt/") :
+        if request.path.startswith("/admin/") or request.path.endswith("nt/") or request.path.startswith("/media") or request.path.startswith("/campaign/"):
             request.thisUser = None
             response = self.get_response(request)
             return response
