@@ -26,7 +26,7 @@ class UserSerializer1(ModelSerializer):
     user_role = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model = User
-        exclude = ("last_login","created_on","updated_on","is_admin","password")
+        exclude = ("last_login","created_on","updated_on","is_admin")
 
     def get_user_role (self,obj):
         return obj.user_role.role_name if obj.user_role else None

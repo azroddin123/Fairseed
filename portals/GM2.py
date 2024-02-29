@@ -99,7 +99,7 @@ class GenericMethodsMixin:
             filter = {self.lookup_field: pk}
             object_instance = self.model.objects.get(**filter)
             create_serializer_class = self.get_create_serializer()
-            serializer = create_serializer_class(object_instance,data=request.data, )
+            serializer = create_serializer_class(object_instance,data=request.data,partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({"error": False, "data": serializer.data}, status=status.HTTP_202_ACCEPTED)

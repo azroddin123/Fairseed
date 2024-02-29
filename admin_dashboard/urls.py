@@ -37,8 +37,8 @@ urlpatterns = [
     path('landing-page/<str:pk>',LandingPageSettingApi.as_view()),
 
     # camapign Catagories api 
-    path('campaign',CampaignAdminApi.as_view()),
-    path('campaign/<str:pk>',CampaignAdminApi.as_view()),
+    path('campaign',CampaignAdminApi2.as_view()),
+    path('campaign/<str:pk>',CampaignAdminApi2.as_view()),
     
     path('reported-campaign',ReportedCauseApi.as_view()),
     path('successful-campaign',SuccessfulCauseApi.as_view()),

@@ -38,8 +38,6 @@ class CampaignApi(GenericMethodsMixin,APIView):
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
    
-    
-
 
 class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     model = Campaigncategory

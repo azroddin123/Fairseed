@@ -141,9 +141,14 @@ class RevisionHistoryApi(APIView):
 class UserApi2(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserAdminSerializer1
-    create_serializer_class = UserSerializer
+    create_serializer_class = UserSerializer1
     lookup_field="id"
-    
+
+class CampaignAdminApi2(GenericMethodsMixin,APIView):
+    model = Campaign
+    serializer_class = CampaignDocumentSerializer
+    create_serializer_class = CampaignSerializer
+    lookup_field  = "id"
 
 class CampaignEditApproval(GenericMethodsMixin,APIView):
     model = Campaign
