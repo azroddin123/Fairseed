@@ -6,7 +6,7 @@ from campaigns.serializers import *
 from donors.serializers import * 
 from campaigns.models import * 
 from rest_framework.views import APIView
-from portals.GM import GenericMethodsMixin
+from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
@@ -62,7 +62,7 @@ class FundRaisedApi(APIView):
         
         
 # Campaign API
-class CampaignApi(GenericMethodsMixin,APIView):
+class CampaignApi3(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignAdminSerializer
     create_serializer_class = CampaignSerializer
@@ -95,6 +95,7 @@ class BankKycApi(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = BankKYCSerializer
     lookup_field = "id"
+    
     def put(self,request,pk,*args, **kwargs):
         try :
             campaign = BankKYC.objects.get(id=pk)

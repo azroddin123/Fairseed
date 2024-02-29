@@ -5,8 +5,8 @@ from accounts.views import ChangePasswordApi
 
 urlpatterns = [
     # Get all User Campaign api
-    path('campaign',CampaignApi.as_view()),
-    path('campaign/<str:pk>',CampaignApi.as_view()),
+    path('campaign',CampaignApi3.as_view()),
+    path('campaign/<str:pk>',CampaignApi3.as_view()),
     
     # Get Approved Donation 
     path('my-donations',MyDonationApi.as_view()),
