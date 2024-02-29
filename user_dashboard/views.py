@@ -34,13 +34,13 @@ class DonationCountApi(APIView):
         end_date = timezone.now()
         start_date = end_date - timedelta(days=30)
         # Donation Data
-        donation_data = Donor.objects.filter(date__range=(start_date,end_date),user=request.thisUser).values('date').annotate(
+        donation_data = Donor.objects.filter(created_on__range=(start_date,end_date),user=request.thisUser).values('created_on').annotate(
                total_amount=Sum('amount')
-                ).order_by('date')
+                ).order_by('created_on')
         # Date list 
         date_list = [start_date + timedelta(days=x) for x in range(30)]
         result = [
-                {"date": date.date(), "total_amount": next((item["total_amount"] for item in donation_data if item["date"] == date.date()), 0)}
+                {"date": date.date(), "total_amount": next((item["total_amount"] for item in donation_data if item["created_on"] == date.date()), 0)}
                 for date in date_list
             ]
         return Response({"donation_data" : result},status=status.HTTP_200_OK)
@@ -50,12 +50,12 @@ class FundRaisedApi(APIView):
     def get(self,request):
         end_date = timezone.now()
         start_date = end_date - timedelta(days=30)
-        fundraise_data = Campaign.objects.filter(donors__date__range=(start_date,end_date),user=request.thisUser).values('donors__date').annotate(
+        fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
         total_amount=Sum('donors__amount')
-        ).order_by('donors__date')
+        ).order_by('donors__created_on')
         date_list = [start_date + timedelta(days=x) for x in range(30)]
         result = [
-                {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__date"] == date.date()), 0)}
+                {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
                 for date in date_list
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
