@@ -44,8 +44,6 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     serializer_class = CampaignCategorySerializer
     lookup_field = "id"
     
-
-
 class AccountDetailApi(GenericMethodsMixin,APIView):
     model = AccountDetail
     serializer_class = AccountDSerializer
