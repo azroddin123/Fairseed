@@ -6,7 +6,7 @@ from campaigns.serializers import *
 from donors.serializers import * 
 from campaigns.models import * 
 from rest_framework.views import APIView
-from portals.GM2 import GenericMethodsMixin
+from portals.GM1 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
