@@ -118,7 +118,7 @@ class ViewBankAndKycAPi(APIView):
     
     def put(self,request,pk,*args, **kwargs):
         try :
-            kyc = BankKYC.objects.get(id=pk)
+            kyc = BankKYC.objects.get(campaign=pk)
             kyc.bank_data = request.data
             kyc.approval_status = "Pending"
             kyc.save()
