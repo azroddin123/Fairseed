@@ -89,7 +89,7 @@ class CampaignDocumentSerializer(ModelSerializer):
     revision_history = RHSerializer(many=True, read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','campaign_image','story','summary','goal_amount','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","documents",'category','revision_history','donor_count')
+        fields = ('id','title','campaign_image','story','summary','goal_amount','campaign_data','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","documents",'category','revision_history','donor_count')
 
     def get_donor_count(self, obj):
         return obj.donors.count()

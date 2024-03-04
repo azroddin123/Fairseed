@@ -162,6 +162,11 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                 print(len(data),"this much objectr")
                 serializer = CampaignDocumentSerializer(data,many=True)
                 return Response({"error" : False , "rows" : serializer.data},status=status.HTTP_200_OK)
+            data = Campaign.objects.get(id=pk,approval_status="Pending")
+            serializer = CampaignDocumentSerializer(data)
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+
+        
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
       
