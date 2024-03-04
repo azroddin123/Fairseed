@@ -178,12 +178,14 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                 serializer = CampaignSerializer(campaign,data=campaign.campaign_data,partial=True)
                 campaign.campaign_data['approval_status'] = "Approved"
                 if serializer.is_valid():
+                    print("new campaign Data Approved ")
                     serializer.save()
                     campaign.campaign_data = {}
+                    print("Approval Status Approved ",campaign.campaign_data,campaign.approval_status)
                     campaign.approval_status="Approved"
                     campaign.save()
                     # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
-                return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+                return Response({"error" : False , "data" : "Camapaign Approved Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
