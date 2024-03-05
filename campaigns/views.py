@@ -288,7 +288,7 @@ class AddCampaignApi(APIView):
                     print("------------------Updating Campaigns-----------------------")
                     print(campaign.id,campaign)
                     uploaded_docs = request.FILES.getlist("documents")
-                    print(uploaded_docs)
+                    print(uploaded_docs,request.FILES)
                     if uploaded_docs:
                         print("deletting Docs")
                         Documents.objects.filter(campaign=campaign).delete()
@@ -314,9 +314,9 @@ class AddCampaignApi(APIView):
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
                         uploaded_docs = request.FILES.getlist("documents")
+                        print("uploaded docus ","------------------>",uploaded_docs)
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
-                       
                         print("---------------Bank KYC Saving---------------------")
                         request.data["campaign"] = campaign.id
                         bkc_serializer = BankKYCSerializer(data = request.data)

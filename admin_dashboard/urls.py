@@ -21,13 +21,13 @@ urlpatterns = [
     path('keyword',KeywordSApi.as_view()),
     path('keyword/<str:pk>',KeywordSApi.as_view()),
 
-    # add limit data 
+    # add limit data str:pk>
     path('limit',LimitApi.as_view()),
     path('limit/<str:pk>',LimitApi.as_view()),
 
     # add social Profile data
     path('social-media',SocialProfileApi.as_view()),
-    path('social-media/<str:pk>',SocialProfileApi.as_view()),
+    path('social-media/<',SocialProfileApi.as_view()),
 
     # Add landing Page API
     path('cause-edit',CampaignEditApproval.as_view()),

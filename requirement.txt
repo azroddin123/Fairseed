@@ -11,3 +11,5 @@ python-dotenv==1.0.0
 razorpay==1.4.1
 django-tinymce
 pymysql
+jsons
+cryptography

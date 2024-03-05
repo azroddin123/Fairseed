@@ -28,9 +28,10 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('admin-dashboard/',include('admin_dashboard.urls')),
     path('campaign/',include('campaigns.urls')),
-    path('donor/',include('donors.urls')),
+    path('donors/',include('donors.urls')),
     path('payment_gateway/',include('payment_gateways.urls')),
     path('user-dashboard/',include('user_dashboard.urls')),
+    path('phonepay/',include('phonepay.urls'))
 
     # # Token URLs
     # path('api-auth/', include('rest_framework.urls')),

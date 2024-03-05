@@ -142,7 +142,7 @@ class UserApi2(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserAdminSerializer1
     create_serializer_class = UserSerializer1
-    lookup_field="id"
+    lookup_field  = "id"
 
 class CampaignAdminApi2(GenericMethodsMixin,APIView):
     model = Campaign

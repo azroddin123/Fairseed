@@ -47,7 +47,6 @@ class GenericMethodsMixin:
             status=status.HTTP_400_BAD_REQUEST,
         )
     
-
     def get_paginated_data(self, request):
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)  

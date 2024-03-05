@@ -61,15 +61,15 @@ class GenericMethodsMixin:
         return Response({"error": False,"pages_count": paginator.num_pages,"count" : paginator.count,"rows": serializer.data}, status=status.HTTP_200_OK)
 
 
-    def get_single_data(self,request, pk):
-        try:
+    def get_single_data(self,request,pk):
+        # try:
             # here we can add authentication and authorization
             print("get single data")
             data = self.model.objects.get(pk=pk,user=request.thisUser)
             serializer = self.serializer_class(data)
             return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
-        except self.model.DoesNotExist:
-            return self.handle_does_not_exist_error()
+        # except self.model.DoesNotExist:
+        #     return self.handle_does_not_exist_error()
 
     # for post method
     def create_data(self, request):

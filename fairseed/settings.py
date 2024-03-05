@@ -53,12 +53,14 @@ INSTALLED_APPS = [
     'campaigns',
     'payment_gateways',
     'portals',
+    'phonepay',
     # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'django_seed',
-    'tinymce'
+    'tinymce',
+
     ]
 
 REST_FRAMEWORK = {
@@ -89,7 +91,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'portals.middlewares.CustomAuthentication'
+    # 'portals.middlewares.CustomAuthentication'
     
 ]
 ROOT_URLCONF = 'fairseed.urls'
