@@ -7,3 +7,6 @@ Pillow
 django-crontab
 django-seed
 markdown
+jsons
+cryptography
+shortuuid
