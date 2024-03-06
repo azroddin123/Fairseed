@@ -162,6 +162,7 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                 print(len(data),"this much objectr")
                 serializer = CampaignDocumentSerializer(data,many=True)
                 return Response({"error" : False , "rows" : serializer.data},status=status.HTTP_200_OK)
+            
             data = Campaign.objects.get(id=pk,approval_status="Pending")
             serializer = CampaignDocumentSerializer(data)
             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
@@ -175,17 +176,25 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
             # we have to import all the data in the rh history also 
             with transaction.atomic():
                 campaign = Campaign.objects.get(id=pk)
-                serializer = CampaignSerializer(campaign,data=campaign.campaign_data,partial=True)
-                campaign.campaign_data['approval_status'] = "Approved"
-                if serializer.is_valid():
-                    print("new campaign Data Approved ")
-                    serializer.save()
+                if request.data['approval_status'] == True : 
+                    serializer = CampaignSerializer(campaign,data=campaign.campaign_data,partial=True)
+                    campaign.campaign_data['approval_status'] = "Approved"
+                    if serializer.is_valid():
+                        print("new campaign Data Approved ")
+                        serializer.save()
+                        campaign.campaign_data = {}
+                        print("Approval Status Approved ",campaign.campaign_data,campaign.approval_status)
+                        campaign.approval_status="Approved"
+                        campaign.save()
+                        RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
+                    return Response({"error" : False , "data" : "Camapaign Update Request Approved Successfully"},status=status.HTTP_200_OK)
+                else :
                     campaign.campaign_data = {}
-                    print("Approval Status Approved ",campaign.campaign_data,campaign.approval_status)
-                    campaign.approval_status="Approved"
+                    campaign.approval_status="Rejected"
                     campaign.save()
-                    # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=serializer,campaign_data=campaign)
-                return Response({"error" : False , "data" : "Camapaign Approved Successfully"},status=status.HTTP_200_OK)
+                    RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
+                    return Response({"error" : False , "data" : "Camapaign Update Request Rejected Successfully"},status=status.HTTP_200_OK)
+                    
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 

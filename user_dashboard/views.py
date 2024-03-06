@@ -74,7 +74,7 @@ class CampaignApi3(GenericMethodsMixin,APIView):
             campaign.campaign_data = request.data
             campaign.approval_status = "Pending"
             campaign.save()
-            return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
+            return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -102,7 +102,7 @@ class BankKycApi(GenericMethodsMixin,APIView):
             campaign.campaign_data = request.data
             campaign.approval_status = "Pending"
             campaign.save()
-            return Response({"error" : False , "message" : "Campaign Edit request sent to admin"},status=status.HTTP_200_OK)
+            return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,7 +122,7 @@ class ViewBankAndKycAPi(APIView):
             kyc.bank_data = request.data
             kyc.approval_status = "Pending"
             kyc.save()
-            return Response({"error" : False , "message" : " Your changes has been recorded and is sent for approval to Admin "},status=status.HTTP_200_OK)
+            return Response({"error" : False , "message" : " Your changes has been recorded and are  sent for approval to Admin "},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
