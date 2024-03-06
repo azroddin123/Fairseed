@@ -49,9 +49,18 @@ class GenericMethodsMixin:
     
     def get_paginated_data(self, request):
         limit = max(int(request.GET.get('limit', 0)),1) 
-        page_number = max(int(request.GET.get('page', 0)), 1)  
+        page_number = max(int(request.GET.get('page', 0)), 1)
+        search = request.GET.get('search')
+        if search :
+            fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
+            q_objects = Q()
+            for field in fields:
+                q_objects |= Q(**{f"{field}__icontains": search})
+            data = self.model.objects.filter(q_objects)
+        else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
-        data = self.model.objects.all()
+            data = self.model.objects.all()
+            
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)

@@ -326,3 +326,44 @@ class AddCampaignApi(APIView):
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
+print("1234")
+from django.shortcuts import render
+from django.db.models import Q
+from django.http import JsonResponse
+from accounts.models import *
+from accounts.serializers import *
+from campaigns.models import * 
+
+# def serach():
+#     model = User
+#     search_param = "azhar"
+#     fields = [field.name for field in model._meta.get_fields()]
+#     print("azhar")
+#     for item in fields:
+#         print(fields)
+#     q_objects = Q()
+#     for field in fields:
+#         q_objects |= Q(**{f"{field}__icontains": search_param})
+        
+#     queryset = model.objects.filter(q_objects)
+#     record_count = queryset.count()
+#     serializer = UserAdminSerializer(queryset, many=True)
+#     print(serializer.data)
+
+def search():
+    model = User
+    search_param = "azhar"
+    fields = [field.name for field in model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
+    q_objects = Q()
+    for field in fields:
+        q_objects |= Q(**{f"{field}__icontains": search_param})
+        
+    queryset = model.objects.filter(q_objects)
+    record_count = queryset.count()
+    serializer = UserAdminSerializer(queryset, many=True)
+    print(record_count,serializer.data)
+
+
+search()
