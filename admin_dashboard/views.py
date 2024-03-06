@@ -186,13 +186,13 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                         print("Approval Status Approved ",campaign.campaign_data,campaign.approval_status)
                         campaign.approval_status="Approved"
                         campaign.save()
-                        RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
+                        # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
                     return Response({"error" : False , "data" : "Camapaign Update Request Approved Successfully"},status=status.HTTP_200_OK)
                 else :
                     campaign.campaign_data = {}
                     campaign.approval_status="Rejected"
                     campaign.save()
-                    RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
+                    # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
                     return Response({"error" : False , "data" : "Camapaign Update Request Rejected Successfully"},status=status.HTTP_200_OK)
                     
         except Exception as e :
