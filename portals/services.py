@@ -57,7 +57,6 @@ def paginate_model_data(model, serializer, request, filter_key=None):
             data = model.objects.filter(**{filter_key: filter_value})
         else:
             data = model.objects.all()
-
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)
@@ -74,17 +73,11 @@ def paginate_model_data(model, serializer, request, filter_key=None):
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-# def paginate_model_data(model, serializer, request, filter_key=None):
+def paginate_data(model, serializer, request,data):
     try:
         limit = int(request.GET.get('limit', 1))
         page_number = int(request.GET.get('page', 1))
-
-        if filter_key:
-            filter_value = request.GET.get(filter_key)
-            data = model.objects.filter(**{filter_key: filter_value})
-        else:
-            data = model.objects.all()
-
+        data = data
         paginator = Paginator(data, limit)
 
         try:
@@ -96,16 +89,13 @@ def paginate_model_data(model, serializer, request, filter_key=None):
             serialized_data = serializer(current_page_data, many=True).data
         except Exception as e:
             return Response({"error": True, "message": f"Serialization error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         response_data = {
             "error": False,
             "pages_count": paginator.num_pages,
             "count": paginator.count,
             "rows": serialized_data
         }
-
-        return Response(response_data, status=status.HTTP_200_OK)
-
+        return response_data
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import * 
 from accounts.views import * 
-from campaigns.views import CampaignAdminApi,CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
+from campaigns.views import CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
 from payment_gateways.views import PhonepayApi
 urlpatterns = [
     
@@ -58,8 +58,7 @@ urlpatterns = [
     
     path('documents',DocumentAPI.as_view()),
     path('documents/<str:pk>',DocumentAPI.as_view()),
-    # path('revision-history',RevisionHistoryAPi.as_view()),
-    # path('revision-history/<str:pk>',RevisionHistoryAPi.as_view()),
+  
     path('revise-history/<str:pk>',RevisionHistoryApi.as_view()),
     
     path('users',UserApi2.as_view()),
