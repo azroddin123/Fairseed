@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'campaigns',
     'payment_gateways',
     'portals',
-    'phonepay',
     # Packages 
     'rest_framework',
     'rest_framework_simplejwt',

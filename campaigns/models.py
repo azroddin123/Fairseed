@@ -74,26 +74,7 @@ class Campaign(BaseModel):
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
     
-# want to combine these two models 
-class AccountDetail(BaseModel):
-    campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='account_details')
-    account_holder_name = models.CharField(max_length=124)
-    account_number      = models.CharField(max_length=124)
-    bank_name           = models.CharField(max_length=124)
-    branch_name         = models.CharField(max_length=124)
-    ifsc_code           = models.CharField(max_length=124)
-    passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
 
-class Kyc(BaseModel):
-    campaign            = models.OneToOneField(Campaign,on_delete=models.CASCADE,related_name='kyc')
-    pan_card            = models.CharField(max_length=10)
-    pan_card_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    adhar_card          = models.CharField(max_length=16)
-    adhar_card_image    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    
-    other_details       = models.CharField(max_length=100,blank=True,null=True)
-    is_verified         = models.BooleanField(default=False)
-    tandc_accept        = models.BooleanField(default=False)
 
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)

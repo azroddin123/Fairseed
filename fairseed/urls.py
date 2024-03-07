@@ -17,10 +17,6 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 from accounts.views import PageNotFoundAPI
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,8 +26,7 @@ urlpatterns = [
     path('campaign/',include('campaigns.urls')),
     path('donors/',include('donors.urls')),
     path('payment_gateway/',include('payment_gateways.urls')),
-    path('user-dashboard/',include('user_dashboard.urls')),
-    path('phonepay/',include('phonepay.urls'))
+    path('user-dashboard/',include('user_dashboard.urls'))
 
     # # Token URLs
     # path('api-auth/', include('rest_framework.urls')),
@@ -46,6 +41,7 @@ if settings.DEBUG:
     
     
 from django.contrib import admin
+
 admin.site.site_header  = 'FairSeed'                             # default: "Django Administration"
 admin.site.index_title  = 'FairSeed Admin Panel'                 # default: "Site administration"
 admin.site.site_title   = 'Fairseed'                              # default : "django admin panel site title"

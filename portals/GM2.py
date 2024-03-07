@@ -51,6 +51,7 @@ class GenericMethodsMixin:
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)
         search = request.GET.get('search')
+        print(len(search))
         print(request.data,"------------------>")
         print(search,"================>")
         if search :
@@ -59,7 +60,12 @@ class GenericMethodsMixin:
             for field in fields:
                 print(field)
                 q_objects |= Q(**{f"{field}__icontains": search})
+               
             data = self.model.objects.filter(q_objects)
+            for item in search :
+                Q(item.key__icontains)
+                query &= Q(**{f"{item['key']}__icontains": search})
+
         else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
             data = self.model.objects.all()

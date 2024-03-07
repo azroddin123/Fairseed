@@ -10,3 +10,5 @@ markdown
 jsons
 cryptography
 shortuuid
+pymysql
+tinymce

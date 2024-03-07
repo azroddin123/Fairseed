@@ -5,9 +5,6 @@ from .serializers import *
 from .models import (
     Campaign, 
     Campaigncategory,
-    AccountDetail,
-    Kyc
-    
 )
 from django.db import transaction
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
@@ -45,16 +42,6 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     serializer_class = CampaignCategorySerializer
     lookup_field = "id"
     
-class AccountDetailApi(GenericMethodsMixin,APIView):
-    model = AccountDetail
-    serializer_class = AccountDSerializer
-    lookup_field = "id"
-
-class KycApi(GenericMethodsMixin,APIView):
-    model = Kyc
-    serializer_class = KycSerializer
-    lookup_field = "id"
-
 class CampaignAdminApi(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignDocumentSerializer
@@ -324,29 +311,14 @@ class AddCampaignApi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-# print("1234")
-# from django.shortcuts import render
 # from django.db.models import Q
-# from django.http import JsonResponse
-# from accounts.models import *
-# from campaigns.serializers import *
-# from campaigns.models import * 
-
-# def serach():
-#     model = Campaign
-#     search_param = "azhar"
-#     fields = [field.name for field in model._meta.get_fields()]
-#     print("azhar")
-#     for item in fields:
-#         print(fields)
-#     q_objects = Q()
-#     for field in fields:
-#         print(field)
-#         q_objects |= Q(**{f"{field}__icontains": search_param})
-        
-#     queryset = model.objects.filter(q_objects)
-#     record_count = queryset.count()
-#     serializer = CampaignAdminSerializer(queryset, many=True)
-#     print(serializer.data,record_count)
-
-# serach()
+# search = [{"username" : "az"},{"email" : "33az"}]
+# search =[{'column':'user','operator':'=','value':'wijdsjdjd'},{'column':'user','operator':'=','value':'wijdsjdjd'}]
+# if search :
+#             query = Q()
+#             for item in search:
+#                 print(item['column'])
+#             #         query &= Q(**{f"{key}__icontains": value})
+#             #     print(query,"query is ")
+#             # data = User.objects.filter(query)
+#             # print("data",len(data),data)

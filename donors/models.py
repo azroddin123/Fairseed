@@ -23,6 +23,7 @@ class Donor(BaseModel):
     is_anonymous  = models.BooleanField(default=False)
     status        = models.CharField(max_length=124,choices=StatusChoices.choices,default=StatusChoices.PENDING)
     is_approved   = models.BooleanField(default=False)
+    
 
 class BankTransaction(BaseModel):
     donor            = models.ForeignKey(Donor,on_delete=models.CASCADE,related_name="bank_transaction")

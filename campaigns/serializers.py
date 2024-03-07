@@ -31,16 +31,7 @@ class CampaignSerializer1(ModelSerializer):
         model   = Campaign
         exclude = ["is_successful","status","is_featured","is_reported"]
 
-class AccountDSerializer(ModelSerializer):
-    class Meta :
-        model  = AccountDetail
-        fields = "__all__"
         
-class KycSerializer(ModelSerializer):
-    class Meta :
-        model = Kyc
-        fields = "__all__"
-
 class DocumentSerializer1(ModelSerializer):
     class Meta :
         model   = Documents
@@ -112,6 +103,7 @@ class CampaignDetailSerializer(ModelSerializer):
     
     def get_donor_count(self, obj):
         return obj.donors.count()
+    
     
 class BankKYCSerializer(ModelSerializer):
     class Meta :
