@@ -10,7 +10,7 @@ urlpatterns = [
     
     # Logical API List 
     path('landing-page',LandingPageApi.as_view()),
-    path('campaign-filter',CampaignFilterApi.as_view()),
+    path('campaign-filter',CampaignTabsAPi.as_view()),
     path('campaign/<str:pk>', CampaignApi.as_view()),
     path('campaign', CampaignApi.as_view()),
     

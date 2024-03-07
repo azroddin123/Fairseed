@@ -7,18 +7,13 @@ from .models import (
     Campaigncategory,
 )
 from django.db import transaction
-from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.views import APIView
-import uuid
-import math
 from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.paginator import Paginator,EmptyPage
 from portals.services import paginate_model_data,paginate_data
+from django.db.models import Count
 
-
-# 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignAdminSerializer
@@ -37,6 +32,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
+
 
 class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     model = Campaigncategory
@@ -128,40 +124,33 @@ class CampaignByCategoryApi2(APIView):
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
-   
-          
-from django.db.models import Count
 
-class CampaignFilterAPI(APIView):
-   def get(self,request,key,*args, **kwargs):
-        if key == "most_supported" : 
-        # Most supported 
-            Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count')
-        # Needs_love
-        if key == "needs_love" : 
-            Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
-        # Expiring soon
-        if key == "expiring_soon" : 
-            Campaign.objects.filter().order_by('-end_date')
-        # newly added logic 
-        if key == "newly_added" : 
-            Campaign.objects.filter().order_by('-created_on')
-        # response =paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
+class CampaignTabsAPi(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            filter_key = request.GET.get('filter')
+            data = []
+            print(filter_key =="most_supported")
+            if filter_key  == "most_supported":
+                print("in mosrt")
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count')
+            elif filter_key  == "needs_love": 
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
+            elif filter_key  == "expiring_soon": 
+                data = Campaign.objects.filter().order_by('-end_date')
+            elif filter_key  == "newly_added": 
+                data = Campaign.objects.filter().order_by('-created_on')
+            else :
+                data = Campaign.objects.all()
+            response = paginate_data(Campaign, CampaignSerializer2, request, data)
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# Need's love ---> donor count is less 
-# Expiring Soon --> campaign Which are expiring soon
-
-# data =  Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
-# for item in data :
-#     print(item,item.fund_raised)
-
-
-# Days left 
 
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         try : 
-            # return Response(status=status.HTTP_400_BAD_REQUEST)
             with transaction.atomic():
                 if pk :
                     data = request.data
@@ -211,16 +200,3 @@ class AddCampaignApi(APIView):
                         return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
-
-from django.db.models import Q
-search = [{"username" : "az"},{"email" : "33az"}]
-search =[{'column':'username','operator':'=','value':'az'},{'column':'email','operator':'=','value':'33'}]
-if search :
-            query = Q()
-            for item in search:
-                print(item['column'])
-                query &= Q(**{f"{item['column']}__icontains": item['value']})
-            print(query,"query is ")
-            data = User.objects.filter(query)
-            print("data",len(data),data)

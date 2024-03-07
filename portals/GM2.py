@@ -50,7 +50,8 @@ class GenericMethodsMixin:
     def get_paginated_data(self, request):
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)
-        search = request.GET.get('search')
+        search   = request.GET.get('search')
+        order_by = request.GET.get('order_by')
         # if search :
         #     fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
         #     q_objects = Q()
@@ -62,7 +63,6 @@ class GenericMethodsMixin:
             for item in search:
                 print(item['column'])
                 query &= Q(**{f"{item['column']}__icontains": item['value']})
-            print(query,"query is ")
             data = self.model.objects.filter(query)
         else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
@@ -78,7 +78,6 @@ class GenericMethodsMixin:
 
     def get_single_data(self, pk):
         try:
-            # here we can add authentication and authorization
             print("get single data")
             data = self.model.objects.get(pk=pk)
             serializer = self.serializer_class(data)
@@ -134,59 +133,5 @@ class GenericMethodsMixin:
                 return Response({"error": False, "data": "Record Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 return self.handle_does_not_exist_error()
-
         except ValidationError as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    # def delete(self, request, pk, *args, **kwargs):
-    #     try : 
-    #         data = self.model.objects.get(pk=pk)
-    #         if data:
-    #             data.delete()
-    #             return Response(
-    #                 {"error" : False, "data": "Record Deleted Successfully"},
-    #                 status=status.HTTP_204_NO_CONTENT,
-    #             )
-    #         return Response(
-    #             { "error" : True,
-    #                 "message": str(self.model._meta).split(".")[1] + " object does not exists"
-    #             },
-    #             status=status.HTTP_400_BAD_REQUEST,
-    #         )
-        
-    #     except self.model.DoesNotExist:
-    #               return Response(
-    #         {   "error" : True,
-    #             "message": str(self.model._meta).split(".")[1] + " object does not exists"
-    #         },
-    #         status=status.HTTP_400_BAD_REQUEST,)
-        
-    #     except ValidationError as e:
-    #             # Handle the specific error, e.g., display a custom error message
-    #             return Response({
-    #                 "error" : True,
-    #                 "message" : str(e) 
-    #             },status=status.HTTP_400_BAD_REQUEST)
-
-    # print("paginated data")
-        # limit = max(int(request.GET.get('limit', 0)), 5) 
-        # page_number = max(int(request.GET.get('page', 0)), 1)  
-        # # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
-        # data = self.model.objects.all()
-        # print(len(data))
-        # paginator = Paginator(data, limit)
-        # try:
-        #     current_page_data = paginator.get_page(page_number)
-        # except EmptyPage:
-        #     return Response(
-        #         {"error": True, "message": "Page not found"},
-        #         status=status.HTTP_404_NOT_FOUND
-        #     )
-        # serializer = self.serializer_class(current_page_data, many=True)
-        # return Response({
-        #     "error": False,
-        #     "pages_count": paginator.num_pages,
-        #     "count": paginator.count,
-        #     "rows": serializer.data,
-        # }, status=status.HTTP_200_OK)
-        

@@ -51,12 +51,6 @@ class GenericMethodsMixin:
         limit = max(int(request.GET.get('limit', 0)), 8) 
         page_number = max(int(request.GET.get('page', 0)), 1)
         search = request.GET.get('search')
-        # if search :
-        #     fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
-        #     q_objects = Q()
-        #     for field in fields:
-        #         q_objects |= Q(**{f"{field}__icontains": search})
-        #     data = self.model.objects.filter(q_objects)
         if search :
             query = Q()
             for item in search:
@@ -65,8 +59,8 @@ class GenericMethodsMixin:
             print(query,"query is ")
             data = self.model.objects.filter(query)
         else : 
-        # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
             data = self.model.objects.filter(user=request.thisUser)
+        
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)
@@ -77,14 +71,12 @@ class GenericMethodsMixin:
 
 
     def get_single_data(self,request,pk):
-        # try:
-            # here we can add authentication and authorization
-            print("get single data")
+        try:
             data = self.model.objects.get(pk=pk,user=request.thisUser)
             serializer = self.serializer_class(data)
             return Response({"error": False, "data": serializer.data}, status=status.HTTP_200_OK)
-        # except self.model.DoesNotExist:
-        #     return self.handle_does_not_exist_error()
+        except self.model.DoesNotExist:
+            return self.handle_does_not_exist_error()
 
     # for post method
     def create_data(self, request):
