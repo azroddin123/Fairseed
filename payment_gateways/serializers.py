@@ -8,7 +8,6 @@ class PGSerializer(ModelSerializer):
         model = PGSetting
         fields = "__all__"
 
-
 class BankTransferSerializer(ModelSerializer):
     class Meta :
         model = BankTransfer
@@ -18,6 +17,3 @@ class PhonePaySerializer(ModelSerializer):
     class Meta :
         model =PhonePay
         fields = "__all__"
-
-
-        

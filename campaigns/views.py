@@ -213,14 +213,14 @@ class AddCampaignApi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-# from django.db.models import Q
-# search = [{"username" : "az"},{"email" : "33az"}]
-# search =[{'column':'user','operator':'=','value':'wijdsjdjd'},{'column':'user','operator':'=','value':'wijdsjdjd'}]
-# if search :
-#             query = Q()
-#             for item in search:
-#                 print(item['column'])
-#             #         query &= Q(**{f"{key}__icontains": value})
-#             #     print(query,"query is ")
-#             # data = User.objects.filter(query)
-#             # print("data",len(data),data)
+from django.db.models import Q
+search = [{"username" : "az"},{"email" : "33az"}]
+search =[{'column':'username','operator':'=','value':'az'},{'column':'email','operator':'=','value':'33'}]
+if search :
+            query = Q()
+            for item in search:
+                print(item['column'])
+                query &= Q(**{f"{item['column']}__icontains": item['value']})
+            print(query,"query is ")
+            data = User.objects.filter(query)
+            print("data",len(data),data)
