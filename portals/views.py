@@ -5,9 +5,10 @@ from accounts.models import *
 from accounts.serializers import *
 from campaigns.models import * 
 
-def serach():
+def search():
     model_name = User
     search_param = "azhar"
+    print("in search")
     model_class = globals()[model_name]
     fields = [field.name for field in model_class._meta.get_fields()]
     print("azhar")
@@ -23,7 +24,7 @@ def serach():
     print(serializer.data)
 
 
-serach()
+search()
 # class SearchFilterAPI(APIView):
 #     def get(self, request):
 #         model_name = request.GET.get('model')

@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 from itertools import chain
 from django.db.models import Q
+
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from django.core.paginator import Paginator,EmptyPage
 import math
@@ -46,21 +47,22 @@ class GenericMethodsMixin:
             {"error": True, "message": f"{self.model._meta} object does not exist"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    
     def get_paginated_data(self, request):
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)
         search = request.GET.get('search')
+        print(request.data,"------------------>")
+        print(search,"================>")
         if search :
             fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
             q_objects = Q()
             for field in fields:
+                print(field)
                 q_objects |= Q(**{f"{field}__icontains": search})
             data = self.model.objects.filter(q_objects)
         else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
             data = self.model.objects.all()
-            
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)

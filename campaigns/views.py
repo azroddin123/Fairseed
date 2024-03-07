@@ -26,17 +26,18 @@ class CampaignApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field = "id"
     
-    # def get(self,request,pk=None,*args, **kwargs):
-    #     try : 
-    #         if pk:
-    #             data = Campaign.objects.get(id=pk)
-    #             serializer = CampaignAdminSerializer(data=data)
-    #             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
-            
-    #         response = paginate_model_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,filter_key='category')
-    #         return Response(response,status=status.HTTP_200_OK)
-    #     except Exception as e :
-    #         return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
+    def get(self,request,pk=None,*args, **kwargs):
+        try : 
+            if pk:
+                data = Campaign.objects.get(id=pk)
+                serializer = CampaignAdminSerializer(data=data)
+                return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+            else :
+                
+                response = paginate_model_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,filter_key='category')
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
    
 
 class  CampaigncategoryApi(GenericMethodsMixin,APIView):
@@ -240,11 +241,6 @@ class CreateCampaignApi(APIView):
         except Exception as e:
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)           
           
-                     
-# Filter API
-# days left 
-# Trending  --> 
-# Most Supported --> where donor count is grater 
 from django.db.models import Count
 
 class CampaignFilterAPI(APIView):
@@ -328,16 +324,16 @@ class AddCampaignApi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-print("1234")
-from django.shortcuts import render
-from django.db.models import Q
-from django.http import JsonResponse
-from accounts.models import *
-from accounts.serializers import *
-from campaigns.models import * 
+# print("1234")
+# from django.shortcuts import render
+# from django.db.models import Q
+# from django.http import JsonResponse
+# from accounts.models import *
+# from campaigns.serializers import *
+# from campaigns.models import * 
 
 # def serach():
-#     model = User
+#     model = Campaign
 #     search_param = "azhar"
 #     fields = [field.name for field in model._meta.get_fields()]
 #     print("azhar")
@@ -345,25 +341,12 @@ from campaigns.models import *
 #         print(fields)
 #     q_objects = Q()
 #     for field in fields:
+#         print(field)
 #         q_objects |= Q(**{f"{field}__icontains": search_param})
         
 #     queryset = model.objects.filter(q_objects)
 #     record_count = queryset.count()
-#     serializer = UserAdminSerializer(queryset, many=True)
-#     print(serializer.data)
+#     serializer = CampaignAdminSerializer(queryset, many=True)
+#     print(serializer.data,record_count)
 
-def search():
-    model = User
-    search_param = "azhar"
-    fields = [field.name for field in model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
-    q_objects = Q()
-    for field in fields:
-        q_objects |= Q(**{f"{field}__icontains": search_param})
-        
-    queryset = model.objects.filter(q_objects)
-    record_count = queryset.count()
-    serializer = UserAdminSerializer(queryset, many=True)
-    print(record_count,serializer.data)
-
-
-search()
+# serach()
