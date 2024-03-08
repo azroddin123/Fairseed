@@ -22,6 +22,13 @@ class PagesAPi(GenericMethodsMixin,APIView):
     serializer_class = PageSerializer
     lookup_field = "id"
 
+
+class PagesSlugApi(APIView):
+    def get(self,request,slug=None):
+        data = Pages.objects.get(slug=slug)
+        serializer = PageSerializer(data)
+        return Response({ "error" : False ,"data" : serializer.data},status=status.HTTP_200_OK)
+
 class GeneralSettingApi(GenericMethodsMixin,APIView):
     model = GeneralSetting
     serializer_class = GSSerializer

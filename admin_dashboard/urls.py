@@ -17,6 +17,8 @@ urlpatterns = [
     path('pages',PagesAPi.as_view()),
     path('pages/<str:pk>',PagesAPi.as_view()),
 
+    path('slug/<str:slug>',PagesSlugApi.as_view()),
+
     # add Keywords API
     path('keyword',KeywordSApi.as_view()),
     path('keyword/<str:pk>',KeywordSApi.as_view()),
