@@ -32,7 +32,7 @@ class DonatePaymentApi(APIView):
                 phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                 unique_transaction_id = str(uuid.uuid4())[:-2]
                 ui_redirect_url = "http://143.110.253.227:3000/"
-                s2s_callback_url = "http://143.110.253.227:3000/donors/check-status/"+unique_transaction_id
+                s2s_callback_url = "http://143.110.253.227:8000/donors/check-status/"+unique_transaction_id
                 # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                 amount = int(request.data.get('amount'))*100
                 id_assigned_to_user_by_merchant = "PGTESTPAYUAT100"
@@ -67,13 +67,6 @@ class CheckPaymentStatusAPi(APIView):
         unique_transaction_id = pk
         transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
         transaction_state = transaction_status_response.data.state
-        print("===============================")
-        print(transaction_status_response)
-
-        print("===============================")
-
-# honePeResponse(success=True, code='PAYMENT_PENDING', message='Your request is in pending state.', 
-# data=PgTransactionStatusResponse(merchant_id='FAIRSEEDONLINE', merchant_transaction_id='1617b3ef-e215-4e1c-b155-fe8ab32e31', transaction_id=None, amount=100, response_code=None, state='PENDING', payment_instrument=None))
         current_status = { 
             "status" : transaction_status_response.code,
             "message" : transaction_status_response.message,
