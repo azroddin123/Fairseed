@@ -23,6 +23,7 @@ class Donor(BaseModel):
     is_anonymous  = models.BooleanField(default=False)
     status        = models.CharField(max_length=124,choices=StatusChoices.choices,default=StatusChoices.PENDING)
     is_approved   = models.BooleanField(default=False)
+    transaction_id= models.CharField(max_length=256,blank=True,null=True)
     
 
 class BankTransaction(BaseModel):

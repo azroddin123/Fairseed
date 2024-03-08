@@ -6,6 +6,13 @@ from rest_framework import status
 from rest_framework import serializers
 
 
+
+
+class DonorSerializer2(ModelSerializer):
+    class Meta:
+        model = Donor
+        fields = "__all__"
+
 class DonorSerializer(ModelSerializer):
     campaign = serializers.SerializerMethodField()
     class Meta:

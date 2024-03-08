@@ -20,30 +20,73 @@ class DonatePaymentApi(APIView):
     def post(self,request):
         # check donation type of request 
         try:
+            data = request.data
             payment_type = request.data.get('payment_type')
-            payment_type == "UPI" 
-            merchant_id = "FAIRSEEDONLINE"  
-            salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
-            salt_index = 1 
-            env = Env.PROD # Change to Env.PROD when you go live
-            phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-            unique_transaction_id = str(uuid.uuid4())[:-2]
-            ui_redirect_url = "http://143.110.253.227:3000/"
-            s2s_callback_url = "https://www.merchant.com/callback"
-            amount = int(request.data.get('amount'))*100
-            id_assigned_to_user_by_merchant = "FAIRSEEDONLINE"
-            pay_page_request = PgPayRequest.pay_page_pay_request_builder(
-                merchant_transaction_id=unique_transaction_id,
-                amount=amount,
-                merchant_user_id=id_assigned_to_user_by_merchant,
-                callback_url=s2s_callback_url,
-                redirect_url=ui_redirect_url
-            )
-            pay_page_response = phonepe_client.pay(pay_page_request)
-            pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
-            return Response({'pay_page_url': pay_page_url}, status=status.HTTP_200_OK)
+            if payment_type == "UPI" :
+                merchant_id = "FAIRSEEDONLINE"  
+                salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
+                salt_index = 1 
+                env = Env.PROD 
+                phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+                unique_transaction_id = str(uuid.uuid4())[:-2]
+                ui_redirect_url = "http://143.110.253.227:3000"
+                s2s_callback_url = "http://0.0.0.0:8000/check-status/"+unique_transaction_id
+
+                amount = int(request.data.get('amount'))*100
+                id_assigned_to_user_by_merchant = "FAIRSEEDONLINE"
+                pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+                    merchant_transaction_id=unique_transaction_id,
+                    amount=amount,
+                    merchant_user_id=id_assigned_to_user_by_merchant,
+                    callback_url=s2s_callback_url,
+                    redirect_url=ui_redirect_url
+                )
+                pay_page_response = phonepe_client.pay(pay_page_request)
+                pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+                request.POST._mutable = True
+                data['transaction_id'] = unique_transaction_id
+                serializer = DonorSerializer2(data=request.data)
+                if serializer.is_valid(raise_exception=True):
+                     serializer.save()
+                return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class CheckPaymentStatusAPi(APIView):
+    def get(self,request):
+        pass
+
+# transaction_id = 
+merchant_id = "FAIRSEEDONLINE"  
+salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
+salt_index = 1 
+env = Env.PROD 
+phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+unique_transaction_id = "e0886636-799f-402a-a868-0ae5f4f505"
+transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
+transaction_state = transaction_status_response.data.state
+print("===============================")
+print(transaction_state,transaction_status_response)
+
+def check_payment_status(transaction_id):
+    merchant_id = "FAIRSEEDONLINE"  
+    salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
+    salt_index = 1 
+    env = Env.PROD 
+    phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+    unique_transaction_id = transaction_id
+    transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
+    transaction_state = transaction_status_response.data.state
+    print("transaction status",transaction_status_response)
+    print("transaction state",transaction_state)
+
+
+
+    
+    pass
+class CheckPaymentStatusAPI(APIView):
+    pass
 
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
