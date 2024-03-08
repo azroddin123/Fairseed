@@ -21,20 +21,21 @@ class DonatePaymentApi(APIView):
     def post(self,request):
         # check donation type of request 
         try:
+            print(request.data)
             data = request.data
             payment_type = request.data.get('payment_type')
             if payment_type == "UPI" :
-                merchant_id = "FAIRSEEDONLINE"  
-                salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
+                merchant_id = "PGTESTPAYUAT100"  
+                salt_key = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"  
                 salt_index = 1 
-                env = Env.PROD 
+                env = Env.UAT 
                 phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                 unique_transaction_id = str(uuid.uuid4())[:-2]
-                ui_redirect_url = "http://192.168.15.216:3000/Home"
+                ui_redirect_url = "http://0.0.0.0:3000/Home"
                 s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                 # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                 amount = int(request.data.get('amount'))*100
-                id_assigned_to_user_by_merchant = "FAIRSEEDONLINE"
+                id_assigned_to_user_by_merchant = "PGTESTPAYUAT100"
                 pay_page_request = PgPayRequest.pay_page_pay_request_builder(
                     merchant_transaction_id=unique_transaction_id,
                     amount=amount,
@@ -49,7 +50,8 @@ class DonatePaymentApi(APIView):
                 serializer = DonorSerializer2(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                      serializer.save()
-                return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=status.HTTP_200_OK)
+                print({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id})
+                return Response(data={'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         

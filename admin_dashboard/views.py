@@ -25,9 +25,12 @@ class PagesAPi(GenericMethodsMixin,APIView):
 
 class PagesSlugApi(APIView):
     def get(self,request,slug=None):
-        data = Pages.objects.get(slug=slug)
-        serializer = PageSerializer(data)
-        return Response({ "error" : False ,"data" : serializer.data},status=status.HTTP_200_OK)
+        try : 
+            data = Pages.objects.get(slug=slug)
+            serializer = PageSerializer(data)
+            return Response({ "error" : False ,"data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class GeneralSettingApi(GenericMethodsMixin,APIView):
     model = GeneralSetting
