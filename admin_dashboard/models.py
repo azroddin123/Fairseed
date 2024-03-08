@@ -96,7 +96,7 @@ class LandingPage(BaseModel):
 
 class Pages(BaseModel):
     title       = models.CharField(max_length=50)
-    slug        = models.CharField(max_length=124)
+    slug        = models.CharField(unique=True,max_length=124)
     show_navbar = models.BooleanField(default=False)
     show_footer = models.BooleanField(default=True)
     show_page   = models.BooleanField(default=True)

@@ -19,7 +19,7 @@ class LandingPageAdmin(admin.ModelAdmin):
     list_display = ('logo','logo_footer','favicon','image_header','image_bottom','avtar','image_category','default_link_color')
 
 class PageAdmin(admin.ModelAdmin):
-    list_display = ('title','slug','show_navbar','show_page','content')
+    list_display = ('title','show_navbar','show_page','content')
 
 
 admin.site.register(GeneralSetting,GSAdmin)
