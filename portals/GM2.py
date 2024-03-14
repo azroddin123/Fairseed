@@ -109,6 +109,7 @@ class GenericMethodsMixin:
 
     def put(self, request, pk, *args, **kwargs):
         try:
+            print("request_data----------->",request.data)
             filter = {self.lookup_field: pk}
             object_instance = self.model.objects.get(**filter)
             create_serializer_class = self.get_create_serializer()

@@ -15,7 +15,6 @@ urlpatterns = [
     #Get Bank And Kyc Details 
     path("bank-kyc",BankKycApi.as_view()),
     path("bank-kyc/<str:pk>",BankKycApi.as_view()),
-   
     # Edit bank and kyc API
     path('edit-bankkyc/<str:pk>',ViewBankAndKycAPi.as_view()),
     

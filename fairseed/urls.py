@@ -18,6 +18,8 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from accounts.views import PageNotFoundAPI
+from campaigns.views import AddCampaignApi
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Apps URLs
@@ -26,15 +28,15 @@ urlpatterns = [
     path('campaign/',include('campaigns.urls')),
     path('donors/',include('donors.urls')),
     path('payment_gateway/',include('payment_gateways.urls')),
-    path('user-dashboard/',include('user_dashboard.urls'))
+    path('user-dashboard/',include('user_dashboard.urls')),
+    path('add-campaign/<str:pk>',AddCampaignApi.as_view()),
+    path('add-campaign',AddCampaignApi.as_view()),
 
     # # Token URLs
     # path('api-auth/', include('rest_framework.urls')),
     # path('api/token/',TokenObtainPairView.as_view(),name="token_obtain_pair"),
     # path('api/token/refresh/',TokenRefreshView.as_view(),name="token_refresh")
 ]
-
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)

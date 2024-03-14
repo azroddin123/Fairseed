@@ -13,13 +13,13 @@ class PGSetting(BaseModel):
 class BankTransfer(BaseModel) :
     fee_percent  = models.IntegerField()
     bank_details = models.TextField()
-    is_enabled       = models.BooleanField(default=True)
+    is_enabled   = models.BooleanField(default=True)
 
 class PhonePay(BaseModel):
     phonepay_key    = models.CharField(max_length=154)
     phonepay_secret = models.CharField(max_length=154)
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
-    is_enabled          = models.BooleanField(default=False)
+    is_enabled      = models.BooleanField(default=False)
 
 

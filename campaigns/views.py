@@ -180,9 +180,9 @@ class AddCampaignApi(APIView):
                     return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
                 else :
                     print(request.FILES,"====================>")
-                    print("---------------------",request.data)
+                    print("---------------------",request.data,request.thisUser)
                     print("camapign save")
-                    request.data["user"]  = "e5477dc6-2ae9-4622-93f3-ae68162b7007"
+                    request.data["user"]  = request.thisUser.id
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()

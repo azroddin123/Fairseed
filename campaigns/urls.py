@@ -23,7 +23,6 @@ urlpatterns = [
     path('add-campaign/<str:pk>',AddCampaignApi.as_view()),
     path('add-campaign',AddCampaignApi.as_view()),
     
-    
     # Donation API
     # bank And Kyc 
     
