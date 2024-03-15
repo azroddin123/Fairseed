@@ -117,7 +117,6 @@ class CheckPaymentStatusAPi(APIView):
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
-    create_serializer_class = DonorSerializer
     lookup_field = "id"
 
 class BankTransactionApi(GenericMethodsMixin,APIView):

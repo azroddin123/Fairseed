@@ -37,14 +37,14 @@ class RegisterUserApi(APIView):
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-
 class LoginAPI(APIView):
     def post(self,request,*args, **kwargs):
+        
+        try : 
             email       = request.data.get('email')
             password    = request.data.get('password')
             # Generate Token
             user = User.objects.filter(email=email).first()
-            print
             if user is None : 
              return Response({"error" : False,"data" : "User Not Exists"},status=status.HTTP_404_NOT_FOUND)
             token = generate_token(user.email)
@@ -54,9 +54,10 @@ class LoginAPI(APIView):
             serializer = UserSerializer1(user)
             data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
+                print("password matched")
                 return Response(data,status=status.HTTP_200_OK)
-            else :
-               return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
@@ -80,7 +81,7 @@ class ForgotPasswordAPI(APIView):
             else:
                 return Response(data = 'Error sending mail',status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response(data="User Email Does not exists",status=status.HTTP_400_BAD_REQUEST )
+            return Response({"error": True,"message" : "User Email Does not exists"},status=status.HTTP_400_BAD_REQUEST )
 
 class UpdateUserAPI(APIView):
     def put(self,request,*args, **kwargs):
@@ -113,11 +114,16 @@ class PageNotFoundAPI(APIView):
         return Response({"error" : True, "message" : "This API Does not exists in this Application"},status=status.HTTP_404_NOT_FOUND)
 
 
-
+# Email Sending Scenarios 
+    
+# 1.Forget Password
+# 2.After Donation
 # Assuming you have already imported the User model
 # users = User.objects.values('country')
 # print(users)
 
+
+# adhar pan , pan card image ,adhar card image
 # for item in users :
 #     print(item)
     

@@ -38,6 +38,14 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     model = Campaigncategory
     serializer_class = CampaignCategorySerializer
     lookup_field = "id"
+
+    def get(self,request,*args, **kwargs) :
+        try :
+            data = Campaigncategory.objects.filter(is_active=True)
+            serializer = CampaignCategorySerializer(data,many=True)
+            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
     
 
 class DocumentApi(GenericMethodsMixin,APIView):
@@ -142,7 +150,7 @@ class CampaignTabsAPi(APIView):
                 data = Campaign.objects.filter().order_by('-created_on')
             else :
                 data = Campaign.objects.all()
-            response = paginate_data(Campaign, CampaignSerializer2, request, data)
+            response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

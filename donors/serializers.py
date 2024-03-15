@@ -4,6 +4,8 @@ from .models import Donor
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
+from accounts.models import User
+from campaigns.models import Campaign,BankKYC
 
 
 
@@ -42,6 +44,23 @@ class UpiSerializers(ModelSerializer):
     class Meta :
         model = UpiTransaction
         fields = "__all__"
+
+
+class User1(ModelSerializer):
+    class Meta :
+        model = User
+        fields = ('id','username','email','mobile_number')
+
+
+class Camapign1(ModelSerializer):
+    class Meta :
+        model = Campaign
+        fields = ('id','title','goal_amount','fund_raised')
+
+
+class WithDrawalSerializer(ModelSerializer):
+    class Meta :
+        model = Withdrawal
 
     # def validate(self, data):
     #     amount = data["amount"]

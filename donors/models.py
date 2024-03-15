@@ -41,3 +41,7 @@ class UpiTransaction(BaseModel):
     datetime         = models.DateTimeField(auto_now_add=True)
 
 
+class Withdrawal(BaseModel):
+    campaign         = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE,related_name="donors")
+    user             = models.ForeignKey("accounts.User",on_delete=models.CASCADE)
+    

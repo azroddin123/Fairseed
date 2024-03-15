@@ -14,7 +14,7 @@ class GeneralSetting(BaseModel):
     tandc_url                   = models.CharField(max_length=254)
     privacy_policy_url          = models.CharField(max_length=254)
     email_no_reply              = models.CharField(max_length=124)
-
+    date_format                 = models.CharField(max_length=254,default="dd-mm-yyyy")
     new_registration_enabled    = models.BooleanField(default=True)
     auto_approve_enabled        = models.BooleanField(default=False)
     email_verification_enabled  = models.BooleanField(default=False)

@@ -86,10 +86,16 @@ class MyDonationApi(GenericMethodsMixin,APIView):
     
 # Recieved Donation For my Campaign 
 class RecivedDonationApi(APIView):
-    def get(self,request,*args, **kwargs):
-        data = Donor.objects.filter(campaign__user=request.thisUser)
-        serializer = DonorSerializer(data,many=True)
-        return Response({"data": serializer.data},status=status.HTTP_200_OK)
+    def get(self,request,pk=None,*args, **kwargs):
+        try : 
+            if pk:
+                Donor.objects.filter(id=pk,campaign__user=request.thisUser)
+                return Response({"data": serializer.data},status=status.HTTP_200_OK)
+            data = Donor.objects.filter(campaign__user=request.thisUser)
+            serializer = DonorSerializer(data,many=True)
+            return Response({"data": serializer.data},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class BankKycApi(GenericMethodsMixin,APIView):
     model = BankKYC
