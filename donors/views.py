@@ -5,8 +5,6 @@ import requests
 from .serializers import * 
 from .models import (
     Donor,
-    BankTransaction,
-    UpiTransaction
 )
 from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
@@ -55,7 +53,7 @@ class DonatePaymentApi(APIView):
                 serializer = DonorSerializer2(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                      serializer.save()
-                serializer = BankTransactionSerializer(data=request.data)
+                return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -79,55 +77,9 @@ class CheckPaymentStatusAPi(APIView):
         }
         return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
 
-# transaction_id = 
-# merchant_id = "FAIRSEEDONLINE"  
-# salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
-# salt_index = 1 
-# env = Env.PROD 
-# phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-# unique_transaction_id = "e0886636-799f-402a-a868-0ae5f4f505"
-# transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
-# transaction_state = transaction_status_response.data.state
-# print("===============================")
-# print(transaction_state,transaction_status_response)
-
-# def check_payment_status(transaction_id):
-#     merchant_id = "FAIRSEEDONLINE"  
-#     salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
-#     salt_index = 1 
-#     env = Env.PROD 
-#     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-#     unique_transaction_id = transaction_id
-#     transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
-#     transaction_state = transaction_status_response.data.state
-#     print("transaction status",transaction_status_response)
-#     print("transaction state",transaction_state)
-
-
-
-    
-#     pass
-# class CheckPaymentStatusAPI(APIView):
-#     pass
 
 class DonorApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
     lookup_field = "id"
 
-class BankTransactionApi(GenericMethodsMixin,APIView):
-    model = BankTransaction
-    serializer_class =BankTransactionSerializer
-    lookup_field = "id"
-
-class UpiTransactionApi(GenericMethodsMixin,APIView):
-    model = UpiTransaction
-    serializer_class = UpiSerializers
-    lookup_field = "id"
-
-
-
-        # response = requests.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', headers=headers, json=json_data)
-
-# Call api 
-# After successful transacrion 

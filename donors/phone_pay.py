@@ -62,9 +62,6 @@ def payment(request):
 # print("transaction state",transaction_state)
 
 
-
-
-
 # # Check the validity of callback
 # x_verify_header_data = "a005532637c6a6e4a4b08ebc6f1144384353305a9cd253d995067964427cd0bb###1"
 

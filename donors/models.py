@@ -27,19 +27,6 @@ class Donor(BaseModel):
     transaction_date = models.DateField(blank=True,null=True)
     other_details    = models.CharField(max_length=124,blank=True,null=True)
 
-class BankTransaction(BaseModel):
-    donor            = models.ForeignKey(Donor,on_delete=models.CASCADE,related_name="bank_transaction")
-    transaction_id   = models.CharField(max_length=124)
-    bank_name        = models.CharField(max_length=124)
-    transaction_date = models.DateField()
-    other_details    = models.CharField(max_length=124,blank=True,null=True)
-
-class UpiTransaction(BaseModel):
-    donor            = models.ForeignKey(Donor,on_delete=models.CASCADE,related_name="upi_transaction") 
-    payment_id       = models.CharField(max_length=100),
-    order_id         = models.CharField(max_length=100),
-    signature        = models.CharField(max_length=200)
-    datetime         = models.DateTimeField(auto_now_add=True)
 
 class Withdrawal(BaseModel):
     campaign          = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE)

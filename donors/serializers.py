@@ -35,17 +35,6 @@ class DonorSerializer1(ModelSerializer):
         # Format the date here
         return obj.created_on.strftime('%d-%b-%Y')
 
-class BankTransactionSerializer(ModelSerializer):
-    class Meta :
-        model = BankTransaction
-        fields = "__all__"
-
-class UpiSerializers(ModelSerializer):
-    class Meta :
-        model = UpiTransaction
-        fields = "__all__"
-
-
 class User1(ModelSerializer):
     class Meta :
         model = User
