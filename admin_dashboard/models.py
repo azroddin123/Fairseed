@@ -9,6 +9,7 @@ from portals.models import BaseModel
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
     welcome_text                = models.CharField(max_length=32)
+    welcome_subtitle            = models.CharField(max_length=32,blank=True,null=True)
     description                 = models.CharField(max_length=124)
     email_admin                 = models.EmailField(max_length=254)
     tandc_url                   = models.CharField(max_length=254)

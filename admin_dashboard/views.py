@@ -114,21 +114,23 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     
     def put(self,request,pk,*args, **kwargs):
         try :
-            # we have to import all the data in the rh history also 
+            print(request.data,"data")
             with transaction.atomic():
                 bankkyc = BankKYC.objects.get(id=pk)
-                if request.data['approve_kyc'] == True : 
-                    serializer = BankKYC(bankkyc,data=bankkyc.bank_data,partial=True)
-                    bankkyc.bank_data['approval_status'] = "Approved"
-                    if serializer.is_valid():
+                if request.data['approve_kyc'] == 'true' : 
+                    serializer = BankKYCSerializer(bankkyc,data=request.data,partial=True)
+                    # serializer1 = BankKYC(bankkyc,data=request.data,partial=True)
+                    # bankkyc.bank_data['approval_status'] = "Approved"
+                    if serializer.is_valid(raise_exception=True) :
                         print("new bankkyc Data Approved ")
                         serializer.save()
+                        # serializer1.save()
                         bankkyc.bank_data = {}
                         print("Approval Status Approved ",bankkyc.bank_data,bankkyc.approval_status)
                         bankkyc.approval_status="Approved"
                         bankkyc.save()
                         # RevisionHistory.objects.create(modeified_by=request.thisUser,bankkyc=bankkyc,bankkyc_data=bankkyc)
-                    return Response({"error" : False , "data" : "Bank Kyc  Update Request Approved Successfully"},status=status.HTTP_200_OK)
+                    return Response({"error" : False , "data" : "Bank Kyc  Update Request Approved Successfully" ,"data1" : serializer.data},status=status.HTTP_200_OK)
                 else :
                     bankkyc.bank_data = {}
                     bankkyc.approval_status="Rejected"
