@@ -10,8 +10,8 @@ urlpatterns = [
     path('gs/<str:pk>',GeneralSettingApi.as_view()),
     
     # campaign catagories API
-    path('category',CampaigncategoryApi.as_view()),
-    path('category/<str:pk>',CampaigncategoryApi.as_view()),
+    path('category',CampaigncategoryApi2.as_view()),
+    path('category/<str:pk>',CampaigncategoryApi2.as_view()),
 
     # add pages in the project 
     path('pages',PagesAPi.as_view()),

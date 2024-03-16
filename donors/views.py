@@ -21,7 +21,7 @@ class DonatePaymentApi(APIView):
     def post(self,request):
         # check donation type of request 
         try:
-            print(request.data)
+            print("===========================",request.data)
             data = request.data
             payment_type = request.data.get('payment_type')
             if payment_type == "UPI" :
@@ -50,16 +50,12 @@ class DonatePaymentApi(APIView):
                 serializer = DonorSerializer2(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                      serializer.save()
-                # print({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id})
                 return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
             else :
                 serializer = DonorSerializer2(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                      serializer.save()
                 serializer = BankTransactionSerializer(data=request.data)
-
-
-
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         

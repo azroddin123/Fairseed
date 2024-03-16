@@ -142,6 +142,11 @@ class DonorsApi(GenericMethodsMixin,APIView):
     model = Donor
     serializer_class = DonorSerializer
     lookup_field = "id"
+
+class  CampaigncategoryApi2(GenericMethodsMixin,APIView):
+    model = Campaigncategory
+    serializer_class = CampaignCategorySerializer
+    lookup_field = "id"
     
 class RevisionHistoryApi(APIView):
     def get(self,request,pk,*args, **kwargs):

@@ -20,6 +20,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field = "id"
     
+    
     def get(self,request,pk=None,*args, **kwargs):
         try : 
             if pk:
@@ -141,15 +142,15 @@ class CampaignTabsAPi(APIView):
             print(filter_key =="most_supported")
             if filter_key  == "most_supported":
                 print("in mosrt")
-                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count')
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active")
             elif filter_key  == "needs_love": 
-                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count')
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active")
             elif filter_key  == "expiring_soon": 
-                data = Campaign.objects.filter().order_by('-end_date')
+                data = Campaign.objects.filter(status="Active").order_by('-end_date')
             elif filter_key  == "newly_added": 
-                data = Campaign.objects.filter().order_by('-created_on')
+                data = Campaign.objects.filter(status="Active").order_by('-created_on')
             else :
-                data = Campaign.objects.all()
+                data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:

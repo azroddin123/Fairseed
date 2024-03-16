@@ -79,7 +79,7 @@ class ForgotPasswordAPI(APIView):
             if (res ==1):
                 return Response(data={'Success':'Otp Mail sent succesfully to '+ mail,'OTP':str(otp)},status=status.HTTP_200_OK)
             else:
-                return Response(data = 'Error sending mail',status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": True,"message" : "Error sending Mail"},status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({"error": True,"message" : "User Email Does not exists"},status=status.HTTP_400_BAD_REQUEST )
 
