@@ -119,7 +119,6 @@ WSGI_APPLICATION = 'fairseed.wsgi.application'
 #     }
 # }
 
-
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',

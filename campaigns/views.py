@@ -20,7 +20,6 @@ class CampaignApi(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field = "id"
     
-    
     def get(self,request,pk=None,*args, **kwargs):
         try : 
             if pk:
@@ -47,7 +46,6 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
             return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
-    
 
 class DocumentApi(GenericMethodsMixin,APIView):
     model = Documents
