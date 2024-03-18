@@ -1,6 +1,6 @@
 # Create your views here.
 # from django.shortcuts import render
-from django.db.models import Sum
+from django.db.models import Sum,Count
 from donors.models import Donor
 from campaigns.serializers import * 
 from donors.serializers import * 
@@ -49,10 +49,13 @@ class DonationCountApi(APIView):
 class FundRaisedApi(APIView):
     def get(self,request):
         end_date = timezone.now()
-        start_date = end_date - timedelta(days=30)
+        start_date = end_date - timedelta(days=31)
         fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
         total_amount=Sum('donors__amount')
         ).order_by('donors__created_on')
+        for item in fundraise_data :
+            print(item)
+
         date_list = [start_date + timedelta(days=x) for x in range(30)]
         result = [
                 {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
@@ -60,7 +63,7 @@ class FundRaisedApi(APIView):
             ]
         return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
         
-        
+
 # Campaign API
 class CampaignApi3(GenericMethodsMixin,APIView):
     model = Campaign
@@ -135,4 +138,3 @@ class ViewBankAndKycAPi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
 
-    

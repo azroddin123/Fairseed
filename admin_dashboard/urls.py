@@ -74,4 +74,6 @@ urlpatterns = [
 
     path('withdrawal',WithdrawalApi.as_view()),
     path('withdrawal/<str:pk>',WithdrawalApi.as_view()),
+
+    path('donation-graph',DonationGraphAPI.as_view()),
 ]

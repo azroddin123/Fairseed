@@ -108,4 +108,6 @@ class RevisionHistory(BaseModel):
     campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
     campaign_data = models.JSONField(null=True,blank=True)
     
-    
+class CauseEdit(BaseModel):
+    campaign          = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    approval_status   = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
