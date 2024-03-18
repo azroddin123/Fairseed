@@ -243,5 +243,3 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
     serializer_class = WithDrawalSerializer
     lookup_field = "id"
 
-    def post(self,request,*args,**kwargs):
-        pass
