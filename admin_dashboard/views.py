@@ -114,13 +114,18 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     
     def put(self,request,pk,*args, **kwargs):
         try :
-            print(request.data,"data")
+            data = request.data
+            print(type(data),"data")
+            print("data",request.data)
             with transaction.atomic():
                 bankkyc = BankKYC.objects.get(id=pk)
+                request.POST._mutable = True
+                data.update(bankkyc.bank_data)
+                print(data,"new data",bankkyc.bank_data)
+                print("data",type(bankkyc.bank_data))
                 if request.data['approve_kyc'] == 'true' : 
-                    serializer = BankKYCSerializer(bankkyc,data=request.data,partial=True)
-                    # serializer1 = BankKYC(bankkyc,data=request.data,partial=True)
-                    # bankkyc.bank_data['approval_status'] = "Approved"
+                    serializer = BankKYCSerializer(bankkyc,data=data,partial=True)
+                    print("request.data",request.data,bankkyc.bank_data)
                     if serializer.is_valid(raise_exception=True) :
                         print("new bankkyc Data Approved ")
                         serializer.save()
@@ -173,6 +178,8 @@ class CampaignAdminApi2(GenericMethodsMixin,APIView):
     create_serializer_class = CampaignSerializer
     lookup_field  = "id"
 
+
+
 class CampaignEditApproval(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignSerializer
@@ -222,7 +229,6 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                     return Response({"error" : False , "data" : "Camapaign Update Request Rejected Successfully"},status=status.HTTP_202_ACCEPTED)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 class DocumentAPI(GenericMethodsMixin,APIView):
     model = Documents

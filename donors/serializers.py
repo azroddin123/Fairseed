@@ -50,6 +50,7 @@ class Camapign1(ModelSerializer):
 class WithDrawalSerializer(ModelSerializer):
     class Meta :
         model = Withdrawal
+        fields = "__all__"
 
     # def validate(self, data):
     #     amount = data["amount"]
