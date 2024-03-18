@@ -31,16 +31,18 @@ class UserDashboardApi(APIView):
 # Donation Count API
 class DonationCountApi(APIView):
     def get(self,request):
+
         end_date = timezone.now()
         start_date = end_date - timedelta(days=30)
-        # Donation Data
-        donation_data = Donor.objects.filter(created_on__range=(start_date,end_date),user=request.thisUser).values('created_on').annotate(
-               total_amount=Sum('amount')
-                ).order_by('created_on')
-        # Date list 
-        date_list = [start_date + timedelta(days=x) for x in range(30)]
+        fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
+        donation_count=Count('id')
+        ).order_by('donors__created_on')
+
+        for item in fundraise_data:
+            print(item)
+        date_list = [start_date + timedelta(days=x) for x in range(31)]
         result = [
-                {"date": date.date(), "total_amount": next((item["total_amount"] for item in donation_data if item["created_on"] == date.date()), 0)}
+                {"date": date.date(), "donation_count": next((item["donation_count"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
                 for date in date_list
             ]
         return Response({"donation_data" : result},status=status.HTTP_200_OK)
@@ -49,14 +51,14 @@ class DonationCountApi(APIView):
 class FundRaisedApi(APIView):
     def get(self,request):
         end_date = timezone.now()
-        start_date = end_date - timedelta(days=31)
+        start_date = end_date - timedelta(days=30)
         fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
         total_amount=Sum('donors__amount')
         ).order_by('donors__created_on')
         for item in fundraise_data :
             print(item)
 
-        date_list = [start_date + timedelta(days=x) for x in range(30)]
+        date_list = [start_date + timedelta(days=x) for x in range(31)]
         result = [
                 {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
                 for date in date_list
@@ -137,4 +139,7 @@ class ViewBankAndKycAPi(APIView):
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
+
+
+
 
