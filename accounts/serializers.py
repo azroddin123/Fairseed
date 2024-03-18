@@ -62,6 +62,7 @@ class ChangePasswordSerializer(serializers.Serializer):
             and self.validated_data["new_password"]
         ):
             user = self.context['request'].thisUser
+            print("user")
             user.set_password(self.validated_data["new_password"])
             user.save()
         return user
