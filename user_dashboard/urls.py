@@ -20,7 +20,7 @@ urlpatterns = [
     
     # Get Receieved Donation 
     path('donations',RecivedDonationApi.as_view()),
-
+    path('donations/<str:pk>',RecivedDonationApi.as_view()),
     path('dashboard-api',UserDashboardApi.as_view()),
     
     path("donation-data",DonationCountApi.as_view()),
