@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 import json
-
+from portals.services import paginate_data
 
 # User Dasboard API
 class UserDashboardApi(APIView):
@@ -93,7 +93,8 @@ class RecivedDonationApi(APIView):
                 return Response({"data": serializer.data},status=status.HTTP_200_OK)
             data = Donor.objects.filter(campaign__user=request.thisUser)
             serializer = DonorSerializer(data,many=True)
-            return Response({"data": serializer.data},status=status.HTTP_200_OK)
+            response = paginate_data(model=Donor,serializer=Donor,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -133,4 +134,4 @@ class ViewBankAndKycAPi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
         
 
-        
+    

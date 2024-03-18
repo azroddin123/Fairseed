@@ -7,9 +7,6 @@ from rest_framework import serializers
 from accounts.models import User
 from campaigns.models import Campaign,BankKYC
 
-
-
-
 class DonorSerializer2(ModelSerializer):
     class Meta:
         model = Donor
@@ -42,32 +39,14 @@ class User1(ModelSerializer):
 
 
 class Camapign1(ModelSerializer):
+    user = User1(read_only=True)
     class Meta :
         model = Campaign
-        fields = ('id','title','goal_amount','fund_raised')
+        fields = ('id','title','goal_amount','fund_raised','user')
 
 
 class WithDrawalSerializer(ModelSerializer):
+    campaign   = Camapign1(read_only=True)
     class Meta :
         model = Withdrawal
-        fields = "__all__"
-
-    # def validate(self, data):
-    #     amount = data["amount"]
-    #     campaign = data["campaign"]
-    #     print(amount)
-    #     print(data,campaign.goal_amount,campaign.fund_raised)
-    #     required_amount = campaign.goal_amount - campaign.fund_raised
-    #     return data
-
-    # def save(self, **kwargs):
-    #     amount = self.validated_data["amount"]
-    #     campaign = self.validated_data["campaign"]
-    #     required_amount = campaign.goal_amount - campaign.fund_raised
-    #     print(amount,required_amount)
-    #     if amount > required_amount:
-    #         raise serializers.ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
-    #     campaign.fund_raised += amount
-    #     print(campaign.save())
-    #     return super().save(**kwargs)
-    
+        fields = "__all__"  

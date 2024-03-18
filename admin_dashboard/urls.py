@@ -71,4 +71,7 @@ urlpatterns = [
     
     path('phonepay',PhonepayApi.as_view()),
     path('phonepay/<str:pk>',UserApi.as_view()),
+
+    path('withdrawal',WithdrawalApi.as_view()),
+    path('withdrawal/<str:pk>',WithdrawalApi.as_view()),
 ]

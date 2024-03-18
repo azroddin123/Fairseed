@@ -238,3 +238,10 @@ class DocumentAPI(GenericMethodsMixin,APIView):
 
 # Remaining Work
 # 
+class WithdrawalApi(GenericMethodsMixin,APIView):
+    model = Withdrawal
+    serializer_class = WithDrawalSerializer
+    lookup_field = "id"
+
+    def post(self,request,*args,**kwargs):
+        pass

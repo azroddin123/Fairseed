@@ -1,6 +1,5 @@
 from django.db import models
 # from campaigns.models import Campaign
-from django.core.validators import MinValueValidator, MaxValueValidator
 from portals.models import BaseModel
 from portals.choices import DonationChoices,PaymentChoices,StatusChoices
 
@@ -27,10 +26,8 @@ class Donor(BaseModel):
     transaction_date = models.DateField(blank=True,null=True)
     other_details    = models.CharField(max_length=124,blank=True,null=True)
 
-
 class Withdrawal(BaseModel):
     campaign          = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE)
-    user              = models.ForeignKey("accounts.User",on_delete=models.CASCADE)
     make_withdrawal   = models.CharField(max_length=124,blank=True,null=True)
     withdrawal_status = models.CharField(max_length=124,blank=True,null=True)
 

@@ -99,7 +99,7 @@ class BankKYC(BaseModel):
     status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)
     # For Approval Proces 
-    bank_data           = models.JSONField(default=dict)
+    bank_data           = models.JSONField(default=dict,null=True,blank=True)
     approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
     
 

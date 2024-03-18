@@ -8,4 +8,5 @@ class DonorAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Donor,DonorAdmin)
+admin.site.register(Withdrawal)
 
