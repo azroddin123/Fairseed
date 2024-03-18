@@ -119,7 +119,6 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = CampBankKycSerializer
     lookup_field = "id"
-    
     def put(self,request,pk,*args, **kwargs):
         try :
             data = request.data
@@ -244,8 +243,6 @@ class DocumentAPI(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-# Remaining Work
-# 
 class WithdrawalApi(GenericMethodsMixin,APIView):
     model = Withdrawal
     serializer_class = WithDrawalSerializer
