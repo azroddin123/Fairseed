@@ -56,7 +56,7 @@ class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
             category = request.GET.get('name')
-            campain_id=Campaigncategory.objects.get(name=category).first()
+            campain_id=Campaigncategory.objects.get(name=category)
             campaing_data = Campaign.objects.filter(category=campain_id)
             serializer = CampaignSerializer1(campaing_data,many=True)
             return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)

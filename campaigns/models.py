@@ -74,8 +74,6 @@ class Campaign(BaseModel):
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
     
-
-
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
@@ -107,7 +105,20 @@ class RevisionHistory(BaseModel):
     modeified_by  = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
     campaign_data = models.JSONField(null=True,blank=True)
-    
+
 class CauseEdit(BaseModel):
-    campaign          = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    campaign_data      = models.JSONField(default=dict,null=True,blank=True)
+    campaign_image     = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
+    document_image1    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
+    document_image2    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
+    document_image3    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
+    approval_status    = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+
+
+    
+
+class BankKYCEdit(BaseModel):
+    bank_kyc          = models.OneToOneField(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
+    bank_data         = models.JSONField(default=dict)
     approval_status   = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)

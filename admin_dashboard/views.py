@@ -119,6 +119,7 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = CampBankKycSerializer
     lookup_field = "id"
+    
     def put(self,request,pk,*args, **kwargs):
         try :
             data = request.data
