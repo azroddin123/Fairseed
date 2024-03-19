@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import * 
-
+from admin_dashboard.views import PagesSlugApi
 urlpatterns = [
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
@@ -23,7 +23,7 @@ urlpatterns = [
     # add campaign
     path('add-campaign/<str:pk>',AddCampaignApi.as_view()),
     path('add-campaign',AddCampaignApi.as_view()),
-    
+    path('slug/<str:slug>',PagesSlugApi.as_view()),
     # Donation API
     # bank And Kyc 
     

@@ -99,7 +99,6 @@ class BankKYC(BaseModel):
     # For Approval Proces 
     bank_data           = models.JSONField(default=dict,null=True,blank=True)
     approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
-    
 
 class RevisionHistory(BaseModel):
     modeified_by  = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
@@ -114,9 +113,6 @@ class CauseEdit(BaseModel):
     document_image2    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
     document_image3    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
     approval_status    = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
-
-
-    
 
 class BankKYCEdit(BaseModel):
     bank_kyc          = models.OneToOneField(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
