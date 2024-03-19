@@ -16,7 +16,7 @@ from campaigns.serializers import *
 from django.db import transaction
 from accounts.serializers import * 
 from django.db.models import Count
-
+from portals.services import paginate_model_data,paginate_data
 
 class PagesAPi(GenericMethodsMixin,APIView):
     model = Pages
@@ -119,7 +119,7 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
     model = BankKYC
     serializer_class = CampBankKycSerializer
     lookup_field = "id"
-    
+
     def put(self,request,pk,*args, **kwargs):
         try :
             data = request.data
@@ -197,7 +197,6 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
         try :
             if pk==None : 
                 data = Campaign.objects.filter(approval_status="Pending")
-                print(len(data),"this much objectr")
                 serializer = CampaignDocumentSerializer(data,many=True)
                 return Response({"error" : False , "rows" : serializer.data},status=status.HTTP_200_OK)
             
@@ -249,6 +248,22 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
     serializer_class = WithDrawalSerializer
     lookup_field = "id"
 
+    def get(self,request,pk=None,*args,**kwargs):
+        try :
+            if pk==None : 
+                data = Withdrawal.objects.all()
+                response = paginate_data(model=Withdrawal,serializer=WithDrawalSerializer,request=request,data=data)
+                return Response(response,status=status.HTTP_200_OK)
+            
+            data = Withdrawal.objects.get(id=pk)
+            bank_data = BankKYC.objects.get(campaign=data.campaign)
+            serializer1 = BankKYCSerializer(bank_data)
+            serializer = WihdrawalSerializer1(data)
+            return Response({"error" : False , "campaign_data" : serializer.data,"bank_data" : serializer1.data},status=status.HTTP_200_OK)
+
+        
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 class DonationGraphAPI(APIView):
     def get(self,request):
         try : 

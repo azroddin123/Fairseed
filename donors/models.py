@@ -28,7 +28,7 @@ class Donor(BaseModel):
 
 class Withdrawal(BaseModel):
     campaign          = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE)
-    make_withdrawal   = models.CharField(max_length=124,blank=True,null=True)
-    withdrawal_status = models.CharField(max_length=124,blank=True,null=True)
+    withdrawal_status = models.CharField(max_length=124,choices=StatusChoices.choices,default=StatusChoices.PENDING)
+    transfer_details  = models.TextField(blank=True,null=True)
 
     

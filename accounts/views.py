@@ -39,7 +39,6 @@ class RegisterUserApi(APIView):
 
 class LoginAPI(APIView):
     def post(self,request,*args, **kwargs):
-        
         try : 
             email       = request.data.get('email')
             password    = request.data.get('password')
@@ -57,7 +56,7 @@ class LoginAPI(APIView):
                 print("password matched")
                 return Response(data,status=status.HTTP_200_OK)
         except Exception as e :
-            return Response({"error" : True, "message" : "Something Went Wrong"},status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):

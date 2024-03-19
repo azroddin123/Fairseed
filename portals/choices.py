@@ -62,3 +62,9 @@ class ApprovalChoices(models.TextChoices):
 class StatusChoices(models.TextChoices):
     PENDING    = PENDING,PENDING
     APPROVED   = APPROVED,APPROVED
+
+
+class WithdrawalChoices(models.TextChoices):
+    PAID       = PAID
+    PENDING    = PENDING
+    REJECTED   = REJECTED

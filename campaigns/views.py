@@ -58,8 +58,8 @@ class CampaignFilterApi(APIView):
             category = request.GET.get('name')
             campain_id=Campaigncategory.objects.get(name=category)
             campaing_data = Campaign.objects.filter(category=campain_id)
-            serializer = CampaignSerializer1(campaing_data,many=True)
-            return Response({"error": False, "rows" : serializer.data },status=status.HTTP_200_OK)
+            response = paginate_data(model=Campaign,serializer=CampaignSerializer1,request=request,data=campaing_data)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 

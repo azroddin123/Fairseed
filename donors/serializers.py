@@ -50,3 +50,8 @@ class WithDrawalSerializer(ModelSerializer):
     class Meta :
         model = Withdrawal
         fields = "__all__"  
+
+class WihdrawalSerializer1(ModelSerializer):
+    class Meta :
+        model = Withdrawal
+        fields = "__all__"

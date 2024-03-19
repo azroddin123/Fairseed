@@ -42,3 +42,5 @@ UPI                 = "UPI"
 
 
 # Admin  Request Choices 
+PAID               = "Paid"
+PENDING_TO_PAY     = "Pending_to_pay"

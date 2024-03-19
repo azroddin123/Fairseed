@@ -2,6 +2,7 @@ from .models import *
 from rest_framework.serializers import ModelSerializer 
 from rest_framework import serializers
 
+from donors.models import Withdrawal
 from campaigns.models import * 
 from campaigns.serializers import * 
 
@@ -102,4 +103,10 @@ class UserSerializer(ModelSerializer):
     class Meta :
         model = User 
         fields = "__all__"
-   
+
+class WihdrawalSerializer1(ModelSerializer):
+    class Meta :
+        model = Withdrawal
+        fields = "__all__"
+
+
