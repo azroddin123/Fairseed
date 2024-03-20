@@ -1,7 +1,7 @@
 from django.db import models
 # from campaigns.models import Campaign
 from portals.models import BaseModel
-from portals.choices import DonationChoices,PaymentChoices,StatusChoices
+from portals.choices import DonationChoices,PaymentChoices,StatusChoices,WithdrawalChoices
 
 
 # Create your models here.
@@ -28,7 +28,7 @@ class Donor(BaseModel):
 
 class Withdrawal(BaseModel):
     campaign          = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE)
-    withdrawal_status = models.CharField(max_length=124,choices=StatusChoices.choices,default=StatusChoices.PENDING)
+    withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.PENDING)
     transfer_details  = models.TextField(blank=True,null=True)
 
     
