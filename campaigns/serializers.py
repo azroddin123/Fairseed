@@ -111,3 +111,8 @@ class BankKYCSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class BankKYCEditSerializer(ModelSerializer):
+    class Meta :
+        model = BankKYCEdit
+        fields = "__all__"
+

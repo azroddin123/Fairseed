@@ -104,9 +104,15 @@ class UserSerializer(ModelSerializer):
         model = User 
         fields = "__all__"
 
-class WihdrawalSerializer1(ModelSerializer):
+class WithdrawalSerializer1(ModelSerializer):
+    
     class Meta :
         model = Withdrawal
         fields = "__all__"
 
 
+class CauseEditSerializer1(ModelSerializer):
+    campaign = CampaignDocumentSerializer(read_only=True)
+    class Meta :
+        model = CauseEdit
+        fields= ('id','campaign','campaign_data','doc1','doc2','doc3')

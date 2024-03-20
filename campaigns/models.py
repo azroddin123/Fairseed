@@ -100,21 +100,28 @@ class BankKYC(BaseModel):
     bank_data           = models.JSONField(default=dict,null=True,blank=True)
     approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
 
-class RevisionHistory(BaseModel):
-    modeified_by  = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
-    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
-    campaign_data = models.JSONField(null=True,blank=True)
+
+
 
 class CauseEdit(BaseModel):
-    campaign           = models.OneToOneField(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    campaign           = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
     campaign_data      = models.JSONField(default=dict,null=True,blank=True)
     campaign_image     = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    document_image1    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    document_image2    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    document_image3    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    approval_status    = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+    doc1               = models.ImageField(upload_to='campaign/docs/',null=True,blank=True)
+    doc2               = models.ImageField(upload_to='campaign/docs/',null=True,blank=True)
+    doc3               = models.ImageField(upload_to='campaign/docs/',null=True,blank=True)
+    approval_status    = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.PENDING)
 
 class BankKYCEdit(BaseModel):
-    bank_kyc          = models.OneToOneField(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
-    bank_data         = models.JSONField(default=dict)
-    approval_status   = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+    bank_kyc            = models.ForeignKey(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
+    bank_data           = models.JSONField(default=dict)
+    pan_image           = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    adhar_image         = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+
+
+class RevisionHistory(BaseModel):
+    modified_by   = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    campaign      = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
+    cause_data    = models.ForeignKey(CauseEdit,on_delete=models.CASCADE,null=True,blank=True)

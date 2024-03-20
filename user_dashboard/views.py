@@ -83,6 +83,47 @@ class CampaignApi3(GenericMethodsMixin,APIView):
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
+
+class CauseEditAPi(GenericMethodsMixin,APIView):
+    def put(self,request,pk,*args,**Kwargs):
+        try :
+            campaign       = Campaign.objects.get(id=pk)
+            # Extracting images 
+            campaign_image = request.FILES.get('campaign_image')
+            uploaded_docs  = request.FILES.getlist("documents")
+            
+            if len(request.FILES) == 0:
+                print("changes_sent")
+                CauseEdit.objects.create(campaign=campaign,campaign_data=request.data,approval_status="Pending")
+                return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
+            else :
+                if campaign_image and uploaded_docs:
+                    request.data.pop('campaign_image')
+                    request.data.pop('documents')
+                    doc1, doc2, doc3 = None, None, None
+                    if len(uploaded_docs) == 1 :
+                        doc1 = uploaded_docs[0]
+                    elif len(uploaded_docs) == 2 :
+                        print("In Uploaded Docs 2 ")
+                        doc1 = uploaded_docs[0]
+                        doc2 = uploaded_docs[1]
+                    elif len(uploaded_docs) == 3:
+                        doc1 = uploaded_docs[0]
+                        doc2 = uploaded_docs[1]
+                        doc3 = uploaded_docs[2]
+                    print("object created")
+                    CauseEdit.objects.create(campaign=campaign,campaign_data=request.data,campaign_image=campaign_image,doc1=doc1,doc2=doc2,doc3=doc3,approval_status="Pending")
+                elif campaign_image and len(uploaded_docs) == 0 :
+                    request.data.pop('campaign_image')
+                    CauseEdit.objects.create(campaign=campaign,campaign_data=request.data,campaign_image=campaign_image,approval_status="Pending")
+                elif uploaded_docs and campaign_image is None:
+                    doc1, doc2, doc3 = None, None, None
+                    request.data.pop('documents')
+                    CauseEdit.objects.create(campaign=campaign,campaign_data=request.data,doc1=doc1,doc2=doc2,doc3=doc3,approval_status="Pending")
+            return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
 # Donor API Donation Done By MySelf 
 class MyDonationApi(GenericMethodsMixin,APIView):
     model= Donor
@@ -109,15 +150,15 @@ class BankKycApi(GenericMethodsMixin,APIView):
     serializer_class = BankKYCSerializer
     lookup_field = "id"
     
-    def put(self,request,pk,*args, **kwargs):
-        try :
-            campaign = BankKYC.objects.get(id=pk)
-            campaign.campaign_data = request.data
-            campaign.approval_status = "Pending"
-            campaign.save()
-            return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+    # def put(self,request,pk,*args, **kwargs):
+    #     try :
+    #         campaign = BankKYC.objects.get(id=pk)
+    #         campaign.campaign_data = request.data
+    #         campaign.approval_status = "Pending"
+    #         campaign.save()
+    #         return Response({"error" : False , "message" : "Your changes have been recorded for this campaign and are sent for approval to the admin"},status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ViewBankAndKycAPi(APIView):
     def get(self,request,pk,*args, **kwargs):
@@ -138,8 +179,33 @@ class ViewBankAndKycAPi(APIView):
             return Response({"error" : False , "message" : " Your changes has been recorded and are  sent for approval to Admin "},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-        
 
+    # def put(self,request,pk,*args, **kwargs):
+    #     try :
+    #         kyc = BankKYC.objects.get(campaign=pk)
+    #         if len(request.FILES) == 0:
+    #             print("changes_sent")
+    #             BankKYCEdit.objects.create(bank_kyc=kyc,bank_data=request.data,approval_status="Pending")
+    #             return Response({"error" : False , "message" : " Your changes has been recorded and are  sent for approval to Admin "},status=status.HTTP_200_OK)
+    #         else :
+    #             adhar    = request.FILES.get('adhar_card_image')
+    #             pan      = request.FILES.get('pan_card_image')
+    #             passbook = request.FILES.get('passbook_image')
+    #             if adhar and passbook and pan:
+    #                 request.data.pop["adhar_card_image"]
+    #                 request.data.pop["pan_card_image"]
+    #                 request.data.pop["passbook_image"]
+    #                 BankKYCEdit.objects.create(bankkyc=kyc,bank_data=request.data,adhar_image=adhar,pan_image=pan,passbook_image=passbook,approval_status="Pending")
+    #             elif adhar and  pan and passbook is None :
+    #                 pass
+                    
+            
 
+    #         kyc.bank_data = request.data
+    #         kyc.approval_status = "Pending"
+    #         kyc.save()
+    #         return Response({"error" : False , "message" : " Your changes has been recorded and are  sent for approval to Admin "},status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 

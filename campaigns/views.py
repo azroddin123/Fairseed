@@ -204,6 +204,6 @@ class AddCampaignApi(APIView):
                         bkc_serializer.is_valid(raise_exception=True)
                         bkc_serializer.save()
                         print("---------------Bank KYC  Saved ---------------------")
-                        return Response({"error" : False, "message" : "Campaign Data Saved Succefully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
+                        return Response({"error" : False, "message" : "Campaign Data Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

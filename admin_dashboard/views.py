@@ -214,19 +214,17 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
             data = Campaign.objects.get(id=pk,approval_status="Pending")
             serializer = CampaignDocumentSerializer(data)
             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
-
-        
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
       
     def put(self,request,pk,*args, **kwargs):
         try :
-            print("=================zaid========",request.data)
+            print("=================admin========",request.data)
             # print(type(request.data['appprove_campaign']),request.data['appprove_campaign'])
             # we have to import all the data in the rh history also 
             with transaction.atomic():
                 campaign = Campaign.objects.get(id=pk)
-                if request.data['approve_campaign'] == "true" : 
+                if request.data['approve_campaign'] == "true" :
                     serializer = CampaignSerializer(campaign,data=campaign.campaign_data,partial=True)
                     campaign.campaign_data['approval_status'] = "Approved"
                     if serializer.is_valid():
@@ -269,7 +267,7 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
             data = Withdrawal.objects.get(id=pk)
             bank_data = BankKYC.objects.get(campaign=data.campaign)
             serializer1 = BankKYCSerializer(bank_data)
-            serializer = WihdrawalSerializer1(data)
+            serializer = WithdrawalSerializer1(data)
             return Response({"error" : False , "campaign_data" : serializer.data,"bank_data" : serializer1.data},status=status.HTTP_200_OK)
 
         
@@ -294,6 +292,57 @@ class DonationGraphAPI(APIView):
             return Response({"donation_data" : result },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class CausEditApi(GenericMethodsMixin,APIView):
+    model = CauseEdit
+    serializer_class = CauseEditSerializer1
+    lookup_field = "id"
+
+    def get(self,request,pk=None,*args,**kwargs):
+        if pk is None :
+            data = CauseEdit.objects.filter(approval_status="Pending")
+            response = paginate_data(model=CauseEdit,serializer=CauseEditSerializer1,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
+
+        cause_edit = CauseEdit.objects.get(id=pk)
+        serializer = CauseEditSerializer1(cause_edit)
+        return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+
+    def put(self,request,pk,*args,**kwargs):
+        try :
+            with transaction.atomic():
+                cause_edit = CauseEdit.objects.get(id=pk,approval_status="Pending")
+                if request.data['approve_campaign'] == "true" :
+                    campaign = Campaign.objects.get(id=cause_edit.campaign.id)
+                    serializer = CampaignSerializer(campaign,data=cause_edit.campaign_data,partial=True)
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                    campaign.campaign_image = cause_edit.campaign_image
+                    campaign.save()
+                    docs = []
+                    for doc_field_name in ["doc1", "doc2", "doc3"]:
+                        doc_value = getattr(cause_edit, doc_field_name)
+                        if doc_value:
+                            docs.append(doc_value)
+                    if docs :
+                            Documents.objects.filter(campaign=campaign).delete()
+                            documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in docs]
+                            Documents.objects.bulk_create(documents_to_create)
+                    cause_edit.approval_status = "Approved"
+                    cause_edit.save()
+                    RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,cause_data=cause_edit)
+                    return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_400_BAD_REQUEST)
+                else :
+                    cause_edit.approval_status = "Rejected"
+                    cause_edit.save()
+                    RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,cause_data=cause_edit)
+                    return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 
 
