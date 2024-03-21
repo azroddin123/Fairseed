@@ -8,8 +8,6 @@ from .models import (
 )
 from datetime import datetime
 current_date = datetime.now()
-
-
 from django.db import transaction
 from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
@@ -71,8 +69,8 @@ class ReportedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_reported=True)
-            serializer = CampaignAdminSerializer(data,many=True)
-            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
@@ -80,12 +78,12 @@ class SuccessfulCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_successful=True)
-            serializer = CampaignAdminSerializer(data,many=True)
-            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-# Camapign By Catagory
+# Campaign By Category
 class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
@@ -115,15 +113,14 @@ class LandingPageApi(APIView):
             "total_campaign" : Campaign.objects.count(),
             "total_donation" : Donor.objects.aggregate(Sum('amount'))['amount__sum'] or 0,
             "donor_count" : Donor.objects.count(),
-            "successfull_campaign" : Campaign.objects.filter(is_successful=True).count(),
-            # this should be done when the amoint is credited to student account.
-            "student_benifited" : Campaign.objects.filter(is_withdrawal=True).count()
+            "successful_campaign" : Campaign.objects.filter(is_successful=True).count(),
+            # this should be done when the amount is credited to student account.
+            "student_benefited" : Campaign.objects.filter(is_withdrawal=True).count()
             }
             serializer = DashboardSerializer(data)
             return Response({"error" : False,"data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 class CampaignByCategoryApi2(APIView):
     def get(self,request,pk,*args, **kwargs):
@@ -143,14 +140,13 @@ class CampaignTabsAPi(APIView):
             data = []
             print(filter_key =="most_supported")
             if filter_key  == "most_supported":
-                print("in mosrt")
                 data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active")
             elif filter_key  == "needs_love": 
                 data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active")
             elif filter_key  == "expiring_soon": 
                 data = Campaign.objects.filter(status="Active").order_by('-end_date')
             elif filter_key  == "newly_added": 
-                data = Campaign.objects.filter(status="Active").order_by('-created_on')
+                data = Campaign.objects.filter(status="Active").order_by('created_on')
             else :
                 data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
@@ -158,16 +154,13 @@ class CampaignTabsAPi(APIView):
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
+# Need to add category key
 class CampaignTabsAPi2(APIView):
     def get(self, request, *args, **kwargs):
         try:
             filter_key = request.GET.get('filter')
             cat_id     = request.GET.get('category')
             data = []
-            
-            print(filter_key =="most_supported")
             if filter_key  == "most_supported":
                 data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active",category=cat_id)
             elif filter_key  == "needs_love": 
@@ -175,7 +168,7 @@ class CampaignTabsAPi2(APIView):
             elif filter_key  == "expiring_soon": 
                 data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-end_date')
             elif filter_key  == "newly_added": 
-                data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-created_on')
+                data = Campaign.objects.filter(status="Active",category=cat_id).order_by('created_on')
             else :
                 data = Campaign.objects.filter(status="Active",category=cat_id)
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
@@ -199,13 +192,11 @@ class AddCampaignApi(APIView):
                     uploaded_docs = request.FILES.getlist("documents")
                     print(uploaded_docs,request.FILES)
                     if uploaded_docs:
-                        print("deletting Docs")
                         Documents.objects.filter(campaign=campaign).delete()
                         print("------------------Updating Docs-----------------------")
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                     
-                    # Acocunt Details 
                     print("----------------------Updating Accounts----------------------")
                     obj = BankKYC.objects.get(campaign=campaign)
                     request.data["campaign"] = campaign.id
@@ -216,14 +207,12 @@ class AddCampaignApi(APIView):
                 else :
                     print(request.FILES,"====================>")
                     print("---------------------",request.data,request.thisUser)
-                    print("camapign save")
                     request.data["user"]  = request.thisUser.id
                     campaign_serializer = CampaignSerializer(data=request.data)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
                         uploaded_docs = request.FILES.getlist("documents")
-                        print("uploaded docus ","------------------>",uploaded_docs)
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                         print("---------------Bank KYC Saving---------------------")

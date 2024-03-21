@@ -60,22 +60,25 @@ class DonatePaymentApi(APIView):
 
 class CheckPaymentStatusAPi(APIView):
     def get(self,request,pk=None,):
-        merchant_id = "FAIRSEEDONLINE"  
-        salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
-        salt_index = 1 
-        env = Env.PROD 
-        phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-        print("pk",pk)
-        unique_transaction_id = pk
-        transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
-        transaction_state = transaction_status_response.data.state
-        current_status = { 
-            "status" : transaction_status_response.code,
-            "message" : transaction_status_response.message,
-            "transaction_State" : transaction_status_response.data.state
+        try :
+            merchant_id = "FAIRSEEDONLINE"  
+            salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
+            salt_index = 1 
+            env = Env.PROD 
+            phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+            print("pk",pk)
+            unique_transaction_id = pk
+            transaction_status_response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)  
+            transaction_state = transaction_status_response.data.state
+            current_status = { 
+                "status" : transaction_status_response.code,
+                "message" : transaction_status_response.message,
+                "transaction_State" : transaction_status_response.data.state
 
-        }
-        return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
+            }
+            return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DonorApi(GenericMethodsMixin,APIView):

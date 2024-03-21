@@ -18,53 +18,58 @@ from portals.services import paginate_data
 # User Dasboard API
 class UserDashboardApi(APIView):
     def get(self,request,*args, **kwargs):
-        print(request.thisUser)
-        # print(Donor.objects.count(user=request.thisUser))
-        data = {
-            "no_of_donation" : Donor.objects.filter(user=request.thisUser).count(),
-            "total_campaign" : Campaign.objects.filter(user=request.thisUser).count(),
-            "amount_receieved" : Campaign.objects.filter(user=request.thisUser).aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
-        }
-        return Response({"data" : data},status=status.HTTP_200_OK)
-
+        try :
+            print(request.thisUser)
+            # print(Donor.objects.count(user=request.thisUser))
+            data = {
+                "no_of_donation" : Donor.objects.filter(user=request.thisUser).count(),
+                "total_campaign" : Campaign.objects.filter(user=request.thisUser).count(),
+                "amount_received" : Campaign.objects.filter(user=request.thisUser).aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
+            }
+            return Response({"data" : data},status=status.HTTP_200_OK)
+        except Exception as e:
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 # Donation Count API
 class DonationCountApi(APIView):
     def get(self,request):
+        try :     
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=30)
+            fundraiser_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
+            donation_count=Count('id')
+            ).order_by('donors__created_on')
 
-        end_date = timezone.now()
-        start_date = end_date - timedelta(days=30)
-        fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
-        donation_count=Count('id')
-        ).order_by('donors__created_on')
-
-        for item in fundraise_data:
-            print(item)
-        date_list = [start_date + timedelta(days=x) for x in range(31)]
-        result = [
-                {"date": date.date(), "donation_count": next((item["donation_count"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
-                for date in date_list
-            ]
-        return Response({"donation_data" : result},status=status.HTTP_200_OK)
-
+            for item in fundraiser_data:
+                print(item)
+            date_list = [start_date + timedelta(days=x) for x in range(31)]
+            result = [
+                    {"date": date.date(), "donation_count": next((item["donation_count"] for item in fundraiser_data if item["donors__created_on"] == date.date()), 0)}
+                    for date in date_list
+                ]
+            return Response({"donation_data" : result},status=status.HTTP_200_OK)
+        except Exception as e:
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 # FundRaised API
 class FundRaisedApi(APIView):
     def get(self,request):
-        end_date = timezone.now()
-        start_date = end_date - timedelta(days=30)
-        fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
-        total_amount=Sum('donors__amount')
-        ).order_by('donors__created_on')
-        for item in fundraise_data :
-            print(item)
+        try : 
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=30)
+            fundraiser_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date),user=request.thisUser).values('donors__created_on').annotate(
+            total_amount=Sum('donors__amount')
+            ).order_by('donors__created_on')
+            for item in fundraiser_data :
+                print(item)
 
-        date_list = [start_date + timedelta(days=x) for x in range(31)]
-        result = [
-                {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
-                for date in date_list
-            ]
-        return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
-        
+            date_list = [start_date + timedelta(days=x) for x in range(31)]
+            result = [
+                    {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraiser_data if item["donors__created_on"] == date.date()), 0)}
+                    for date in date_list
+                ]
+            return Response({"fundraiser_data" : result },status=status.HTTP_200_OK)
+        except Exception as e:
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)   
 
 # Campaign API
 class CampaignApi3(GenericMethodsMixin,APIView):
@@ -121,8 +126,8 @@ class MyDonationApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
     
-# Recieved Donation For my Campaign 
-class RecivedDonationApi(APIView):
+# Received Donation For my Campaign 
+class ReceivedDonationApi(APIView):
     def get(self,request,pk=None,*args, **kwargs):
         try : 
             if pk:
@@ -181,7 +186,7 @@ class ViewBankAndKycAPi(APIView):
                 BankKYCEdit.objects.create(bank_kyc=kyc, bank_data=request.data, approval_status="Pending")
                 return Response({"error": False, "message": "Your changes have been recorded and are sent for approval to Admin"}, status=status.HTTP_200_OK)
             
-                    # Extract file fields
+            # Extract file fields
             file_fields = ['adhar_card_image', 'pan_card_image', 'passbook_image']
             bank_kyc_object = {field: request.FILES.get(field) for field in file_fields}
        

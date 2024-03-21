@@ -60,11 +60,14 @@ class LoginAPI(APIView):
 
 class ChangePasswordApi(APIView):
     def post(self,request,*args, **kwargs):
-        serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try : 
+            serializer = ChangePasswordSerializer(data=request.data,context={'request': self.request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"Success": "Password updated successfully"},status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+                return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class ForgotPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
@@ -98,37 +101,20 @@ class UpdateUserAPI(APIView):
     
 class ResetPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        if User.objects.filter(email=email):
-            user = User.objects.get(email=email)
-            user.set_password(password)
-            user.save()
-            return Response(data={'Success':'Password for Email ' +str(user) +' reset succesfull'},status=status.HTTP_200_OK)
-        return Response(data = {'Error':'Email does not exists'})
+        try : 
+            email = request.data.get('email')
+            password = request.data.get('password')
+            if User.objects.filter(email=email):
+                user = User.objects.get(email=email)
+                user.set_password(password)
+                user.save()
+                return Response(data={'Success':'Password for Email ' +str(user) +' reset succesfull'},status=status.HTTP_200_OK)
+            return Response(data = {'Error':'Email does not exists'})
+        except Exception as e :
+                return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class PageNotFoundAPI(APIView):
     def get(self,request,*args, **kwargs):
         return Response({"error" : True, "message" : "This API Does not exists in this Application"},status=status.HTTP_404_NOT_FOUND)
 
-
-# Email Sending Scenarios 
-    
-# 1.Forget Password
-# 2.After Donation
-# Assuming you have already imported the User model
-# users = User.objects.values('country')
-# print(users)
-
-
-# adhar pan , pan card image ,adhar card image
-# for item in users :
-#     print(item)
-    
-# # Query to get country-wise user count
-# country_user_count = User.objects.values('country').annotate(user_count=Count('id'))
-
-# # Print the results
-# for item in country_user_count:
-#     print("Country:", item['country'], "User Count:", item['user_count'])

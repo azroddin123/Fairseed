@@ -18,12 +18,12 @@ urlpatterns = [
     # Edit bank and kyc API
     path('edit-bankkyc/<str:pk>',ViewBankAndKycAPi.as_view()),
     
-    path('donations',RecivedDonationApi.as_view()),
-    path('donations/<str:pk>',RecivedDonationApi.as_view()),
+    path('donations',ReceivedDonationApi.as_view()),
+    path('donations/<str:pk>',ReceivedDonationApi.as_view()),
     path('dashboard-api',UserDashboardApi.as_view()),
     
     path("donation-data",DonationCountApi.as_view()),
     
-    path('fundraise-data',FundRaisedApi.as_view())
+    path('fundraiser-data',FundRaisedApi.as_view())
 
 ]
