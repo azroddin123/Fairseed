@@ -55,4 +55,14 @@ class User(AbstractBaseUser):
         return self.email
     
 
+    def save(self, *args, **kwargs):
+        # Check if user_role is not set and assign the default role
+        if not self.user_role_id:
+            default_role = UserRole.objects.get(role_name='Normal')  
+            self.user_role = default_role
+
+        # Call the original save method
+        super().save(*args, **kwargs)
+    
+
 
