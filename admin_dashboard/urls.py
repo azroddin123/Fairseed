@@ -39,7 +39,7 @@ urlpatterns = [
     path('landing-page',LandingPageSettingApi.as_view()),
     path('landing-page/<str:pk>',LandingPageSettingApi.as_view()),
 
-    # camapign Catagories api 
+
     path('campaign',CampaignAdminApi2.as_view()),
     path('campaign/<str:pk>',CampaignAdminApi2.as_view()),
     
@@ -52,7 +52,7 @@ urlpatterns = [
     path('dashboard-api',AdminDashboardApi.as_view()),
     path('donation-api',AdminDonationApi.as_view()),
     
-    path('countrywise-users',AdminCountryApi.as_view()),
+    path('countrywide-users',AdminCountryApi.as_view()),
     
     path('user-update/<str:pk>',UserUpdateApi.as_view()),
     

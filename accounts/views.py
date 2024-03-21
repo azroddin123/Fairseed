@@ -27,12 +27,11 @@ class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
         try : 
             serializer = UserSerializer(data=request.data)
-            
             if  serializer.is_valid():
                 user = serializer.save()
                 print(user.id)
                 token = generate_token(user.email)
-                return Response({"message" : "User Created Succefully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
+                return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
