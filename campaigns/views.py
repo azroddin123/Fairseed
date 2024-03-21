@@ -6,6 +6,10 @@ from .models import (
     Campaign, 
     Campaigncategory,
 )
+from datetime import datetime
+current_date = datetime.now()
+
+
 from django.db import transaction
 from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
@@ -27,7 +31,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
                 serializer = CampaignAdminSerializer(data=data)
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
             else :
-                data = Campaign.objects.filter(status="Active")
+                data = Campaign.objects.filter(status="Active",end_date__lt=current_date)
                 response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
@@ -231,3 +235,5 @@ class AddCampaignApi(APIView):
                         return Response({"error" : False, "message" : "Campaign Data Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
