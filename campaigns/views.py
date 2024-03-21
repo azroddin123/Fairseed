@@ -152,9 +152,33 @@ class CampaignTabsAPi(APIView):
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": True, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class CampaignTabsAPi2(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            filter_key = request.GET.get('filter')
+            cat_id     = request.GET.get('category')
+            data = []
+            
+            print(filter_key =="most_supported")
+            if filter_key  == "most_supported":
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active",category=cat_id)
+            elif filter_key  == "needs_love": 
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active",category=cat_id)
+            elif filter_key  == "expiring_soon": 
+                data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-end_date')
+            elif filter_key  == "newly_added": 
+                data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-created_on')
+            else :
+                data = Campaign.objects.filter(status="Active",category=cat_id)
+            response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
 class AddCampaignApi(APIView):
     def post(self,request,pk=None,*args, **kwargs):
         try : 
