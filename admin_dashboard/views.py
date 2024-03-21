@@ -167,9 +167,8 @@ class RevisionHistoryApi(APIView):
     def get(self,request,pk,*args, **kwargs):
         try :
             data = RevisionHistory.objects.filter(campaign=pk)
-            print(len(data),"this much objectr")
-            serializer = RHSerializer(data,many=True)
-            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+            response = paginate_data(model=RevisionHistory,serializer=RHSerializer,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
             
@@ -209,8 +208,8 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
             if pk==None : 
                 data = Campaign.objects.filter(approval_status="Pending")
                 serializer = CampaignDocumentSerializer(data,many=True)
-                return Response({"error" : False , "rows" : serializer.data},status=status.HTTP_200_OK)
-            
+                response = paginate_data(model=Campaign,serializer=CampaignDocumentSerializer,request=request,data=data)
+                return Response(response,status=status.HTTP_200_OK)            
             data = Campaign.objects.get(id=pk,approval_status="Pending")
             serializer = CampaignDocumentSerializer(data)
             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
@@ -220,8 +219,7 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
     def put(self,request,pk,*args, **kwargs):
         try :
             print("=================admin========",request.data)
-            # print(type(request.data['appprove_campaign']),request.data['appprove_campaign'])
-            # we have to import all the data in the rh history also 
+        
             with transaction.atomic():
                 campaign = Campaign.objects.get(id=pk)
                 if request.data['approve_campaign'] == "true" :
@@ -273,6 +271,7 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
         
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
 class DonationGraphAPI(APIView):
     def get(self,request):
         try : 

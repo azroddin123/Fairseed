@@ -46,8 +46,8 @@ class  CampaigncategoryApi(GenericMethodsMixin,APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaigncategory.objects.filter(is_active=True)
-            serializer = CampaignCategorySerializer(data,many=True)
-            return Response({"error": False,"count":  len(data) or 0,"rows" : serializer.data },status=status.HTTP_200_OK)
+            response = paginate_data(Campaigncategory, CampaignCategorySerializer, request, data)
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,9 +60,9 @@ class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
             category = request.GET.get('name')
-            campain_id=Campaigncategory.objects.get(name=category)
-            campaing_data = Campaign.objects.filter(category=campain_id)
-            response = paginate_data(model=Campaign,serializer=CampaignSerializer1,request=request,data=campaing_data)
+            campaign_id=Campaigncategory.objects.get(name=category)
+            campaign_data = Campaign.objects.filter(category=campaign_id)
+            response = paginate_data(model=Campaign,serializer=CampaignSerializer1,request=request,data=campaign_data)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)

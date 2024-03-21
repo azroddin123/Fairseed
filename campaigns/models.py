@@ -74,6 +74,15 @@ class Campaign(BaseModel):
     def get_successful_campaign(cls):
         return cls.objects.filter(is_successful=True)
     
+    def save(self, *args, **kwargs):
+        # Check if the goal amount is reached
+        if self.fund_raised == self.goal_amount:
+            self.is_successful = True
+        else:
+            self.is_successful = False
+        # Call the original save method
+        super().save(*args, **kwargs)
+    
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
@@ -115,8 +124,8 @@ class CauseEdit(BaseModel):
 class BankKYCEdit(BaseModel):
     bank_kyc            = models.ForeignKey(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
     bank_data           = models.JSONField(default=dict)
-    pan_image           = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    adhar_image         = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    pan_card_image           = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    adhar_card_image         = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
 

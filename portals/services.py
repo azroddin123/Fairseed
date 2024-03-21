@@ -84,7 +84,6 @@ def paginate_data(model, serializer, request,data):
             current_page_data = paginator.get_page(page_number)
         except EmptyPage:
             return Response({"error": True, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
-
         try:
             serialized_data = serializer(current_page_data, many=True).data
         except Exception as e:
