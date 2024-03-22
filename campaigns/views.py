@@ -57,8 +57,8 @@ class DocumentApi(GenericMethodsMixin,APIView):
 class CampaignFilterApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
-            category = request.GET.get('name')
-            campaign_id=Campaigncategory.objects.get(name=category)
+            slug = request.GET.get('slug')
+            campaign_id=Campaigncategory.objects.get(slug=slug)
             campaign_data = Campaign.objects.filter(category=campaign_id)
             response = paginate_data(model=Campaign,serializer=CampaignSerializer1,request=request,data=campaign_data)
             return Response(response,status=status.HTTP_200_OK)

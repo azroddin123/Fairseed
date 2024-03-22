@@ -13,7 +13,7 @@ import markdown
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
-    slug   = models.CharField(max_length=130,blank=True,null=True,)
+    slug   = models.CharField(max_length=130,blank=True,null=True,unique=True)
     image  = models.ImageField(upload_to="campaign/catagory/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
     

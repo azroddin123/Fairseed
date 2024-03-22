@@ -46,8 +46,8 @@ class DashboardSerializer(serializers.Serializer):
     total_campaign       = serializers.IntegerField()
     total_donation       = serializers.IntegerField()
     donor_count          = serializers.IntegerField()
-    successfull_campaign = serializers.IntegerField()
-    student_benifited    = serializers.IntegerField()
+    successful_campaign = serializers.IntegerField()
+    student_benefited    = serializers.IntegerField()
 
 class CampaignBycategorySerializer(ModelSerializer):
     campaign    = CampaignSerializer1(source="campaign_set",many=True)
