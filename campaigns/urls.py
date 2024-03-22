@@ -2,6 +2,7 @@ from django.urls import path
 from .views import * 
 from admin_dashboard.views import PagesSlugApi
 urlpatterns = [
+    
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
     
@@ -16,6 +17,7 @@ urlpatterns = [
     path('campaign/<str:pk>', CampaignApi.as_view()),
     path('campaign', CampaignApi.as_view()),
     path('successful-campaign',SuccessfulCauseApi.as_view()),
+    path('featured-campaign',FeaturedCauseApi.as_view()),
     
     # Campaign By Category 
     path('category',CampaignFilterApi.as_view()),
@@ -27,7 +29,4 @@ urlpatterns = [
     path('add-campaign/<str:pk>',AddCampaignApi.as_view()),
     path('add-campaign',AddCampaignApi.as_view()),
     path('slug/<str:slug>',PagesSlugApi.as_view()),
-    # Donation API
-    # bank And Kyc 
-    
 ]

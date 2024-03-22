@@ -29,7 +29,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
                 serializer = CampaignAdminSerializer(data=data)
                 return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
             else :
-                data = Campaign.objects.filter(status="Active",end_date__lt=current_date)
+                data = Campaign.objects.filter(status="Active",end_date__gt=current_date)
                 response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
@@ -78,6 +78,15 @@ class SuccessfulCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_successful=True)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
+class FeaturedCauseApi(APIView):
+    def get(self,request,*args, **kwargs) :
+        try :
+            data = Campaign.objects.filter(is_featured=True)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
