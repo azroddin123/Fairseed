@@ -59,8 +59,8 @@ class CampaignFilterApi(APIView):
         try : 
             category = request.GET.get('name')
             campaign_id=Campaigncategory.objects.get(name=category)
-            campaign_data = Campaign.objects.filter(category=campaign_id)
-            response = paginate_data(model=Campaign,serializer=CampaignSerializer1,request=request,data=campaign_data)
+            campaign_data = Campaign.objects.filter(category=campaign_id,status="Active")
+            response = paginate_data(model=Campaign,serializer=CampaignSerializer2,request=request,data=campaign_data)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
@@ -86,7 +86,7 @@ class SuccessfulCauseApi(APIView):
 class FeaturedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
-            data = Campaign.objects.filter(is_featured=True)
+            data = Campaign.objects.filter(status="Active")
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
@@ -96,6 +96,7 @@ class FeaturedCauseApi(APIView):
 class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
         try : 
+            print("redan is calling")
             cat_id = request.GET.get('category')
             response = paginate_model_data(model=Campaign,serializer=CampaignSerializer2,request=request,filter_key='category')
             category_data = CampaignCategorySerializer(Campaigncategory.objects.get(id=cat_id)).data 
@@ -168,7 +169,8 @@ class CampaignTabsAPi2(APIView):
     def get(self, request, *args, **kwargs):
         try:
             filter_key = request.GET.get('filter')
-            cat_id     = request.GET.get('category')
+            category = request.GET.get('name')
+            cat_id=Campaigncategory.objects.get(name=category)
             data = []
             if filter_key  == "most_supported":
                 data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active",category=cat_id)
@@ -184,36 +186,11 @@ class CampaignTabsAPi2(APIView):
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
 class AddCampaignApi(APIView):
-    def post(self,request,pk=None,*args, **kwargs):
+    def post(self,request,*args, **kwargs):
         try : 
             with transaction.atomic():
-                if pk :
-                    data = request.data
-                    print("---------------------",request.data)
-                    campaign = Campaign.objects.get(id=pk)
-                    c_serializer = CampaignSerializer(campaign,data=request.data,partial=True)
-                    c_serializer.is_valid(raise_exception=True)
-                    c_serializer.save()
-                    print("------------------Updating Campaigns-----------------------")
-                    print(campaign.id,campaign)
-                    uploaded_docs = request.FILES.getlist("documents")
-                    print(uploaded_docs,request.FILES)
-                    if uploaded_docs:
-                        Documents.objects.filter(campaign=campaign).delete()
-                        print("------------------Updating Docs-----------------------")
-                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
-                        Documents.objects.bulk_create(documents_to_create)
-                    
-                    print("----------------------Updating Accounts----------------------")
-                    obj = BankKYC.objects.get(campaign=campaign)
-                    request.data["campaign"] = campaign.id
-                    bkc_serializer = BankKYCSerializer(obj, data=request.data,partial = True)
-                    bkc_serializer.is_valid(raise_exception=True)
-                    bkc_serializer.save()
-                    return Response({"error": False, "message": "Campaign Data Updated Successfully", "data": c_serializer.data}, status=status.HTTP_200_OK)
-                else :
                     print(request.FILES,"====================>")
                     print("---------------------",request.data,request.thisUser)
                     request.data["user"]  = request.thisUser.id

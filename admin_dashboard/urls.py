@@ -32,8 +32,8 @@ urlpatterns = [
     path('social-media/<',SocialProfileApi.as_view()),
 
     # Add landing Page API
-    path('cause-edit',CampaignEditApproval.as_view()),
-    path('cause-edit/<str:pk>',CampaignEditApproval.as_view()),
+    # path('cause-edit',CampaignEditApproval.as_view()),
+    # path('cause-edit/<str:pk>',CampaignEditApproval.as_view()),
     
 
     path('landing-page',LandingPageSettingApi.as_view()),
@@ -46,8 +46,8 @@ urlpatterns = [
     path('reported-campaign',ReportedCauseApi.as_view()),
     path('successful-campaign',SuccessfulCauseApi.as_view()),
     
-    path('campaign-kyc',CampaignKycAPI.as_view()),
-    path('campaign-kyc/<str:pk>',CampaignKycAPI.as_view()),
+    # path('campaign-kyc',CampaignKycAPI.as_view()),
+    # path('campaign-kyc/<str:pk>',CampaignKycAPI.as_view()),
     
     path('dashboard-api',AdminDashboardApi.as_view()),
     path('donation-api',AdminDonationApi.as_view()),
@@ -78,6 +78,10 @@ urlpatterns = [
 
     path('donation-graph',DonationGraphAPI.as_view()),
 
-    path('cause-edit1',CausEditApi.as_view()),
-    path('cause-edit1/<str:pk>',CausEditApi.as_view()),
+    path('cause-edit',CausEditApi.as_view()),
+    path('cause-edit/<str:pk>',CausEditApi.as_view()),
+
+
+    path('campaign-kyc',BankKycEditApi.as_view()),
+    path('campaign-kyc/<str:pk>',BankKycEditApi.as_view()),
 ]

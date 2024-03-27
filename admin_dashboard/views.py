@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.serializers import ValidationError
 from django.db.models import Sum
 from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
@@ -86,7 +85,7 @@ class AdminDonationApi(APIView):
                 ]
             for item in result:
                 print(item['date'],item['total_amount'])
-            return Response({"fundraised_data" : result },status=status.HTTP_200_OK)
+            return Response({"fundraiser_data" : result },status=status.HTTP_200_OK)
         except Exception as e :
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -234,13 +233,13 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                         campaign.is_admin_approved = True
                         campaign.save()
                         # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
-                    return Response({"error" : False , "data" : "Camapaign Update Request Approved Successfully"},status=status.HTTP_202_ACCEPTED)
+                    return Response({"error" : False , "data" : "Campaign Update Request Approved Successfully"},status=status.HTTP_202_ACCEPTED)
                 else :
                     campaign.campaign_data = {}
                     campaign.approval_status="Rejected"
                     campaign.save()
-                    # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
-                    return Response({"error" : False , "data" : "Camapaign Update Request Rejected Successfully"},status=status.HTTP_202_ACCEPTED)
+                    # RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
+                    return Response({"error" : False , "data" : "Campaign Update Request Rejected Successfully"},status=status.HTTP_202_ACCEPTED)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -304,13 +303,14 @@ class CausEditApi(GenericMethodsMixin,APIView):
             data = CauseEdit.objects.filter(approval_status="Pending")
             response = paginate_data(model=CauseEdit,serializer=CauseEditSerializer1,request=request,data=data)
             return Response(response,status=status.HTTP_200_OK)
-
+    
         cause_edit = CauseEdit.objects.get(id=pk)
         serializer = CauseEditSerializer1(cause_edit)
         return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
 
     def put(self,request,pk,*args,**kwargs):
         try :
+            print("request_data",request.data)
             with transaction.atomic():
                 cause_edit = CauseEdit.objects.get(id=pk,approval_status="Pending")
                 if request.data['approve_campaign'] == "true" :
@@ -332,15 +332,60 @@ class CausEditApi(GenericMethodsMixin,APIView):
                     cause_edit.approval_status = "Approved"
                     cause_edit.save()
                     RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,cause_data=cause_edit)
-                    return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_200_OK)
                 else :
                     cause_edit.approval_status = "Rejected"
                     cause_edit.save()
                     RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,cause_data=cause_edit)
-                    return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error" : True, "message" : "Campaign Rejected Successfully Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
+class BankKycEditApi(GenericMethodsMixin,APIView):
+    model = BankKYCEdit
+    serializer_class = BankKYCEditSerializer
+    lookup_field = "id"
+
+    def get(self,request,pk=None,*args,**kwargs):
+        try : 
+            if pk is None :
+                data = BankKYCEdit.objects.filter(approval_status="Pending")
+                response = paginate_data(BankKYCEdit,BankKYCEditSerializer,request=request,data=data)
+                return Response(response,status=status.HTTP_200_OK)
         
+            bank_edit = BankKYCEdit.objects.get(id=pk)
+            serializer = BankKYCEditSerializer(bank_edit)
+            return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
+        except Exception as e :
+                return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def put(self,request,pk,*args,**kwargs):
+        try :
+            print("request_data",request.data)
+            with transaction.atomic():
+                bank_edit = BankKYCEdit.objects.get(id=pk,approval_status="Pending")
+                if request.data['approve_kyc'] == "true" :
+                    bank_kyc = BankKYC.objects.get(id=bank_edit.bank_kyc.id)
+                    serializer = BankKYCEditSerializer(bank_kyc,data=bank_edit.bank_data,partial=True)
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                    if bank_edit.adhar_card_image :
+                        bank_kyc.adhar_card_image = bank_edit.adhar_card_image
+                    if bank_edit.pan_card_image :
+                        bank_kyc.pan_card_image = bank_edit.pan_card_image
+                    if bank_edit.passbook_image :
+                        bank_kyc.passbook_image = bank_edit.passbook_image
+                    bank_kyc.save()
+                    bank_edit.approval_status = "Approved"
+                    return Response({"error" : True, "message" : "Kyc Request Approved Successfully"},status=status.HTTP_200_OK)
+                else :
+                    bank_edit.approval_status = "Rejected"
+                    bank_edit.save()
+                    return Response({"error" : True, "message" : "Kyc Request Rejected Successfully"},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
 

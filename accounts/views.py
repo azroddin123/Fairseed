@@ -78,11 +78,11 @@ class ForgotPasswordAPI(APIView):
             otp = randint(1000,9999)
             res = my_mail(mail,otp)
             if (res ==1):
-                return Response(data={'Success':'Otp Mail sent succesfully to '+ mail,'OTP':str(otp)},status=status.HTTP_200_OK)
+                return Response(data={'Success':'Otp Mail sent successfully to '+ mail,'OTP':str(otp)},status=status.HTTP_200_OK)
             else:
-                return Response({"error": True,"message" : "Error sending Mail"},status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"error": True,"message" : "Error sending Mail"},status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response({"error": True,"message" : "User Email Does not exists"},status=status.HTTP_400_BAD_REQUEST )
+            return Response(data={"error": True,"message" : "User Email Does not exists"},status=status.HTTP_400_BAD_REQUEST )
 
 class UpdateUserAPI(APIView):
     def put(self,request,*args, **kwargs):
@@ -107,7 +107,7 @@ class ResetPasswordAPI(APIView):
                 user = User.objects.get(email=email)
                 user.set_password(password)
                 user.save()
-                return Response(data={'Success':'Password for Email ' +str(user) +' reset succesfull'},status=status.HTTP_200_OK)
+                return Response(data={'Success':'Password for Email ' +str(user) +' reset successful'},status=status.HTTP_200_OK)
             return Response(data = {'Error':'Email does not exists'})
         except Exception as e :
                 return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

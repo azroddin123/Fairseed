@@ -17,6 +17,7 @@ urlpatterns = [
     path("bank-kyc/<str:pk>",BankKycApi.as_view()),
     # Edit bank and kyc API
     path('edit-bankkyc/<str:pk>',ViewBankAndKycAPi.as_view()),
+    path('edit-bankkyc/<str:pk>',ViewBankAndKycAPi.as_view()),
     
     path('donations',ReceivedDonationApi.as_view()),
     path('donations/<str:pk>',ReceivedDonationApi.as_view()),

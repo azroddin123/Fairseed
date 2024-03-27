@@ -4,7 +4,6 @@ djangorestframework
 djangorestframework-simplejwt
 python-dotenv
 Pillow
-django-crontab
 django-seed
 markdown
 jsons

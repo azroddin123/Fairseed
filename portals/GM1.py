@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from django.core.exceptions import ValidationError
 from itertools import chain
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
@@ -92,7 +91,7 @@ class GenericMethodsMixin:
         if pk in ["0", None]:
             return self.get_paginated_data(request)
         else:
-            return self.get_single_data(pk)
+            return self.get_single_data(request,pk)
 
     def post(self, request, pk=None, *args, **kwargs):
         if pk in ["0", None]:
@@ -127,5 +126,5 @@ class GenericMethodsMixin:
             else:
                 return self.handle_does_not_exist_error()
 
-        except ValidationError as e:
+        except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

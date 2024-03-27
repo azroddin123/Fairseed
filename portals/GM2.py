@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from django.core.exceptions import ValidationError
 from itertools import chain
 from django.db.models import Q
 
@@ -134,5 +133,5 @@ class GenericMethodsMixin:
                 return Response({"error": False, "data": "Record Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 return self.handle_does_not_exist_error()
-        except ValidationError as e:
+        except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

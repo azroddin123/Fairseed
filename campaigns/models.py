@@ -5,7 +5,6 @@ from portals.models import BaseModel
 from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices,ApprovalChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-# from django.core.exceptions import ValidationError
 from rest_framework.serializers import ValidationError
 from donors.models import Donor
 from datetime import datetime, timedelta
@@ -14,7 +13,7 @@ import markdown
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
     slug   = models.CharField(max_length=130,blank=True,null=True,unique=True)
-    image  = models.ImageField(upload_to="campaign/catagory/",blank=True,null=True,)
+    image  = models.ImageField(upload_to="campaign/category/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)
     
     def __str__(self) -> str:
@@ -42,9 +41,6 @@ class Campaign(BaseModel):
     is_featured       = models.BooleanField(default=False)
     is_reported       = models.BooleanField(default=False)
     is_withdrawal     = models.BooleanField(default=False)
-    approval_status   = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
-    campaign_data     = models.JSONField(null=True,blank=True)
-    is_admin_approved = models.BooleanField(default=False)
     notes             = models.TextField(blank=True,null=True)
     def __str__(self) -> str:
         return self.title
@@ -76,8 +72,9 @@ class Campaign(BaseModel):
     
     def save(self, *args, **kwargs):
         # Check if the goal amount is reached
-        if self.fund_raised == self.goal_amount:
+        if self.fund_raised >= self.goal_amount:
             self.is_successful = True
+            self.status="Completed"
         else:
             self.is_successful = False
         # Call the original save method
@@ -105,12 +102,6 @@ class BankKYC(BaseModel):
     is_verified         = models.BooleanField(default=False)
     status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)
-    # For Approval Proces 
-    bank_data           = models.JSONField(default=dict,null=True,blank=True)
-    approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
-
-
-
 
 class CauseEdit(BaseModel):
     campaign           = models.ForeignKey(Campaign,on_delete=models.CASCADE,null=True,blank=True)
@@ -124,10 +115,10 @@ class CauseEdit(BaseModel):
 class BankKYCEdit(BaseModel):
     bank_kyc            = models.ForeignKey(BankKYC,on_delete=models.CASCADE,blank=True,null=True)
     bank_data           = models.JSONField(default=dict)
-    pan_card_image           = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    adhar_card_image         = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    pan_card_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
+    adhar_card_image    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.NO_REQUEST)
+    approval_status     = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.PENDING)
 
 
 class RevisionHistory(BaseModel):
