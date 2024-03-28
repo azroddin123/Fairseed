@@ -2,6 +2,10 @@ from django.db import models
 # from campaigns.models import Campaign
 from portals.models import BaseModel
 from portals.choices import DonationChoices,PaymentChoices,StatusChoices,WithdrawalChoices
+from fairseed.task import send_email_fun
+from fairseed.settings import EMAIL_HOST_USER
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # Create your models here.
@@ -26,8 +30,16 @@ class Donor(BaseModel):
     transaction_date = models.DateField(blank=True,null=True)
     other_details    = models.CharField(max_length=124,blank=True,null=True)
 
+
+@receiver(post_save, sender=Donor)
+def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+    if created:
+        subject = "Fairseed Donation Email"
+        message = f"Your Donation For Campaign  '{instance.campaign.title}' of '{instance.amount} has been done successfully."
+        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+    
 class Withdrawal(BaseModel):
-    campaign          = models.ForeignKey("campaigns.Campaign",on_delete=models.CASCADE)
+    campaign          = models.OneToOneField("campaigns.Campaign",on_delete=models.CASCADE)
     withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.PENDING)
     transfer_details  = models.TextField(blank=True,null=True)
 

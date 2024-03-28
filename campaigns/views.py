@@ -15,6 +15,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from portals.services import paginate_model_data,paginate_data
 from django.db.models import Count
+from fairseed.task import send_email_fun
+from fairseed.settings import EMAIL_HOST_USER
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -31,6 +33,9 @@ class CampaignApi(GenericMethodsMixin,APIView):
             else :
                 data = Campaign.objects.filter(status="Active",end_date__gt=current_date)
                 response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+                print("sending")
+                send_email_fun.delay("test", "test message", EMAIL_HOST_USER, "33azharoddin@gmail.com")
+                print("receiving")
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)

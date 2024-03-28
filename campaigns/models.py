@@ -2,13 +2,20 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 from portals.models import BaseModel
-from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices,ApprovalChoices
+from portals.choices import RaiseChoices,ZakatChoices,CampaignChoices,KycChoices,ApprovalChoices,WithdrawalChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.serializers import ValidationError
 from donors.models import Donor
 from datetime import datetime, timedelta
 import markdown
+from django.core.mail import send_mail
+from django.conf import settings
+from portals.services import campaign_creation_updation
+from fairseed.task import send_email_fun
+from portals.services import campaign_creation_updation
+from fairseed.settings import EMAIL_HOST_USER
+
 
 class Campaigncategory(BaseModel):
     name   = models.CharField(max_length=50)
@@ -41,6 +48,10 @@ class Campaign(BaseModel):
     is_featured       = models.BooleanField(default=False)
     is_reported       = models.BooleanField(default=False)
     is_withdrawal     = models.BooleanField(default=False)
+
+# Withdrawal API
+    withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.NO_REQUEST)
+    transfer_details  = models.TextField(blank=True,null=True)
     notes             = models.TextField(blank=True,null=True)
     def __str__(self) -> str:
         return self.title
@@ -62,6 +73,7 @@ class Campaign(BaseModel):
             campaign.fund_raised += instance.amount
             campaign.save()
 
+
     @classmethod
     def get_reported_campaigns(cls):
         return cls.objects.filter(is_reported=True)
@@ -79,6 +91,27 @@ class Campaign(BaseModel):
             self.is_successful = False
         # Call the original save method
         super().save(*args, **kwargs)
+
+    # Signal handlers
+@receiver(post_save, sender=Campaign)
+def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+    if created:
+        subject = "Fairseed Campaign Creation Mail"
+        message = f"Your campaign '{instance.title}' has been created, and a request for approval has been sent to the admin."
+        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        # campaign_creation_updation(instance.user.email,instance.status,instance.title,subject,message)
+    else:
+        subject = "Fairseed Campaign Updation Mail"
+        message = "Your Campaign Data is Updated Now"
+        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        # campaign_creation_updation(instance.email,instance.status,instance.title,subject,message)
+
+
+# @receiver(models.signals.post_delete, sender=Campaign)
+# def send_email_on_model_deletion(sender, instance, **kwargs):
+#     subject = "Your Campaign status is updated"
+#     message = "Youe campaign is deleted "
+
     
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)

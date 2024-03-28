@@ -23,13 +23,9 @@ class UserSerializer(ModelSerializer):
         return user
     
 class UserSerializer1(ModelSerializer):
-    user_role = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model = User
         exclude = ("last_login","created_on","updated_on","is_admin","password")
-
-    def get_user_role (self,obj):
-        return obj.user_role.role_name if obj.user_role else None
     
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

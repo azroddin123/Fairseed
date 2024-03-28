@@ -22,4 +22,15 @@ class PhonePay(BaseModel):
     fee_cents       = models.IntegerField()
     is_enabled      = models.BooleanField(default=False)
 
+    def save(self,*args, **kwargs):
+    # check the record count if it is one then update the existing one otherwise save the record 
+        count = PhonePay.objects.count()
+        print(count)
+        if count == 0  :
+            return super(PhonePay,self).save(*args, **kwargs)
+        else :
+            obj = PhonePay.objects.all()
+            obj.delete()
+            return super(PhonePay,self).save(*args, **kwargs)
+
 

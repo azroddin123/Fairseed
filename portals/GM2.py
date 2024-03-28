@@ -26,10 +26,8 @@ class GenericMethodsMixin:
     
     def get_create_serializer(self):
         try:
-            print("here")
             return self.create_serializer_class
         except:
-            print("there")
             return self.serializer
 
     def get_model(self):
@@ -66,6 +64,7 @@ class GenericMethodsMixin:
         else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
             data = self.model.objects.all()
+            
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)

@@ -4,7 +4,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from portals.models import BaseModel
 
-
 # from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
@@ -23,6 +22,8 @@ class GeneralSetting(BaseModel):
     google_login_enabled        = models.BooleanField(default=False)
     captcha_enabled             = models.BooleanField(default=False)
     input_field_enabled         = models.BooleanField(default=False)
+    keywords                      = models.JSONField(default=list, blank=True, null=True)
+
     
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 

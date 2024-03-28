@@ -84,4 +84,6 @@ urlpatterns = [
 
     path('campaign-kyc',BankKycEditApi.as_view()),
     path('campaign-kyc/<str:pk>',BankKycEditApi.as_view()),
+
+
 ]

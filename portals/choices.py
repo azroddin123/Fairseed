@@ -65,6 +65,7 @@ class StatusChoices(models.TextChoices):
 
 
 class WithdrawalChoices(models.TextChoices):
+    NO_REQUEST = NO_REQUEST,NO_REQUEST
     PAID       = PAID,PAID
     PENDING    = PENDING,PENDING
     REJECTED   = REJECTED,REJECTED

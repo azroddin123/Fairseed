@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .serializers import *
+from accounts.serializers import * 
 from .models import *
 from campaigns.models import *
 from donors.models import *
@@ -10,10 +11,9 @@ from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Sum
-from rest_framework.permissions import IsAdminUser
 from campaigns.serializers import * 
 from django.db import transaction
-from accounts.serializers import * 
+
 from django.db.models import Count
 from portals.services import paginate_model_data,paginate_data
 
@@ -75,16 +75,14 @@ class AdminDonationApi(APIView):
         try : 
             end_date = timezone.now()
             start_date = end_date - timedelta(days=30)
-            fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date)).values('donors__created_on').annotate(
+            fundraiser_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date)).values('donors__created_on').annotate(
             total_amount=Sum('donors__amount')
             ).order_by('donors__created_on')
             date_list = [start_date + timedelta(days=x) for x in range(30)]
             result = [
-                    {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
+                    {"date": date.date(), "total_amount": next((item["total_amount"] for item in fundraiser_data if item["donors__created_on"] == date.date()), 0)}
                     for date in date_list
                 ]
-            for item in result:
-                print(item['date'],item['total_amount'])
             return Response({"fundraiser_data" : result },status=status.HTTP_200_OK)
         except Exception as e :
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -141,13 +139,11 @@ class CampaignKycAPI(GenericMethodsMixin,APIView):
                         print("Approval Status Approved ",bankkyc.bank_data,bankkyc.approval_status)
                         bankkyc.approval_status="Approved"
                         bankkyc.save()
-                        # RevisionHistory.objects.create(modeified_by=request.thisUser,bankkyc=bankkyc,bankkyc_data=bankkyc)
                     return Response({"error" : False , "data" : "Bank Kyc  Update Request Approved Successfully" ,"data1" : serializer.data},status=status.HTTP_200_OK)
                 else :
                     bankkyc.bank_data = {}
                     bankkyc.approval_status="Rejected"
                     bankkyc.save()
-                    # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign.id,campaign_data=campaign)
                     return Response({"error" : False , "data" : "Bank KYC Update Request Rejected Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -181,13 +177,13 @@ class UserApi2(GenericMethodsMixin,APIView):
     def post(self,request,*args, **kwargs):
         try : 
             serializer = UserSerializer(data=request.data)
-            if  serializer.is_valid():
+            if  serializer.is_valid(raise_exception=True):
                 user = serializer.save()
-                return Response({"error" : False ,"message" : "User Created Succefully" , "data" : UserSerializer1(user).data},status=status.HTTP_201_CREATED)
+                return Response({"error" : False ,"message" : "User Created Successfully" , "data" : UserSerializer1(user).data},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
+        
 
 class CampaignAdminApi2(GenericMethodsMixin,APIView):
     model = Campaign

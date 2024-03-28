@@ -13,20 +13,6 @@ def generate_token(email):
     return token
 
 
-
-# Forget Password API
-# def my_mail(mail,otp):  
-#         subject = "Fairseed Password Reset OTP"  
-#         msg     = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong>\nPlease do not share this with anyone.".format(otp)
-#         res     = send_mail(subject, msg,'33azharoddin@gmail.com', [mail],fail_silently=False)  
-#         if(res == 1):  
-#             msg = 1  
-#         else:  
-#             print("no")
-#             msg = 0
-#         return msg  
-
-
 def my_mail(mail, otp):
     subject = "Fairseed Password Reset OTP"
     msg = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong> <br>\nPlease do not share this with anyone.".format(otp)
@@ -46,6 +32,57 @@ def my_mail(mail, otp):
         msg = 0
     
     return msg
+
+def campaign_creation_updation(mail,status,title,subject,msg):
+    # subject = "Fairseed Campaign Creation Mail"
+    # message = "Your Campaign is created and request is send for approval to admin"+title+"this is title"
+    print(mail,status,title,subject,msg,"------------------------")
+    email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
+    email.attach_alternative(msg, "text/html")  # Specify HTML content type
+    try:
+        res = email.send()
+        if res == 1:
+            msg = 1
+        else:
+            print("no")
+            msg = 0
+    except Exception as e:
+        print(e)
+        msg = 0
+    
+    return msg
+
+
+
+
+def donation_email(mail,campaign,amount):
+    subject = "Fairseed Campaign "
+    msg = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong> <br>\nPlease do not share this with anyone.".format(amount)
+    # Create an EmailMultiAlternatives object to support HTML content
+    email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
+    email.attach_alternative(msg, "text/html")  # Specify HTML content type
+    
+    try:
+        res = email.send()
+        if res == 1:
+            msg = 1
+        else:
+            print("no")
+            msg = 0
+    except Exception as e:
+        print(e)
+        msg = 0
+    
+    return msg
+
+
+
+
+
+
+
+
+
 from django.core.paginator import Paginator, EmptyPage
 
 def paginate_model_data(model, serializer, request, filter_key=None):

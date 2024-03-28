@@ -24,7 +24,12 @@ urlpatterns = [
     path('dashboard-api',UserDashboardApi.as_view()),
     
     path("donation-data",DonationCountApi.as_view()),
+    path('fundraiser-data',FundRaisedApi.as_view()),
+
+    path('make-withdrawal',WithdrawalApi.as_view()),
+    path('make-withdrawal/<str:pk>',WithdrawalApi.as_view()),
     
-    path('fundraiser-data',FundRaisedApi.as_view())
+    # Finalize Campaign
+    path('finalize-campaign/<str:pk>',FinalizeCampaignAPI.as_view())
 
 ]
