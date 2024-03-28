@@ -50,8 +50,8 @@ class Campaign(BaseModel):
     is_withdrawal     = models.BooleanField(default=False)
 
 # Withdrawal API
-    withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.NO_REQUEST)
-    transfer_details  = models.TextField(blank=True,null=True)
+    # withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.NO_REQUEST)
+    # transfer_details  = models.TextField(blank=True,null=True)
     notes             = models.TextField(blank=True,null=True)
     def __str__(self) -> str:
         return self.title
