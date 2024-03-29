@@ -17,6 +17,7 @@ from portals.services import paginate_model_data,paginate_data
 from django.db.models import Count
 from fairseed.task import send_email_fun
 from fairseed.settings import EMAIL_HOST_USER
+from django.db.models import F, ExpressionWrapper, FloatField
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -163,7 +164,16 @@ class CampaignTabsAPi(APIView):
             elif filter_key  == "newly_added": 
                 data = Campaign.objects.filter(status="Active").order_by('created_on')
             elif filter_key  == "trending": 
-                data = Campaign.objects.filter(status="Active").order_by('created_on')
+                data = Campaign.objects.annotate(
+                completion_percentage=ExpressionWrapper(
+                    (F('fund_raised') / F('goal_amount')) * 100,
+                    output_field=FloatField()
+                ),
+                difference_percentage=100 - ExpressionWrapper(
+                    (F('fund_raised') / F('goal_amount')) * 100,
+                    output_field=FloatField()
+                )
+            ).order_by('difference_percentage')
 
             else :
 
