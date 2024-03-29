@@ -48,11 +48,9 @@ class LoginAPI(APIView):
             token = generate_token(user.email)
             # password_match = check_password(password,user.password)
             password_match = check_password(password,user.password)
-            print("password match",password_match)
             serializer = UserSerializer1(user)
             data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
-                print("password matched")
                 return Response(data,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

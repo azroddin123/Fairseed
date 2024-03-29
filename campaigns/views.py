@@ -174,10 +174,7 @@ class CampaignTabsAPi(APIView):
                     output_field=FloatField()
                 )
             ).order_by('difference_percentage')
-
             else :
-
-
                 data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
@@ -200,6 +197,17 @@ class CampaignTabsAPi2(APIView):
                 data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-end_date')
             elif filter_key  == "newly_added": 
                 data = Campaign.objects.filter(status="Active",category=cat_id).order_by('created_on')
+            elif filter_key  == "trending": 
+                data = Campaign.objects.annotate(
+                completion_percentage=ExpressionWrapper(
+                    (F('fund_raised') / F('goal_amount')) * 100,
+                    output_field=FloatField()
+                ),
+                difference_percentage=100 - ExpressionWrapper(
+                    (F('fund_raised') / F('goal_amount')) * 100,
+                    output_field=FloatField()
+                )
+            ).order_by('difference_percentage')
             else :
                 data = Campaign.objects.filter(status="Active",category=cat_id)
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)

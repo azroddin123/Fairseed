@@ -30,6 +30,7 @@ urlpatterns = [
     path('make-withdrawal/<str:pk>',WithdrawalApi.as_view()),
     
     # Finalize Campaign
-    path('finalize-campaign/<str:pk>',FinalizeCampaignAPI.as_view())
+    path('finalize-campaign/<str:pk>',FinalizeCampaignAPI.as_view()),
+    path('report-campaign',ReportCampaignAPI.as_view())
 
 ]
