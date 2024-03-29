@@ -55,7 +55,7 @@ class DonatePaymentApi(APIView):
                      serializer.save()
                 return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 
 class CheckPaymentStatusAPi(APIView):
