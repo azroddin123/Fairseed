@@ -242,6 +242,7 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
 class FinalizeCampaignAPI(APIView):
     def post(self,request,pk,*args,**kwargs):
         try : 
+            print(request.data,"------------->")
             campaign = Campaign.objects.get(id=pk)
             campaign.status = "Completed"
             campaign.save()

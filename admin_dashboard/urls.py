@@ -43,7 +43,6 @@ urlpatterns = [
     path('campaign',CampaignAdminApi2.as_view()),
     path('campaign/<str:pk>',CampaignAdminApi2.as_view()),
     
-    path('reported-campaign',ReportedCauseApi.as_view()),
     path('successful-campaign',SuccessfulCauseApi.as_view()),
     
     # path('campaign-kyc',CampaignKycAPI.as_view()),
@@ -84,6 +83,9 @@ urlpatterns = [
 
     path('campaign-kyc',BankKycEditApi.as_view()),
     path('campaign-kyc/<str:pk>',BankKycEditApi.as_view()),
+
+    path('reported-campaign',ReportedCauseAPI.as_view()),
+    path('reported-campaign/<str:pk>',ReportedCauseAPI.as_view()),
 
 
 ]

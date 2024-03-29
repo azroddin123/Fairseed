@@ -159,10 +159,15 @@ class CampaignTabsAPi(APIView):
             elif filter_key  == "needs_love": 
                 data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active")
             elif filter_key  == "expiring_soon": 
-                data = Campaign.objects.filter(status="Active").order_by('-end_date')
+                data = Campaign.objects.filter(status="Active").order_by('end_date')
             elif filter_key  == "newly_added": 
                 data = Campaign.objects.filter(status="Active").order_by('created_on')
+            elif filter_key  == "trending": 
+                data = Campaign.objects.filter(status="Active").order_by('created_on')
+
             else :
+
+
                 data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
@@ -196,7 +201,6 @@ class AddCampaignApi(APIView):
     def post(self,request,*args, **kwargs):
         try : 
             with transaction.atomic():
-                    print(request.FILES,"====================>")
                     print("---------------------",request.data,request.thisUser)
                     request.data["user"]  = request.thisUser.id
                     campaign_serializer = CampaignSerializer(data=request.data)
@@ -215,5 +219,4 @@ class AddCampaignApi(APIView):
                         return Response({"error" : False, "message" : "Campaign Data Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 

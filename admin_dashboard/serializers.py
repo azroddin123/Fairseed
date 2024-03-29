@@ -17,6 +17,13 @@ class CampBankKycSerializer(ModelSerializer):
         model = BankKYC
         fields = "__all__"
 
+
+class ReportedCampaignSerializer(ModelSerializer):
+    campaign = CampSerializer(read_only=True)
+    class Meta :
+        model = ReportedCampaign
+        fields = "__all__"
+
 # class GSSerializer(ModelSerializer):
 #     keywords = serializers.ListField(child=serializers.CharField(),write_only=True)
 #     class Meta :

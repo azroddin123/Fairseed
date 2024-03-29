@@ -384,6 +384,7 @@ class BankKycEditApi(GenericMethodsMixin,APIView):
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
+class ReportedCauseAPI(GenericMethodsMixin,APIView):
+    model = ReportedCampaign
+    serializer_class = ReportedCampaignSerializer
+    lookup_field = "id"
