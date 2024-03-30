@@ -23,7 +23,7 @@ class UserSerializer(ModelSerializer):
         return user
     
 class UserSerializer1(ModelSerializer):
-    user_role = serializers.SerializerMethodField(read_only=True)
+    user_role = serializers.SerializerMethodField()
     class Meta :
         model = User
         exclude = ("last_login","created_on","updated_on","is_admin","password")

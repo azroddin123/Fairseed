@@ -1,22 +1,18 @@
-from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.serializers import ValidationError
 from portals.services import generate_token,my_mail
 from django.contrib.auth.hashers import check_password
 from random import randint
-from django.core.mail import send_mail
 
 
 class UserRolesAPi(GenericMethodsMixin,APIView):
     model = UserRole
     serializer_class = UserRoleSerializer
     lookup_field = "id"
-
 
 class UserApi(GenericMethodsMixin,APIView):
     model = User

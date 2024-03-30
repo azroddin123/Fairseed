@@ -1,7 +1,4 @@
 from django.db import models
-# Create your models here.
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from portals.models import BaseModel
 
 # from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel

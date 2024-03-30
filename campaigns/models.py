@@ -9,11 +9,8 @@ from rest_framework.serializers import ValidationError
 from donors.models import Donor
 from datetime import datetime, timedelta
 import markdown
-from django.core.mail import send_mail
 from django.conf import settings
-from portals.services import campaign_creation_updation
 from fairseed.task import send_email_fun
-from portals.services import campaign_creation_updation
 from fairseed.settings import EMAIL_HOST_USER
 
 
@@ -49,9 +46,6 @@ class Campaign(BaseModel):
     is_reported       = models.BooleanField(default=False)
     is_withdrawal     = models.BooleanField(default=False)
 
-# Withdrawal API
-    # withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.NO_REQUEST)
-    # transfer_details  = models.TextField(blank=True,null=True)
     notes             = models.TextField(blank=True,null=True)
     def __str__(self) -> str:
         return self.title
@@ -68,11 +62,9 @@ class Campaign(BaseModel):
             campaign = instance.campaign
             required_amount = campaign.goal_amount - campaign.fund_raised
             if instance.amount > required_amount:
-                print(instance.delete(),"instance deleted successfully")
                 raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
             campaign.fund_raised += instance.amount
             campaign.save()
-
 
     @classmethod
     def get_reported_campaigns(cls):
@@ -106,13 +98,6 @@ def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
         send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
         # campaign_creation_updation(instance.email,instance.status,instance.title,subject,message)
 
-
-# @receiver(models.signals.post_delete, sender=Campaign)
-# def send_email_on_model_deletion(sender, instance, **kwargs):
-#     subject = "Your Campaign status is updated"
-#     message = "Youe campaign is deleted "
-
-    
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)

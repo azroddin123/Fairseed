@@ -24,23 +24,6 @@ class ReportedCampaignSerializer(ModelSerializer):
         model = ReportedCampaign
         fields = "__all__"
 
-# class GSSerializer(ModelSerializer):
-#     keywords = serializers.ListField(child=serializers.CharField(),write_only=True)
-#     class Meta :
-#         model = GeneralSetting
-#         exclude = ("new_registration_enabled","auto_approve_enabled","email_verification_enabled","facebook_login_enabled","google_login_enabled")
-
-#     def save(self, *args, **kwargs):
-#         gs = super().save(*args, **kwargs)
-#         keywords_list = self.validated_data.get("keywords")
-#         print(keywords_list)
-#         print("----------------------",gs)
-#         for item in keywords_list : 
-#             print(Keyword.objects.create(gs=gs,name=item))
-#         # Your additional actions or data update logic here
-#         pass
-    
-    
 class KS(ModelSerializer):
     class Meta :
         model = Keyword
@@ -100,6 +83,12 @@ class WithdrawalSerializer1(ModelSerializer):
     class Meta :
         model = Withdrawal
         fields = "__all__"
+
+
+class UserSerializer2(ModelSerializer):
+    class Meta :
+        model = User
+        exclude = ("last_login","created_on","updated_on","is_admin","password")
 
 
 class CauseEditSerializer1(ModelSerializer):

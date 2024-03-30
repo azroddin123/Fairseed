@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from .serializers import *
 from accounts.serializers import * 
 from .models import *
@@ -171,7 +170,7 @@ class RevisionHistoryApi(APIView):
 class UserApi2(GenericMethodsMixin,APIView):
     model = User
     serializer_class = UserAdminSerializer1
-    create_serializer_class = UserSerializer1
+    create_serializer_class = UserSerializer2
     lookup_field  = "id"
 
     def post(self,request,*args, **kwargs):
