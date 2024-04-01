@@ -227,7 +227,7 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
                         campaign.approval_status="Approved"
                         campaign.is_admin_approved = True
                         campaign.save()
-                        # RevisionHistory.objects.create(modeified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
+                        # RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,campaign_data=campaign)
                     return Response({"error" : False , "data" : "Campaign Update Request Approved Successfully"},status=status.HTTP_202_ACCEPTED)
                 else :
                     campaign.campaign_data = {}
@@ -271,15 +271,15 @@ class DonationGraphAPI(APIView):
         try : 
             end_date = timezone.now()
             start_date = end_date - timedelta(days=30)
-            fundraise_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date)).values('donors__created_on').annotate(
+            fundraiser_data = Campaign.objects.filter(donors__created_on__range=(start_date,end_date)).values('donors__created_on').annotate(
             donation_count=Count('id')
             ).order_by('donors__created_on')
 
-            for item in fundraise_data:
+            for item in fundraiser_data:
                 print(item)
             date_list = [start_date + timedelta(days=x) for x in range(31)]
             result = [
-                    {"date": date.date(), "donation_count": next((item["donation_count"] for item in fundraise_data if item["donors__created_on"] == date.date()), 0)}
+                    {"date": date.date(), "donation_count": next((item["donation_count"] for item in fundraiser_data if item["donors__created_on"] == date.date()), 0)}
                     for date in date_list
                 ]
             return Response({"donation_data" : result },status=status.HTTP_200_OK)

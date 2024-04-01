@@ -26,6 +26,7 @@ class UserDashboardApi(APIView):
                 "no_of_donation" : Donor.objects.filter(user=request.thisUser).count(),
                 "total_campaign" : Campaign.objects.filter(user=request.thisUser).count(),
                 "amount_received" : Campaign.objects.filter(user=request.thisUser).aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
+                "withdrawals" : Campaign.objects.filter(user=request.thisUser,is_withdrawal=True).count()
             }
             return Response({"data" : data},status=status.HTTP_200_OK)
         except Exception as e:

@@ -176,7 +176,9 @@ class CampaignTabsAPi(APIView):
             ).order_by('difference_percentage')
             else :
                 data = Campaign.objects.filter(status="Active")
+         
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
+            response["filter_key"] = filter_key
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -210,6 +212,8 @@ class CampaignTabsAPi2(APIView):
             ).order_by('difference_percentage')
             else :
                 data = Campaign.objects.filter(status="Active",category=cat_id)
+            
+            print(filter_key,"====================")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
