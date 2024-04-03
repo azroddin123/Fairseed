@@ -69,13 +69,9 @@ class CampaignAdminSerializer(ModelSerializer):
     
     
 class RHSerializer(ModelSerializer):
-    user = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = RevisionHistory
         fields =  "__all__"
-
-    def get_user(self,obj):
-        return obj.user.username
         
 class CampaignDocumentSerializer(ModelSerializer):
     user        = UserAdminSerializer(read_only=True)
