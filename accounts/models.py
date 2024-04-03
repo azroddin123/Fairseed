@@ -74,5 +74,5 @@ class User(AbstractBaseUser):
 def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
     if created:
         subject = "Fairseed Campaign Creation Mail"
-        message = f"Your campaign '{instance.title}' has been created, and a request for approval has been sent to the admin."
+        message = f"Your User '{instance.email}' has been created."
         send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
