@@ -5,6 +5,11 @@ from portals.choices import UserChoices,RoleChoices
 from portals.models import BaseModel
 import uuid
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from fairseed.task import send_email_fun
+from fairseed.settings import EMAIL_HOST_USER
+
 class UserRole(BaseModel):
     role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True,)
     def __str__(self) -> str:
@@ -65,4 +70,9 @@ class User(AbstractBaseUser):
         super().save(*args, **kwargs)
     
 
-
+@receiver(post_save, sender=User)
+def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+    if created:
+        subject = "Fairseed Campaign Creation Mail"
+        message = f"Your campaign '{instance.title}' has been created, and a request for approval has been sent to the admin."
+        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)

@@ -34,9 +34,7 @@ class CampaignApi(GenericMethodsMixin,APIView):
             else :
                 data = Campaign.objects.filter(status="Active",end_date__gt=current_date)
                 response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
-                print("sending")
-                send_email_fun.delay("test", "test message", EMAIL_HOST_USER, "33azharoddin@gmail.com")
-                print("receiving")
+            
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_200_OK)
@@ -237,6 +235,9 @@ class AddCampaignApi(APIView):
                         bkc_serializer = BankKYCSerializer(data = request.data)
                         bkc_serializer.is_valid(raise_exception=True)
                         bkc_serializer.save()
+                        print("sending")
+                        send_email_fun.delay("test", "Campaign Created Successfully", EMAIL_HOST_USER, "33azharoddin@gmail.com")
+                        print("receiving")
                         print("---------------Bank KYC  Saved ---------------------")
                         return Response({"error" : False, "message" : "Campaign Data Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :

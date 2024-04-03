@@ -176,9 +176,9 @@ class UserApi2(GenericMethodsMixin,APIView):
     def post(self,request,*args, **kwargs):
         try : 
             serializer = UserSerializer(data=request.data)
-            if  serializer.is_valid(raise_exception=True):
-                user = serializer.save()
-                return Response({"error" : False ,"message" : "User Created Successfully" , "data" : UserSerializer1(user).data},status=status.HTTP_201_CREATED)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({"error" : False ,"message" : "User Created Successfully"},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

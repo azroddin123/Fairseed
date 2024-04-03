@@ -32,6 +32,8 @@ class GeneralSetting(BaseModel):
             obj = GeneralSetting.objects.all()
             obj.delete()
             return super(GeneralSetting,self).save(*args, **kwargs)
+    
+   
 
 class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
