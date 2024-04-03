@@ -173,7 +173,7 @@ class CampaignTabsAPi(APIView):
                     (F('fund_raised') / F('goal_amount')) * 100,
                     output_field=FloatField()
                 )
-            ).order_by('difference_percentage')
+            ).order_by('difference_percentage').filter(status="Active")
             else :
                 data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
@@ -208,7 +208,7 @@ class CampaignTabsAPi2(APIView):
                     (F('fund_raised') / F('goal_amount')) * 100,
                     output_field=FloatField()
                 )
-            ).order_by('difference_percentage')
+            ).order_by('difference_percentage').filter(status="Active",category=cat_id)
             else :
                 data = Campaign.objects.filter(status="Active",category=cat_id)
             print(filter_key,"====================")
