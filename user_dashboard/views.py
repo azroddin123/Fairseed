@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from portals.services import paginate_data
-from admin_dashboard.serializers import ReportedCampaignSerializer
+from admin_dashboard.serializers import ReportedCampaignSerializer,ReportedCampaignSerializer1
 
 # User Dashboard API
 class UserDashboardApi(APIView):
@@ -256,7 +256,8 @@ class FinalizeCampaignAPI(APIView):
 class ReportCampaignAPI(APIView):
     def post(self,request,*Args,**kwargs):
         try :
-            serializer = ReportedCampaignSerializer(data=request.data)
+            print(request.data)
+            serializer = ReportedCampaignSerializer1(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response({"error" : False , "message" : "Campaign Status Reported Successfully"},status=status.HTTP_200_OK)

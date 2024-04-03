@@ -24,6 +24,14 @@ class ReportedCampaignSerializer(ModelSerializer):
         model = ReportedCampaign
         fields = "__all__"
 
+
+class ReportedCampaignSerializer1(ModelSerializer):
+    class Meta :
+        model = ReportedCampaign
+        fields = "__all__"
+
+
+
 class KS(ModelSerializer):
     class Meta :
         model = Keyword
