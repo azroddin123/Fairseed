@@ -233,12 +233,10 @@ class ViewBankAndKycAPi(APIView):
 
 class WithdrawalApi(GenericMethodsMixin,APIView):
     model = Withdrawal
+    create_serializer_class = WithDrawalSerializer1
     serializer_class = WithDrawalSerializer
     lookup_field = "id"
 
-
-    # def post(self,request,*args,**kwargs):
-    #     pass
 
 
 class FinalizeCampaignAPI(APIView):

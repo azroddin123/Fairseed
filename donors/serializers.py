@@ -51,3 +51,7 @@ class WithDrawalSerializer(ModelSerializer):
         model = Withdrawal
         fields = "__all__"  
 
+class WithDrawalSerializer1(ModelSerializer):
+    class Meta :
+        model = Withdrawal
+        fields = "__all__"  
