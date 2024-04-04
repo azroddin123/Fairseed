@@ -354,7 +354,6 @@ class BankKycEditApi(GenericMethodsMixin,APIView):
             return Response({"error" : False , "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-    
 
     def put(self,request,pk,*args,**kwargs):
         try :
@@ -362,21 +361,25 @@ class BankKycEditApi(GenericMethodsMixin,APIView):
             with transaction.atomic():
                 bank_edit = BankKYCEdit.objects.get(id=pk,approval_status="Pending")
                 if request.data['approve_kyc'] == "true" :
+                    print("In Approve KYC")
                     bank_kyc = BankKYC.objects.get(id=bank_edit.bank_kyc.id)
                     serializer = BankKYCEditSerializer(bank_kyc,data=bank_edit.bank_data,partial=True)
                     serializer.is_valid(raise_exception=True)
                     serializer.save()
+                   
                     if bank_edit.adhar_card_image :
                         bank_kyc.adhar_card_image = bank_edit.adhar_card_image
                     if bank_edit.pan_card_image :
                         bank_kyc.pan_card_image = bank_edit.pan_card_image
                     if bank_edit.passbook_image :
                         bank_kyc.passbook_image = bank_edit.passbook_image
-                    bank_kyc.save()
+                    bank_kyc.status="Approved"
                     bank_edit.approval_status = "Approved"
+                    bank_kyc.save()
                     return Response({"error" : True, "message" : "Kyc Request Approved Successfully"},status=status.HTTP_200_OK)
                 else :
                     bank_edit.approval_status = "Rejected"
+                    bank_kyc.status="Rejected"
                     bank_edit.save()
                     return Response({"error" : True, "message" : "Kyc Request Rejected Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
