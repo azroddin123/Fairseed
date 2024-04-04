@@ -65,14 +65,13 @@ class User(AbstractBaseUser):
         if not self.user_role_id:
             default_role = UserRole.objects.get(role_name='Normal')  
             self.user_role = default_role
-
         # Call the original save method
         super().save(*args, **kwargs)
-    
 
+    
 @receiver(post_save, sender=User)
 def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
     if created:
         subject = "Fairseed Campaign Creation Mail"
         message = f"Your User '{instance.email}' has been created."
-        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.email)
