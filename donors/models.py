@@ -44,3 +44,4 @@ class Withdrawal(BaseModel):
     transfer_details  = models.TextField(blank=True,null=True)
 
     
+# username fund_Raised ,goal_amount,beniiciary name.

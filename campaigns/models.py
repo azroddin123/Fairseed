@@ -148,6 +148,8 @@ class RevisionHistory(BaseModel):
 class ReportedCampaign(BaseModel):
     campaign           = models.ForeignKey(Campaign,on_delete=models.CASCADE)
     user               = models.ForeignKey(User,on_delete=models.CASCADE)
+    email              = models.EmailField(max_length=245,null=True,blank=True)
+    contact_no         = models.CharField(max_length=10,null=True,blank=True)
     message            = models.CharField(max_length=240)
     approval_status    = models.CharField(max_length=240,choices=ApprovalChoices.choices,default=ApprovalChoices.PENDING)
 

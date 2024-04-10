@@ -330,6 +330,7 @@ class CausEditApi(GenericMethodsMixin,APIView):
                     return Response({"error" : True, "message" : "Campaign Approved Successfully"},status=status.HTTP_200_OK)
                 else :
                     cause_edit.approval_status = "Rejected"
+                    campaign = Campaign.objects.get(id=cause_edit.campaign.id)
                     cause_edit.save()
                     RevisionHistory.objects.create(modified_by=request.thisUser,campaign=campaign,cause_data=cause_edit)
                     return Response({"error" : True, "message" : "Campaign Rejected Successfully Successfully"},status=status.HTTP_200_OK)

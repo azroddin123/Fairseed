@@ -237,6 +237,18 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
     serializer_class = WithDrawalSerializer
     lookup_field = "id"
 
+    def get(self,request,pk=None,*args, **kwargs):
+        try : 
+            if pk:
+                data = Withdrawal.objects.filter(id=pk,campaign__user=request.thisUser)
+                response = paginate_data(model=Withdrawal,serializer=WithDrawalSerializer,request=request,data=data)
+                return Response(response,status=status.HTTP_200_OK)
+            data = Withdrawal.objects.filter(campaign__user=request.thisUser)
+            serializer = WithDrawalSerializer(data,many=True)
+            response = paginate_data(model=Withdrawal,serializer=WithDrawalSerializer,request=request,data=data)
+            return Response(response,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class FinalizeCampaignAPI(APIView):
@@ -261,5 +273,4 @@ class ReportCampaignAPI(APIView):
             return Response({"error" : False , "message" : "Campaign Status Reported Successfully"},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-        
         
