@@ -87,5 +87,4 @@ urlpatterns = [
     path('reported-campaign',ReportedCauseAPI.as_view()),
     path('reported-campaign/<str:pk>',ReportedCauseAPI.as_view()),
 
-
 ]

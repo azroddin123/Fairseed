@@ -56,16 +56,23 @@ class CampaignBycategorySerializer(ModelSerializer):
         fields  = "__all__"
 
 class CampaignAdminSerializer(ModelSerializer):
-    user        = UserAdminSerializer(read_only=True)
-    category    = CampaignCategorySerializer(read_only=True)
-    donor_count = serializers.SerializerMethodField(read_only=True)
-    documents   = DocumentSerializer1(many=True, read_only=True)
+    user              = UserAdminSerializer(read_only=True)
+    category          = CampaignCategorySerializer(read_only=True)
+    donor_count       = serializers.SerializerMethodField(read_only=True)
+    withdrawal_status = serializers.SerializerMethodField(read_only=True)
+    documents         = DocumentSerializer1(many=True, read_only=True)
     class Meta :
         model  = Campaign
-        fields = ('id','title','campaign_image','story','summary','goal_amount','zakat_eligible','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count','rasing_for','documents')
+        fields = ('id','title','campaign_image','story','summary','goal_amount','zakat_eligible','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count','rasing_for','documents','withdrawal_status')
 
     def get_donor_count(self, obj):
-          return obj.donors.count()
+        return obj.donors.count()
+    
+    def get_withdrawal_status(self,obj):
+        try:
+            return obj.withdrawal.withdrawal_status
+        except AttributeError:
+            return None
     
     
 class RHSerializer(ModelSerializer):

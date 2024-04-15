@@ -391,3 +391,15 @@ class ReportedCauseAPI(GenericMethodsMixin,APIView):
     model = ReportedCampaign
     serializer_class = ReportedCampaignSerializer
     lookup_field = "id"
+
+    def put(self,request,pk,*args,**kwargs):
+        try : 
+            print("pk",pk)
+            rc = ReportedCampaign.objects.get(id=pk)
+            campaign = Campaign.objects.get(id=rc.campaign.id)
+            campaign.status = "Rejected"
+            campaign.save()
+            rc.delete()
+            return Response({"error" : True, "message" : "Campaign Status Rejected Successfully"},status=status.HTTP_200_OK)
+        except Exception as e :
+                return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

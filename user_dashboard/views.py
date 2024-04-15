@@ -230,7 +230,6 @@ class ViewBankAndKycAPi(APIView):
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class WithdrawalApi(GenericMethodsMixin,APIView):
     model = Withdrawal
     create_serializer_class = WithDrawalSerializer1
