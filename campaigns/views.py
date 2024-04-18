@@ -82,7 +82,7 @@ class SuccessfulCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_successful=True)
-            response = paginate_data(Campaign,CampaignAdminSerializer,request,data)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
