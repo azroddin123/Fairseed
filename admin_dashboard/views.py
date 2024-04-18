@@ -12,10 +12,9 @@ from rest_framework import status
 from django.db.models import Sum
 from campaigns.serializers import * 
 from django.db import transaction
-
+from campaigns.models import send_email_on_model_creation_or_update
 from django.db.models import Count
 from portals.services import paginate_model_data,paginate_data
-
 class PagesAPi(GenericMethodsMixin,APIView):
     model = Pages
     serializer_class = PageSerializer
@@ -152,6 +151,19 @@ class DonorsApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
 
+    def put(self,request,pk,*args, **kwargs):
+        try : 
+            donor = Donor.objects.get(id=pk)
+            serializer  = DonorSerializer(donor,data=request.data,partial=True)
+            post_save.disconnect(update_campaign, sender=Donor)
+            if serializer.is_valid():
+                serializer.save()
+                post_save.connect(update_campaign, sender=Donor)
+                return Response({"error" : False , "data" : serializer.data , "message" : "Donor Updated Successfully"},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+           
+
 class  CampaigncategoryApi2(GenericMethodsMixin,APIView):
     model = Campaigncategory
     serializer_class = CampaignCategorySerializer
@@ -179,6 +191,21 @@ class UserApi2(GenericMethodsMixin,APIView):
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response({"error" : False ,"message" : "User Created Successfully"},status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self,request,pk,*args, **kwargs):
+        try : 
+            user = User.objects.get(id=pk)
+            password = request.data.get('password')
+            if password:
+                user.set_password(password)
+                print("password updated")
+            serializer = UserSerializer2(user,data=request.data,partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({"error" : False ,"message" : "User Updated Successfully"},status=status.HTTP_201_CREATED)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

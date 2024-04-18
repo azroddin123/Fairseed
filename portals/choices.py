@@ -62,6 +62,7 @@ class ApprovalChoices(models.TextChoices):
 class StatusChoices(models.TextChoices):
     PENDING    = PENDING,PENDING
     APPROVED   = APPROVED,APPROVED
+    REJECTED   = REJECTED,REJECTED
 
 
 class WithdrawalChoices(models.TextChoices):

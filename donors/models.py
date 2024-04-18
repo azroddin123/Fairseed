@@ -6,7 +6,7 @@ from fairseed.task import send_email_fun
 from fairseed.settings import EMAIL_HOST_USER
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from rest_framework.serializers import ValidationError
 
 # Create your models here.
 class Donor(BaseModel):
@@ -31,13 +31,24 @@ class Donor(BaseModel):
     other_details    = models.CharField(max_length=124,blank=True,null=True)
 
 
+@receiver(post_save,sender=Donor)
+def update_campaign(sender, instance, **kwargs):
+        campaign = instance.campaign
+        required_amount = campaign.goal_amount - campaign.fund_raised
+        if instance.amount > required_amount:
+            raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
+        campaign.fund_raised += instance.amount
+        campaign.save()
+
+        
 @receiver(post_save, sender=Donor)
 def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
     if created:
         subject = "Fairseed Donation Email"
         message = f"Your Donation For Campaign  '{instance.campaign.title}' of '{instance.amount} has been done successfully."
         send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
-    
+
+
 class Withdrawal(BaseModel):
     campaign          = models.OneToOneField("campaigns.Campaign",on_delete=models.CASCADE)
     withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.PENDING)

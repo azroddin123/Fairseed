@@ -57,14 +57,14 @@ class Campaign(BaseModel):
     def days_left(self):
         return max(0, (self.end_date - datetime.now().date()).days)
    
-    @receiver(post_save,sender=Donor)
-    def update_campaign(sender, instance, **kwargs):
-            campaign = instance.campaign
-            required_amount = campaign.goal_amount - campaign.fund_raised
-            if instance.amount > required_amount:
-                raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
-            campaign.fund_raised += instance.amount
-            campaign.save()
+    # @receiver(post_save,sender=Donor)
+    # def update_campaign(sender, instance, **kwargs):
+    #         campaign = instance.campaign
+    #         required_amount = campaign.goal_amount - campaign.fund_raised
+    #         if instance.amount > required_amount:
+    #             raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
+    #         campaign.fund_raised += instance.amount
+    #         campaign.save()
 
     @classmethod
     def get_reported_campaigns(cls):

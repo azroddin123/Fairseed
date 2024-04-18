@@ -49,7 +49,7 @@ class LoginAPI(APIView):
             data = {"error" : False, "message": "User logged in successfully","user_info": serializer.data,"token" : token}
             if password == user.password  or password_match:
                 return Response(data,status=status.HTTP_200_OK)
-            return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_200_OK)
+            return Response({"error" : True, "message" : "Password is not Matched"},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
