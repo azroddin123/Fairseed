@@ -6,7 +6,8 @@ NORMAL              = "Normal"
 CAMPAIGN_APPROVER   = "Campaign_Approver"
 CAMPAIGN_MANAGER    = "Campaign_Manager"
 ADMIN               = "Admin"
-
+SUPERADMIN          = "Superadmin"
+ACCOUNTANT          = "Accountant"
 #Zakat 
 YES                 = "Yes"
 NO                  = "No"

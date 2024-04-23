@@ -111,14 +111,7 @@ class BankKYC(BaseModel):
     branch_name         = models.CharField(max_length=124)
     ifsc_code           = models.CharField(max_length=124)
     passbook_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-# kyc Details
-    pan_card            = models.CharField(max_length=10)
-    pan_card_image      = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
-    adhar_card          = models.CharField(max_length=16)
-    adhar_card_image    = models.ImageField(upload_to="campaign/kyc/",blank=True,null=True,)
     other_details       = models.CharField(max_length=100,blank=True,null=True)
-    is_verified         = models.BooleanField(default=False)
-    status              = models.CharField(max_length=124,choices=KycChoices.choices,default=CampaignChoices.PENDING)
     tandc_accept        = models.BooleanField(default=False)
 
 class CauseEdit(BaseModel):
