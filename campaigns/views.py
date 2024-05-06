@@ -99,6 +99,7 @@ class SuccessfulCauseApi(APIView):
             data = Campaign.objects.filter(is_successful=True)
             limit = max(int(request.GET.get('limit', 10)), 1)
             page_number = max(int(request.GET.get('page', 1)), 1)
+            print(page_number,limit)
             paginator = Paginator(data, limit)
             current_page_data = paginator.get_page(page_number)
             serializer = CampaignAdminSerializer(current_page_data, many=True)
