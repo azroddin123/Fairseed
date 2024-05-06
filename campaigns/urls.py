@@ -16,7 +16,7 @@ urlpatterns = [
     path('category-filter',CampaignTabsAPi2.as_view()),
     path('campaign/<str:pk>', CampaignApi.as_view()),
     path('campaign', CampaignApi.as_view()),
-    path('successful-campaign',SuccessfulCauseApi.as_view()),
+    path('successful-campaign',SuccessfulCampaignApi.as_view()),
     path('featured-campaign',FeaturedCauseApi.as_view()),
     
     # Campaign By Category 
