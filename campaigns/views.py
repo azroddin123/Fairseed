@@ -83,7 +83,7 @@ class ReportedCauseApi(APIView):
 class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
-            campaign_data = Campaign.objects.filter(status="Closed",is_successful=True)
+            campaign_data = Campaign.objects.filter(status="Completed",is_successful=True)
             print("data===============>",campaign_data)
             response = paginate_data(Campaign,CampaignAdminSerializer,request,campaign_data)
             print("campaign------------------->",response)
