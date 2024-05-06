@@ -73,18 +73,21 @@ class ReportedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_reported=True)
+            print("data===============>",data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
         
 
 class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
-            data = Campaign.objects.filter(is_successful=True)
-            print("data===============>",data)
-            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            campaign_data = Campaign.objects.filter(is_successful=True)
+            print("data===============>",campaign_data)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
             print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
@@ -103,7 +106,9 @@ class FeaturedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(status="Active")
+            print("data===============>",data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
