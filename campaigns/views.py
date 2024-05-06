@@ -83,7 +83,7 @@ class ReportedCauseApi(APIView):
 class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
-            campaign_data = Campaign.objects.all().filter(is_successful=True)
+            campaign_data = Campaign.objects.filter(is_successful=True)
             print("data===============>",campaign_data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
             print("campaign------------------->",response)
@@ -92,25 +92,14 @@ class SuccessfulCampaignApi(APIView):
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
 
-from django.core.paginator import Paginator, EmptyPage
 class SuccessfulCauseApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            data = Campaign.objects.filter(is_successful=True)
-            limit = max(int(request.GET.get('limit', 10)), 1)
-            page_number = max(int(request.GET.get('page', 1)), 1)
-            print(page_number,limit)
-            paginator = Paginator(data, limit)
-            current_page_data = paginator.get_page(page_number)
-            serializer = CampaignAdminSerializer(current_page_data, many=True)
-            serialized_data = serializer.data
-            response_data = {
-                "error": False,
-                "pages_count": paginator.num_pages,
-                "count": paginator.count,
-                "rows": serialized_data
-            }
-            return Response(response_data, status=status.HTTP_200_OK)
+            campaign_data = Campaign.get_successful_campaign()
+            print("data===============>",campaign_data)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
+            print("campaign------------------->",response)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
