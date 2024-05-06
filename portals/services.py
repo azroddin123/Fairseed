@@ -122,13 +122,16 @@ def paginate_data(model, serializer, request,data):
         except EmptyPage:
             print("--------------in emapty page ")
             return Response({"error": True, "message": "Page not found"}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            print(serializer,"-----------------serializer------------")
-            serialized_data = serializer(current_page_data, many=True).data
-            print(serialized_data,"-----------------serializer------------")
+        # try:
+        #     print(serializer,"-----------------serializer------------")
+        #     serialized_data = serializer(current_page_data, many=True).data
+        #     print(serialized_data,"-----------------serializer------------")
         except Exception as e:
-            print(" in exception ")
+            print(" in exception ",e)
             return Response({"error": True, "message": f"Serialization error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serialized_data = serializer(current_page_data, many=True).data
+        print(serialized_data, "-----------------serializer------------")
         response_data = {
             "error": False,
             "pages_count": paginator.num_pages,
