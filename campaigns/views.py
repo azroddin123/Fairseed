@@ -96,10 +96,8 @@ class SuccessfulCauseApi(APIView):
     def get(self, request, *args, **kwargs):
         try:
             campaign_data = Campaign.get_successful_campaign()
-            print("data===============>",campaign_data)
-            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
-            print("campaign------------------->",response)
-            return Response(response,status=status.HTTP_200_OK)
+            serializer = CampaignAdminSerializer(campaign_data,many=True)
+            return Response({"data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
