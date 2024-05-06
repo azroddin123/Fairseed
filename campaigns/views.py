@@ -80,8 +80,6 @@ class ReportedCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-        
-
 class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
@@ -103,7 +101,8 @@ class SuccessfulCauseApi(APIView):
             page_number = max(int(request.GET.get('page', 1)), 1)
             paginator = Paginator(data, limit)
             current_page_data = paginator.get_page(page_number)
-            serialized_data = CampaignAdminSerializer(current_page_data, many=True).data
+            serializer = CampaignAdminSerializer(current_page_data, many=True)
+            serialized_data = serializer.data
             response_data = {
                 "error": False,
                 "pages_count": paginator.num_pages,
