@@ -112,8 +112,8 @@ def paginate_model_data(model, serializer, request, filter_key=None):
     
 def paginate_data(model, serializer, request,data):
     try:
-        limit = max(int(request.GET.get('limit', 0)), 1)
-        page_number = max(int(request.GET.get('page', 0)), 1)
+        limit = max(int(request.GET.get('limit', 1)), 1)
+        page_number = max(int(request.GET.get('page', 1)), 1)
         data = data
         paginator = Paginator(data, limit)
         try:
