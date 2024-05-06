@@ -83,9 +83,9 @@ class ReportedCauseApi(APIView):
 class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
-            campaign_data = Campaign.objects.filter(status="Completed",is_successful=True)
+            campaign_data = Campaign.objects.all().filter(is_successful=True)
             print("data===============>",campaign_data)
-            response = paginate_data(Campaign,CampaignAdminSerializer,request,campaign_data)
+            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
             print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
