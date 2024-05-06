@@ -12,6 +12,8 @@ class RoleChoices(models.TextChoices):
     CAMPAIGN_APPROVER = CAMPAIGN_APPROVER,CAMPAIGN_APPROVER
     CAMPAIGN_MANAGER  = CAMPAIGN_MANAGER,CAMPAIGN_MANAGER
     ADMIN             = ADMIN,ADMIN 
+    ACCOUNTANT        = ACCOUNTANT,ACCOUNTANT
+    SUPERADMIN        = SUPERADMIN,SUPERADMIN
 
 # Campaign Choices 
 class ZakatChoices(models.TextChoices):

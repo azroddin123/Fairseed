@@ -124,7 +124,7 @@ def paginate_data(model, serializer, request,data):
         try:
             serialized_data = serializer(current_page_data, many=True).data
         except Exception as e:
-            return Response({"error": True, "message": f"Serialization error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": True, "message": f"Serialization error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         response_data = {
             "error": False,
             "pages_count": paginator.num_pages,

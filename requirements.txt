@@ -10,4 +10,6 @@ jsons
 cryptography
 shortuuid
 pymysql
-tinymce
+django-tinymce
+celery
+Markdown

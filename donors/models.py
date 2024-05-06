@@ -41,18 +41,15 @@ def update_campaign(sender, instance, **kwargs):
         campaign.save()
 
         
-@receiver(post_save, sender=Donor)
-def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
-    if created:
-        subject = "Fairseed Donation Email"
-        message = f"Your Donation For Campaign  '{instance.campaign.title}' of '{instance.amount} has been done successfully."
-        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
-
+# @receiver(post_save, sender=Donor)
+# def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+#     if created:
+#         subject = "Fairseed Donation Email"
+#         message = f"Your Donation For Campaign  '{instance.campaign.title}' of '{instance.amount} has been done successfully."
+#         send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
 
 class Withdrawal(BaseModel):
     campaign          = models.OneToOneField("campaigns.Campaign",on_delete=models.CASCADE)
     withdrawal_status = models.CharField(max_length=124,choices=WithdrawalChoices.choices,default=WithdrawalChoices.PENDING)
     transfer_details  = models.TextField(blank=True,null=True)
-
-    
 # username fund_Raised ,goal_amount,beniiciary name.
