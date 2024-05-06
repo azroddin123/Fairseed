@@ -93,14 +93,27 @@ class SuccessfulCampaignApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
+
+from django.core.paginator import Paginator, EmptyPage
 class SuccessfulCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_successful=True)
-            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
-            return Response(response,status=status.HTTP_200_OK)
-        except Exception as e :
-            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+            limit = max(int(request.GET.get('limit', 10)), 1)  # Default limit is 10 if not provided or invalid
+            page_number = max(int(request.GET.get('page', 1)), 1)
+            paginator = Paginator(data, limit)
+            current_page_data = paginator.get_page(page_number)
+            serialized_data = CampaignAdminSerializer(current_page_data, many=True).data
+            response_data = {
+            "error": False,
+            "pages_count": paginator.num_pages,
+            "count": paginator.count,
+            "rows": serialized_data
+                             }
+            return Response(response_data,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class FeaturedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
