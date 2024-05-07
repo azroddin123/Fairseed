@@ -6,6 +6,7 @@ urlpatterns = [
     path('campaign-category',CampaigncategoryApi.as_view()),
     path('campaign-category/<str:pk>',CampaigncategoryApi.as_view()),
     
+    # Documents API
     path('documents',DocumentApi.as_view()),
     path('documents/<str:pk>',DocumentApi.as_view()),
     
@@ -17,7 +18,6 @@ urlpatterns = [
     path('campaign/<str:pk>', CampaignApi.as_view()),
     path('campaign', CampaignApi.as_view()),
     path('successful-campaign',SuccessfulCampaignApi.as_view()),
-    path('successful-cause',SuccessfulCauseApi.as_view()),
     path('featured-campaign',FeaturedCauseApi.as_view()),
     
     # Campaign By Category 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('category', CampaignByCategoryApi.as_view()),
     path('category/<str:pk>',CampaignByCategoryApi2.as_view()),
     path('campaign-details/<str:pk>', CampaignDetailsApi.as_view()),
+    path('global-search',CampaignSearchAPIView.as_view()),
    
     # add campaign
     path('add-campaign/<str:pk>',AddCampaignApi.as_view()),

@@ -34,7 +34,6 @@ class Campaign(BaseModel):
     fund_raised       = models.PositiveIntegerField(default=0,validators=[MinValueValidator(0, message="Value must be greater than or equal to 0"),
                         MaxValueValidator(100000, message="Value must be less than or equal to 100000")])
     zakat_eligible    = models.BooleanField(default=False)
-    rasing_for        = models.CharField(choices=RaiseChoices.choices,max_length=124)
     location          = models.CharField(max_length=124)
     story             = models.TextField(blank=True,null=True)
     summary           = models.TextField(blank=True,null=True)

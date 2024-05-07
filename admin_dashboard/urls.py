@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import * 
 from accounts.views import * 
-from campaigns.views import CampaigncategoryApi,ReportedCauseApi,SuccessfulCauseApi
+from campaigns.views import CampaigncategoryApi,ReportedCauseApi,SuccessfulCampaignApi
 from payment_gateways.views import PhonepayApi
 urlpatterns = [
     
@@ -43,7 +43,7 @@ urlpatterns = [
     path('campaign',CampaignAdminApi2.as_view()),
     path('campaign/<str:pk>',CampaignAdminApi2.as_view()),
     
-    path('successful-campaign',SuccessfulCauseApi.as_view()),
+    path('successful-campaign',SuccessfulCampaignApi.as_view()),
     
     # path('campaign-kyc',CampaignKycAPI.as_view()),
     # path('campaign-kyc/<str:pk>',CampaignKycAPI.as_view()),

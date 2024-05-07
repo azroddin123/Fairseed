@@ -18,6 +18,7 @@ from django.db.models import Count
 from fairseed.task import send_email_fun
 from fairseed.settings import EMAIL_HOST_USER
 from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models import Q
 
 class CampaignApi(GenericMethodsMixin,APIView):
     model = Campaign
@@ -73,9 +74,7 @@ class ReportedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(is_reported=True)
-            print("data===============>",data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
-            print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
@@ -84,7 +83,6 @@ class SuccessfulCampaignApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             campaign_data = Campaign.objects.filter(is_successful=True)
-            print("data===============>",campaign_data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=campaign_data)
             print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
@@ -92,37 +90,36 @@ class SuccessfulCampaignApi(APIView):
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
 
-class SuccessfulCauseApi(APIView):
-    def get(self, request, *args, **kwargs):
-        try:
-            campaign_data = Campaign.get_successful_campaign()
-            serializer = CampaignAdminSerializer(campaign_data,many=True)
-            return Response({"data" : serializer.data},status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": True, "message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class FeaturedCauseApi(APIView):
     def get(self,request,*args, **kwargs) :
         try :
             data = Campaign.objects.filter(status="Active")
-            print("data===============>",data)
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
-            print("campaign------------------->",response)
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
-class GlobalSerachAPI(APIView):
-    def get(self,request,*args, **kwargs) :
-        try :
-            data = Campaign.objects.filter(status="Active")
-            print("data===============>",data)
-            response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
-            print("campaign------------------->",response)
-            return Response(response,status=status.HTTP_200_OK)
+class CampaignSearchAPIView(APIView):
+    def get(self, request, *args,**kwargs):
+        try : 
+            search_param = request.query_params.get('search', None)
+            if search_param:
+                queryset = Campaign.objects.filter(
+                    Q(title__icontains=search_param) |
+                    Q(rasing_for__icontains=search_param) |
+                    Q(location__icontains=search_param) |
+                    Q(story__icontains=search_param) |
+                    Q(summary__icontains=search_param)
+                )
+            else:
+                queryset = Campaign.objects.all()
+
+            serializer = CampaignSerializer(queryset, many=True)
+            return Response({"error": False,"rows": serializer.data },status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
-        pass
+       
 # Campaign By Category
 class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
