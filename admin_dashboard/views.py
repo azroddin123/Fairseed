@@ -12,6 +12,8 @@ from rest_framework import status
 from django.db.models import Sum
 from campaigns.serializers import * 
 from django.db import transaction
+from openpyxl import Workbook
+from django.http import HttpResponse
 from campaigns.models import send_email_on_model_creation_or_update
 from django.db.models import Count
 from portals.services import paginate_model_data,paginate_data
@@ -240,7 +242,6 @@ class CampaignEditApproval(GenericMethodsMixin,APIView):
     def put(self,request,pk,*args, **kwargs):
         try :
             print("=================admin========",request.data)
-        
             with transaction.atomic():
                 campaign = Campaign.objects.get(id=pk)
                 if request.data['approve_campaign'] == "true" :
@@ -282,14 +283,11 @@ class WithdrawalApi(GenericMethodsMixin,APIView):
                 data = Withdrawal.objects.all()
                 response = paginate_data(model=Withdrawal,serializer=WithDrawalSerializer,request=request,data=data)
                 return Response(response,status=status.HTTP_200_OK)
-            
             data = Withdrawal.objects.get(id=pk)
             bank_data = BankKYC.objects.get(campaign=data.campaign)
             serializer1 = BankKYCSerializer(bank_data)
             serializer = WithdrawalSerializer1(data)
             return Response({"error" : False , "campaign_data" : serializer.data,"bank_data" : serializer1.data},status=status.HTTP_200_OK)
-
-        
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
@@ -430,3 +428,26 @@ class ReportedCauseAPI(GenericMethodsMixin,APIView):
             return Response({"error" : True, "message" : "Campaign Status Rejected Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
                 return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+class ExportToCSV(APIView):
+       def get(self, request, *args, **kwargs):
+        data = Campaign.objects.all()
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=campaign_data.xlsx'
+
+        workbook = Workbook()
+        worksheet = workbook.active
+
+        worksheet.append(['title', 'username', 'mobile_no', 'goal_amount', 'fund_raised', 'status', 'end_date'])
+
+        for obj in data:
+            row = [obj.title, obj.user.username if obj.user else None, obj.user.mobile_number if obj.user else None,
+                   obj.goal_amount, obj.fund_raised, obj.status, obj.end_date]
+            worksheet.append(row)
+
+        workbook.save(response)
+        return response

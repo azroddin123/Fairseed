@@ -49,18 +49,19 @@ class GenericMethodsMixin:
         page_number = max(int(request.GET.get('page', 0)), 1)
         search   = request.GET.get('search')
         order_by = request.GET.get('order_by')
-        # if search :
-        #     fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
-        #     q_objects = Q()
-        #     for field in fields:
-        #         print(field)
-        #         q_objects |= Q(**{f"{field}__icontains": search})
         if search :
-            query = Q()
-            for item in search:
-                print(item['column'])
-                query &= Q(**{f"{item['column']}__icontains": item['value']})
-            data = self.model.objects.filter(query)
+            fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
+            q_objects = Q()
+            for field in fields:
+                print(field)
+                q_objects |= Q(**{f"{field}__icontains": search})
+            data = self.model.objects.filter(q_objects)
+        # if search :
+        #     query = Q()
+        #     for item in search:
+        #         print(item['column'])
+        #         query &= Q(**{f"{item['column']}__icontains": item['value']})
+        #     data = self.model.objects.filter(query)
         else :   
         # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
             data = self.model.objects.all()

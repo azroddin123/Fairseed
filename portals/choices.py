@@ -20,7 +20,6 @@ class ZakatChoices(models.TextChoices):
     YES = YES,YES
     NO  = NO,NO
 
-
 class RaiseChoices(models.TextChoices):
     SELF  = SELF,SELF
     OTHER =  OTHER,OTHER

@@ -100,10 +100,32 @@ class FeaturedCauseApi(APIView):
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
 
+# class CampaignSearchAPIView(APIView):
+#     def get(self, request, *args,**kwargs):
+#         try : 
+#             search_param = request.query_params.get('search', None)
+#             if search_param:
+#                 queryset = Campaign.objects.filter(
+#                     Q(title__icontains=search_param) |
+#                     Q(rasing_for__icontains=search_param) |
+#                     Q(location__icontains=search_param) |
+#                     Q(story__icontains=search_param) |
+#                     Q(summary__icontains=search_param)
+#                 )
+#             else:
+#                 queryset = Campaign.objects.all()
+
+#             serializer = CampaignSerializer(queryset, many=True)
+#             return Response({"error": False,"rows": serializer.data },status=status.HTTP_200_OK)
+#         except Exception as e :
+#             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
+
+
 class CampaignSearchAPIView(APIView):
-    def get(self, request, *args,**kwargs):
-        try : 
+    def get(self, request, *args, **kwargs):
+        try:
             search_param = request.query_params.get('search', None)
+            print("Search Parameter:", search_param)  # Debugging
             if search_param:
                 queryset = Campaign.objects.filter(
                     Q(title__icontains=search_param) |
@@ -112,14 +134,16 @@ class CampaignSearchAPIView(APIView):
                     Q(story__icontains=search_param) |
                     Q(summary__icontains=search_param)
                 )
+                print("Filtered Queryset:", queryset)  # Debugging
             else:
                 queryset = Campaign.objects.all()
 
             serializer = CampaignSerializer(queryset, many=True)
-            return Response({"error": False,"rows": serializer.data },status=status.HTTP_200_OK)
-        except Exception as e :
-            return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
-       
+            return Response({"error": False, "rows": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print("Error:", e)  # Debugging
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 # Campaign By Category
 class CampaignByCategoryApi(APIView):
     def get(self,request,*args, **kwargs):
