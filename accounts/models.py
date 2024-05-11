@@ -71,7 +71,10 @@ class User(AbstractBaseUser):
     
 @receiver(post_save, sender=User)
 def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+    print("in celery")
     if created:
-        subject = "Fairseed Campaign Creation Mail"
+        subject = "Fairseed User Creation Mail"
         message = f"Your User '{instance.email}' has been created."
-        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.email)
+        if instance.email : 
+            send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.email)
+        
