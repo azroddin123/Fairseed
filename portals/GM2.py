@@ -48,24 +48,48 @@ class GenericMethodsMixin:
         limit = max(int(request.GET.get('limit', 0)),1) 
         page_number = max(int(request.GET.get('page', 0)), 1)
         search   = request.GET.get('search')
-        order_by = request.GET.get('order_by')
-        if search :
-            fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
+        order    = request.GET.get('order')
+        sortField = request.GET.get('sortField')
+        
+        
+        # search api curenty worling 
+        # if search :
+        #     fields = [field.name for field in self.model._meta.get_fields() if field.is_relation == False]  # Exclude related fields
+        #     q_objects = Q()
+        #     for field in fields:
+        #         print(field)
+        #         q_objects |= Q(**{f"{field}__icontains": search})
+    
+        #     data = self.model.objects.filter(q_objects)
+        if search:
             q_objects = Q()
-            for field in fields:
-                print(field)
-                q_objects |= Q(**{f"{field}__icontains": search})
+            for field in self.model._meta.fields:
+                if not field.is_relation:
+                    q_objects |= Q(**{f"{field.name}__icontains": search})
+                elif hasattr(field, 'related_model'):
+                    related_model = field.related_model
+                    if related_model:
+                        for related_field in related_model._meta.fields:
+                            if not related_field.is_relation:
+                                q_objects |= Q(**{f"{field.name}__{related_field.name}__icontains": search})
             data = self.model.objects.filter(q_objects)
+        else :   
+            data = self.model.objects.all()
+        
+        # sort field for sorting
+        if sortField:
+            if order.lower() == 'asc':
+                data = data.order_by(sortField)
+            elif order.lower() == 'desc':
+                data = data.order_by(f'-{sortField}')
+        # 500 error api 
         # if search :
         #     query = Q()
         #     for item in search:
         #         print(item['column'])
         #         query &= Q(**{f"{item['column']}__icontains": item['value']})
         #     data = self.model.objects.filter(query)
-        else :   
-        # page_number = int(request.GET.get('page', 0))  if we want the last page record on first page 
-            data = self.model.objects.all()
-            
+        # New api now adding 
         paginator = Paginator(data, limit)
         try:
             current_page_data = paginator.get_page(page_number)

@@ -451,3 +451,8 @@ class ExportToCSV(APIView):
 
         workbook.save(response)
         return response
+       
+
+
+class GenericSearchAPI(APIView):
+    pass

@@ -15,7 +15,7 @@ from fairseed.settings import EMAIL_HOST_USER
 
 
 class Campaigncategory(BaseModel):
-    name   = models.CharField(max_length=50)
+    name   = models.CharField(max_length=50,unique=True)
     slug   = models.CharField(max_length=130,blank=True,null=True,unique=True)
     image  = models.ImageField(upload_to="campaign/category/",blank=True,null=True,)
     is_active = models.BooleanField(default=False)

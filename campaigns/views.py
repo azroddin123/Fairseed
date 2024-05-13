@@ -290,3 +290,29 @@ class AddCampaignApi(APIView):
                         return Response({"error" : False, "message" : "Campaign Data Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
+        
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from .models import YourModel  # Replace with your actual model
+
+# class SearchAPIView(APIView):
+#     filter_class = SearchFilter
+
+#     def get(self, request):
+#         """
+#         Handles GET requests for search and filtering.
+#         """
+#         filter_data = request.GET.get('filter', None)
+#         if not filter_data:
+#             return Response({'error': 'Missing filter data'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             filter_data = json.loads(filter_data)
+#         except json.JSONDecodeError:
+#             return Response({'error': 'Invalid JSON filter data'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         queryset = YourModel.objects.all()
+#         filtered_queryset = self.filter_class.filter_queryset(queryset, filter_data)
+#         serializer = YourModelSerializer(filtered_queryset, many=True)
+#         return Response(serializer.data)

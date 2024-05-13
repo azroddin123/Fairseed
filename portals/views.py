@@ -5,26 +5,28 @@ from accounts.models import *
 from accounts.serializers import *
 from campaigns.models import * 
 
-def search():
-    model_name = User
-    search_param = "azhar"
-    print("in search")
-    model_class = globals()[model_name]
-    fields = [field.name for field in model_class._meta.get_fields()]
-    print("azhar")
-    for item in fields:
-        print(fields)
-    q_objects = Q()
-    for field in fields:
-        q_objects |= Q(**{f"{field}__icontains": search_param})
-        
-    queryset = model_class.objects.filter(q_objects)
-    record_count = queryset.count()
-    serializer = UserAdminSerializer(queryset, many=True)
-    print(serializer.data)
+# def search():
+
+print("azaht")
+model_name = User
+search_param = "azhar"
+print("in search")
+model_class = globals()[model_name]
+fields = [field.name for field in model_class._meta.get_fields()]
+print("azhar")
+for item in fields:
+    print(fields)
+q_objects = Q()
+for field in fields:
+    q_objects |= Q(**{f"{field}__icontains": search_param})
+    
+queryset = model_class.objects.filter(q_objects)
+record_count = queryset.count()
+serializer = UserAdminSerializer(queryset, many=True)
+print(serializer.data)
 
 
-search()
+# search()
 # class SearchFilterAPI(APIView):
 #     def get(self, request):
 #         model_name = request.GET.get('model')
