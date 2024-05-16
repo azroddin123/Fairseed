@@ -12,6 +12,7 @@ import markdown
 from django.conf import settings
 from fairseed.task import send_email_fun
 from fairseed.settings import EMAIL_HOST_USER
+from portals.services import campaign_creation_updation_mail
 
 
 class Campaigncategory(BaseModel):
@@ -89,12 +90,17 @@ def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
     if created:
         subject = "Fairseed Campaign Creation Mail"
         message = f"Your campaign '{instance.title}' has been created, and a request for approval has been sent to the admin."
-        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        campaign_creation_updation_mail(instance.user.email,subject,message)
+        # send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
         # campaign_creation_updation(instance.user.email,instance.status,instance.title,subject,message)
     else:
+        print("in else part")
         subject = "Fairseed Campaign Updation Mail"
-        message = "Your Campaign Data is Updated Now"
-        send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        message = "Your Campaign Data is Updated Now.please Check Your Campaign On Fairseed"
+        res = campaign_creation_updation_mail(instance.user.email,subject,message)
+        print(res)
+        # send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+        # send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
         # campaign_creation_updation(instance.email,instance.status,instance.title,subject,message)
 
 class Documents(BaseModel):

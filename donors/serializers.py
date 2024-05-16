@@ -13,12 +13,12 @@ class DonorSerializer2(ModelSerializer):
         fields = "__all__"
 
 class DonorSerializer(ModelSerializer):
-    campaign = serializers.SerializerMethodField()
+    campaign_title = serializers.SerializerMethodField()
     class Meta:
         model = Donor
         fields = "__all__"
         
-    def get_campaign(self, obj):
+    def get_campaign_title(self, obj):
         return obj.campaign.title
         # return obj.campaign.campaign_name if obj.campaign else None
 

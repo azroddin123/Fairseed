@@ -149,7 +149,6 @@ class MyDonationApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-    
 # Received Donation For my Campaign 
 class ReceivedDonationApi(APIView):
     def get(self,request,pk=None,*args, **kwargs):
@@ -193,9 +192,6 @@ class BankKycApi(GenericMethodsMixin,APIView):
             return Response({"error" : False , "message" : " Your changes has been recorded and are  sent for approval to Admin "},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-    
-
-
 
 class ViewBankAndKycAPi(APIView):
     def get(self,request,pk,*args, **kwargs):

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from portals.GM2 import GenericMethodsMixin
 from rest_framework.response import Response
 from rest_framework import status
-from portals.services import generate_token,my_mail
+from portals.services import generate_token,my_mail,user_creation_mail
 from django.contrib.auth.hashers import check_password
 from random import randint
 
@@ -19,17 +19,20 @@ class UserApi(GenericMethodsMixin,APIView):
     serializer_class = UserSerializer1
     lookup_field = "id"
     
+from django.db import transaction
 class RegisterUserApi(APIView):
     def post(self,request,*args, **kwargs):
         try : 
-            print(request.data)
-            serializer = UserSerializer(data=request.data)
-            if  serializer.is_valid():
-                user = serializer.save()
-                print(user.id)
-                token = generate_token(user.email)
-                return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            with transaction.atomic() : 
+                print(request.data)
+                serializer = UserSerializer(data=request.data)
+                if  serializer.is_valid():
+                    user = serializer.save()
+                    print(user.id)
+                    token = generate_token(user.email)
+                    res = user_creation_mail(user.email)
+                    return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
+                return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 

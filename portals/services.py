@@ -33,10 +33,28 @@ def my_mail(mail, otp):
     
     return msg
 
-def campaign_creation_updation(mail,status,title,subject,msg):
+def campaign_creation_updation_mail(mail,subject,msg):
     # subject = "Fairseed Campaign Creation Mail"
     # message = "Your Campaign is created and request is send for approval to admin"+title+"this is title"
-    print(mail,status,title,subject,msg,"------------------------")
+    email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
+    email.attach_alternative(msg, "text/html")  # Specify HTML content type
+    try:
+        res = email.send()
+        if res == 1:
+            msg = 1
+        else:
+            print("no")
+            msg = 0
+    except Exception as e:
+        print(e)
+        msg = 0
+    
+    return msg
+
+
+def user_creation_mail(mail):
+    subject = "Fairseed User Creation Email"
+    msg = "Your Account is created with Email "+ " "+mail+"."
     email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
     email.attach_alternative(msg, "text/html")  # Specify HTML content type
     try:
