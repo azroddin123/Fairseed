@@ -73,13 +73,12 @@ def user_creation_mail(mail):
 
 
 
-def donation_email(mail,campaign,amount):
-    subject = "Fairseed Campaign "
-    msg = "Your one time password for resetting the password at <strong>Fairseed</strong> is as follows: <strong>{}</strong> <br>\nPlease do not share this with anyone.".format(amount)
+def donation_email(mail,amount):
+    subject = "Donation Email"
+    msg = "Your Donation Has been done successfully of amount ".format(amount)
     # Create an EmailMultiAlternatives object to support HTML content
     email = EmailMultiAlternatives(subject, msg, '33azharoddin@gmail.com', [mail])
     email.attach_alternative(msg, "text/html")  # Specify HTML content type
-    
     try:
         res = email.send()
         if res == 1:
