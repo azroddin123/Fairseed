@@ -16,6 +16,8 @@ from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
 from phonepe.sdk.pg.env import Env
 from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
 from django.db import transaction
+from portals.email_utility import send_email_async
+
 
 class DonatePaymentApi(APIView):
     def post(self,request):
@@ -52,16 +54,21 @@ class DonatePaymentApi(APIView):
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
                         if donor.email : 
+                            subject = "Donation Email"
+                            msg = "Your Donation Has been done successfully of amount ".format(amount)
                             print(donor.email,"--------------",donor.amount)
-                            res = donation_email(donor.email,donor.amount)
+                            send_email_async(subject,msg,[donor.email])
+                            # res = donation_email(donor.email,donor.amount)
                     return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
                 else :
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
                         if donor.email : 
-                            donation_email(donor.email,amount)
-
+                            subject = "Donation Email"
+                            msg = "Your Donation Has been done successfully of amount ".format(amount)
+                            print(donor.email,"--------------",donor.amount)
+                            send_email_async(subject,msg,[donor.email])
                     return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)

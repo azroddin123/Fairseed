@@ -7,7 +7,7 @@ from rest_framework import status
 from portals.services import generate_token,my_mail,user_creation_mail
 from django.contrib.auth.hashers import check_password
 from random import randint
-
+from portals.email_utility import send_email_async
 
 class UserRolesAPi(GenericMethodsMixin,APIView):
     model = UserRole
@@ -30,7 +30,10 @@ class RegisterUserApi(APIView):
                     user = serializer.save()
                     print(user.id)
                     token = generate_token(user.email)
-                    res = user_creation_mail(user.email)
+                    subject = "Fairseed User Creation Email"
+                    message = "Your Account is created with Email "+ " "+user.email+"."
+                    send_email_async(subject,message,[user.email])
+                    # res = user_creation_mail(user.email)
                     return Response({"message" : "User Created Successfully" , "data" : UserSerializer1(user).data , "token" : token},status=status.HTTP_201_CREATED)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e :
