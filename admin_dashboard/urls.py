@@ -29,7 +29,7 @@ urlpatterns = [
 
     # add social Profile data
     path('social-media',SocialProfileApi.as_view()),
-    path('social-media/<',SocialProfileApi.as_view()),
+    path('social-media/',SocialProfileApi.as_view()),
 
     # Add landing Page API
     # path('cause-edit',CampaignEditApproval.as_view()),

@@ -42,7 +42,7 @@ class Camapign1(ModelSerializer):
     user = User1(read_only=True)
     class Meta :
         model = Campaign
-        fields = ('id','title','goal_amount','fund_raised','user')
+        fields = ('id','title','goal_amount','fund_raised','user','c_id')
 
 
 class WithDrawalSerializer(ModelSerializer):
