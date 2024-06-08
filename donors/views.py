@@ -43,7 +43,7 @@ class DonatePaymentApi(APIView):
                     s2s_callback_url = "http://143.110.253.227:8000/donors/check-status/"+unique_transaction_id
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     amount = int(request.data.get('amount'))*100
-                    id_assigned_to_user_by_merchant = "PGTESTPAYUAT100"
+                    id_assigned_to_user_by_merchant = "FAIRSEEDONLINE"
                     pay_page_request = PgPayRequest.pay_page_pay_request_builder(
                         merchant_transaction_id=unique_transaction_id,
                         amount=amount,
