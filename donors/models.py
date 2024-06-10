@@ -29,6 +29,7 @@ class Donor(BaseModel):
     bank_name        = models.CharField(max_length=124,blank=True,null=True)
     transaction_date = models.DateField(blank=True,null=True)
     other_details    = models.CharField(max_length=124,blank=True,null=True)
+    date             = models.DateField(null=True,blank=True)
 
 
 @receiver(post_save,sender=Donor)

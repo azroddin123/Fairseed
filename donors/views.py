@@ -55,6 +55,8 @@ class DonatePaymentApi(APIView):
                     pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
                     request.POST._mutable = True
                     data['transaction_id'] = unique_transaction_id
+                    data['status'] = "Approved"
+                    data["is_approved"] = True
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
@@ -71,7 +73,7 @@ class DonatePaymentApi(APIView):
                         donor = serializer.save()
                         if donor.email : 
                             subject = "Donation Email"
-                            msg = "Your Donation Has been done successfully of amount ".format(amount)
+                            msg = "Your Donation Has been done successfully of amount ".format(donor.amount)
                             print(donor.email,"--------------",donor.amount)
                             send_email_async(subject,msg,[donor.email])
                     return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
