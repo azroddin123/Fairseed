@@ -30,7 +30,7 @@ class DonorSerializer1(ModelSerializer):
     
     def get_date(self, obj):
         # Format the date here
-        return obj.created_on.strftime('%d-%b-%Y')
+        return obj.date.strftime('%d-%b-%Y') if obj.date else None
 
 class User1(ModelSerializer):
     class Meta :
