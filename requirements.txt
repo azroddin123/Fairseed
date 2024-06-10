@@ -1,4 +1,4 @@
-Django==4.2 
+Django
 django-cors-headers      
 djangorestframework           
 djangorestframework-simplejwt
@@ -14,5 +14,6 @@ django-tinymce
 celery
 Markdown
 openpyxl
-requests    
---index-url https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-python --extra-index-url https://pypi.org/simple phonepe_sdk==1.1.0
+requests
+pip install --index-url https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-python --extra-index-url https://pypi.org/simple phonepe_sdk==1.1.0
+
