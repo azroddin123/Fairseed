@@ -42,7 +42,11 @@ class DonatePaymentApi(APIView):
                     ui_redirect_url = "https://staging.fairseed.org"
                     s2s_callback_url = "http://143.110.253.227:8000/donors/check-status/"+unique_transaction_id
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
-                    amount = int(request.data.get('amount'))*100
+                    try:
+                        amount = int(request.data.get('amount', 0)) * 100
+                    except ValueError:
+                        return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+                    # amount = int(request.data.get('amount'))*100
                     id_assigned_to_user_by_merchant = "PGTESTPAYUAT100"
                     pay_page_request = PgPayRequest.pay_page_pay_request_builder(
                         merchant_transaction_id=unique_transaction_id,
@@ -71,11 +75,11 @@ class DonatePaymentApi(APIView):
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
-                        # if donor.email : 
-                        #     subject = "Donation Email"
-                        #     msg = "Your Donation Has been done successfully of amount ".format(donor.amount)
-                        #     print(donor.email,"--------------",donor.amount)
-                        #     send_email_async(subject,msg,[donor.email])
+                        if donor.email: 
+                            subject = "Donation Email"
+                            msg = "Your Donation Has been done successfully of amount {}".format(donor.amount)
+                            print(donor.email, "--------------", donor.amount)
+                            send_email_async(subject, msg, [donor.email])
                     return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
