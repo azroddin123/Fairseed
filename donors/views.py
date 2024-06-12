@@ -73,6 +73,12 @@ class DonatePaymentApi(APIView):
                             # res = donation_email(donor.email,donor.amount)
                     return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
                 else :
+                    print(type(amount))
+                    try:
+                        amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
+                    except ValueError:
+                        return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+                    
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
