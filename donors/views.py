@@ -71,11 +71,11 @@ class DonatePaymentApi(APIView):
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
-                        if donor.email : 
-                            subject = "Donation Email"
-                            msg = "Your Donation Has been done successfully of amount ".format(donor.amount)
-                            print(donor.email,"--------------",donor.amount)
-                            send_email_async(subject,msg,[donor.email])
+                        # if donor.email : 
+                        #     subject = "Donation Email"
+                        #     msg = "Your Donation Has been done successfully of amount ".format(donor.amount)
+                        #     print(donor.email,"--------------",donor.amount)
+                        #     send_email_async(subject,msg,[donor.email])
                     return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
