@@ -34,6 +34,7 @@ class Donor(BaseModel):
 
 @receiver(post_save,sender=Donor)
 def update_campaign(sender, instance, **kwargs):
+        print("post_save")
         campaign = instance.campaign
         required_amount = campaign.goal_amount - campaign.fund_raised
         if instance.amount > required_amount:
