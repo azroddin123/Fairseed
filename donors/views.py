@@ -41,7 +41,7 @@ class DonatePaymentApi(APIView):
 
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
-                    ui_redirect_url = "https://staging.fairseed.org"
+                    ui_redirect_url = "https://fairseed.org"
                     s2s_callback_url = "http://143.110.253.227:8000/donors/check-status/"+unique_transaction_id
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     try:
