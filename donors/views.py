@@ -29,14 +29,15 @@ class DonatePaymentApi(APIView):
                 data = request.data
                 payment_type = request.data.get('payment_type')
                 if payment_type == "UPI" :
-                    merchant_id = "PGTESTPAYUAT100"  
-                    salt_key = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"  
-                    salt_index = 1 
-                    env = Env.UAT 
-                    # merchant_id = "FAIRSEEDONLINE"   
-                    # salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
+                    # merchant_id = "PGTESTPAYUAT100"  
+                    # salt_key = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"  
                     # salt_index = 1 
-                    # env = Env.PROD 
+                    # env = Env.UAT 
+                    
+                    merchant_id = "FAIRSEEDONLINE"   
+                    salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
+                    salt_index = 1 
+                    env = Env.PROD 
 
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]

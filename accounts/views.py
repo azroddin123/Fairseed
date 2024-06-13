@@ -98,7 +98,6 @@ class UpdateUserAPI(APIView):
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-
     
 class ResetPasswordAPI(APIView):
     def post(self,request,*args, **kwargs):
