@@ -50,7 +50,7 @@ class DonatePaymentApi(APIView):
                     except ValueError:
                         return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
                     # amount = int(request.data.get('amount'))*100
-                    id_assigned_to_user_by_merchant = "PGTESTPAYUAT100"
+                    id_assigned_to_user_by_merchant = settings.PROD_MERCHANT_ID
                     pay_page_request = PgPayRequest.pay_page_pay_request_builder(
                         merchant_transaction_id=unique_transaction_id,
                         amount=amount,
