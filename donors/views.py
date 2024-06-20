@@ -28,6 +28,7 @@ class DonatePaymentApi(APIView):
                 data = request.data
                 payment_type = request.data.get('payment_type')
                 if payment_type == "UPI" :
+                    print("in if part")
                     # merchant_id = "PGTESTPAYUAT100"  
                     # salt_key = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"  
                     # salt_index = 1 
@@ -37,8 +38,6 @@ class DonatePaymentApi(APIView):
                     salt_key = settings.PROD_SALT_KEY   
                     salt_index = settings.PROD_SALT_INDEX
                     env = Env.PROD 
-                    
-                    
 
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
@@ -75,7 +74,8 @@ class DonatePaymentApi(APIView):
                             # res = donation_email(donor.email,donor.amount)
                     return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
                 else :
-                    print(type(amount))
+                    print("in else part")
+                    print("===========================",request.data)
                     try:
                         amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
                     except ValueError:
