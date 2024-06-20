@@ -77,13 +77,10 @@ class DonatePaymentApi(APIView):
                 else :
                     print("in else part")
                     print("===========================",request.data)
-                    try:
-                        amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
-                    except ValueError:
-                        return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+                    # amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
                     serializer = DonorSerializer2(data=request.data)
-                    if serializer.is_valid(raise_exception=True):
-                        donor = serializer.save()
+                    if serializer.is_valid():
+                       serializer.save()
                         # if donor.email: 
                         #     subject = "Donation Email"
                         #     msg = "Your Donation Has been done successfully of amount {}".format(donor.amount)
