@@ -27,6 +27,7 @@ class DonatePaymentApi(APIView):
                 print("===========================",request.data)
                 data = request.data
                 payment_type = request.data.get('payment_type')
+                amount = 0
                 if payment_type == "UPI" :
                     print("in if part")
                     # merchant_id = "PGTESTPAYUAT100"  
