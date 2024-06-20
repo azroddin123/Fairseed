@@ -27,7 +27,6 @@ class DonatePaymentApi(APIView):
                 print("===========================",request.data)
                 data = request.data
                 payment_type = request.data.get('payment_type')
-                amount = 0
                 if payment_type == "UPI" :
                     print("in if part")
                     # merchant_id = "PGTESTPAYUAT100"  
@@ -77,19 +76,82 @@ class DonatePaymentApi(APIView):
                 else :
                     print("in else part")
                     print("===========================",request.data)
-                    # amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
+                    amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
+                    request.POST._mutable = True
+                    request.data['amount'] = amount
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid():
-                       serializer.save()
-                        # if donor.email: 
-                        #     subject = "Donation Email"
-                        #     msg = "Your Donation Has been done successfully of amount {}".format(donor.amount)
-                        #     print(donor.email, "--------------", donor.amount)
-                        #     send_email_async(subject, msg, [donor.email])
+                        donor = serializer.save()
+                        if donor.email: 
+                            subject = "Donation Email"
+                            msg = "Your Donation Has been done successfully of amount {}".format(donor.amount)
+                            print(donor.email, "--------------", donor.amount)
+                            send_email_async(subject, msg, [donor.email])
                     return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class DonateMoneyAPI(APIView):
+    def post(self,request,args,**kwargs):
+        try:
+            # print(request.data,"--------------------------------->")
+            # data = request.data
+            payment_type = request.data.get('payment_type')
+            with transaction.atomic() : 
+                if payment_type == "Bank_Transfer" :
+                    print("===========================",request.data)
+                    amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
+                    serializer = DonorSerializer2(data=request.data)
+                    if serializer.is_valid():
+                       serializer.save()
+                    return Response({"error":False,"data" : serializer.data}, status=status.HTTP_201_CREATED)
+                else :
+                    data = request.data
+                    merchant_id = settings.PROD_MERCHANT_ID
+                    salt_key = settings.PROD_SALT_KEY   
+                    salt_index = settings.PROD_SALT_INDEX
+                    env = Env.PROD 
+
+                    phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+                    unique_transaction_id = str(uuid.uuid4())[:-2]
+                    ui_redirect_url  = settings.REDIRECT_URL
+                    s2s_callback_url = settings.REDIRECT_URL
+                    # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
+                    try:
+                        amount = int(request.data.get('amount', 0)) * 100
+                    except ValueError:
+                        return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
+                    # amount = int(request.data.get('amount'))*100
+                    id_assigned_to_user_by_merchant = settings.PROD_MERCHANT_ID
+                    pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+                        merchant_transaction_id=unique_transaction_id,
+                        amount=amount,
+                        merchant_user_id=id_assigned_to_user_by_merchant,
+                        callback_url=s2s_callback_url,
+                        redirect_url=ui_redirect_url,
+                    )
+                    pay_page_response = phonepe_client.pay(pay_page_request)
+                    pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+                    request.POST._mutable = True
+                    data['transaction_id'] = unique_transaction_id
+                    data['status'] = "Approved"
+                    data["is_approved"] = True
+                    serializer = DonorSerializer2(data=request.data)
+                    if serializer.is_valid(raise_exception=True):
+                        donor = serializer.save()
+                        if donor.email : 
+                            subject = "Donation Email"
+                            msg = "Your Donation Has been done successfully of amount ".format(amount)
+                            print(donor.email,"--------------",donor.amount)
+                            send_email_async(subject,msg,[donor.email])
+                            # res = donation_email(donor.email,donor.amount)
+                    return Response({'pay_page_url': pay_page_url , "data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
+        except Exception as e:
+            return Response({'error': True, "message" : str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                
+                
+                
 
 class CheckPaymentStatusAPi(APIView):
     def get(self,request,pk=None,):

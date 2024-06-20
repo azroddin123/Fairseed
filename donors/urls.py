@@ -8,6 +8,7 @@ urlpatterns = [
     path('donor-details',DonorApi.as_view()),
     path('donor-details/<str:pk>',DonorApi.as_view()),
     path('donate-money',DonatePaymentApi.as_view()),
+    path('donate-money2',DonateMoneyAPI.as_view()),
     path('check-status/<str:pk>',CheckPaymentStatusAPi.as_view()),
 
     
