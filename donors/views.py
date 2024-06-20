@@ -17,8 +17,7 @@ from phonepe.sdk.pg.env import Env
 from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
 from django.db import transaction
 from portals.email_utility import send_email_async
-
-
+from django.conf import settings
 class DonatePaymentApi(APIView):
     def post(self,request):
         # check donation type of request 
@@ -34,15 +33,17 @@ class DonatePaymentApi(APIView):
                     # salt_index = 1 
                     # env = Env.UAT 
                     
-                    merchant_id = "FAIRSEEDONLINE"   
-                    salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
-                    salt_index = 1 
+                    merchant_id = settings.PROD_MERCHANT_ID
+                    salt_key = settings.PROD_SALT_KEY   
+                    salt_index = settings.PROD_SALT_INDEX
                     env = Env.PROD 
+                    
+                    
 
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
-                    ui_redirect_url = "https://fairseed.org"
-                    s2s_callback_url = "https://fairseed.org:8000/donors/check-status/"+unique_transaction_id
+                    ui_redirect_url  = settings.REDIRECT_URL
+                    s2s_callback_url = settings.REDIRECT_URL + unique_transaction_id
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     try:
                         amount = int(request.data.get('amount', 0)) * 100
@@ -79,7 +80,6 @@ class DonatePaymentApi(APIView):
                         amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
                     except ValueError:
                         return Response({'error': True, 'message': 'Invalid amount value'}, status=status.HTTP_400_BAD_REQUEST)
-                    
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
@@ -96,10 +96,10 @@ class DonatePaymentApi(APIView):
 class CheckPaymentStatusAPi(APIView):
     def get(self,request,pk=None,):
         try :
-            merchant_id = "FAIRSEEDONLINE"  
-            salt_key = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"  
-            salt_index = 1 
-            env = Env.PROD 
+            merchant_id = settings.PROD_MERCHANT_ID
+            salt_key    = settings.PROD_SALT_KEY   
+            salt_index  = settings.PROD_SALT_INDEX
+            env         = Env.PROD 
             phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
             print("pk",pk)
             unique_transaction_id = pk

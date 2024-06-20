@@ -166,13 +166,23 @@ import os
 # STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
 CORS_ORIGIN_ALLOW_ALL = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = '33azharoddin@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tmhzemmcwirzimmc'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True 
+# EMAIL_USE_SSL = False
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = '33azharoddin@gmail.com'
-EMAIL_HOST_PASSWORD = 'tmhzemmcwirzimmc'
+EMAIL_HOST_USER = 'info@fairseed.org'
+EMAIL_HOST_PASSWORD = 'yuzddbbwnldaxxdk'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True 
 EMAIL_USE_SSL = False
+
 
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
@@ -180,3 +190,9 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
+
+
+PROD_MERCHANT_ID = "FAIRSEEDONLINE"   
+PROD_SALT_KEY    = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
+PROD_SALT_INDEX  = 1 
+REDIRECT_URL     ="https://fairseed.org"
