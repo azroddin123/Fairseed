@@ -9,7 +9,7 @@ from campaigns.serializers import *
 class CampSerializer(ModelSerializer):
     class Meta :
         model = Campaign
-        fields = ('id','title','rasing_for','c_id')
+        fields = ('id','title','rasing_for','c_id','notes')
 
 class CampBankKycSerializer(ModelSerializer):
     campaign = CampSerializer(read_only=True)
