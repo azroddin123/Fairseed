@@ -68,6 +68,8 @@ class Campaign(BaseModel):
     #         campaign.fund_raised += instance.amount
     #         campaign.save()
 
+
+
     @classmethod
     def get_reported_campaigns(cls):
         return cls.objects.filter(is_reported=True)
@@ -105,8 +107,17 @@ def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
         # print(res)
         # send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
         # send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.user.email)
+   
         # campaign_creation_updation(instance.email,instance.status,instance.title,subject,message)
-
+        
+from django.utils import timezone
+@receiver(post_save, sender=Campaign)
+def check_campaign_end_date(sender, instance, **kwargs):
+    now = timezone.now().date()
+    if instance.end_date < now and instance.status == CampaignChoices.PENDING:
+        instance.status = CampaignChoices.COMPLETED  
+        instance.save(update_fields=['status'])
+        
 class Documents(BaseModel):
     campaign     = models.ForeignKey(Campaign,on_delete=models.CASCADE,related_name="documents",blank=True,null=True)
     doc_file     = models.FileField(upload_to="campaign/documents/",blank=True,null=True)
