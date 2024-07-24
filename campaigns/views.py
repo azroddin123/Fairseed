@@ -276,6 +276,7 @@ class AddCampaignApi(APIView):
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
                         uploaded_docs = request.FILES.getlist("documents")
+                        print("--------------------docs-------------",uploaded_docs)
                         documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
                         Documents.objects.bulk_create(documents_to_create)
                         print("---------------Bank KYC Saving---------------------")
