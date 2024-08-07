@@ -12,6 +12,7 @@ shortuuid
 pymysql
 django-tinymce
 celery
+django_celery_beat
 Markdown
 openpyxl
 requests

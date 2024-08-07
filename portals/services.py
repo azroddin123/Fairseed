@@ -7,7 +7,9 @@ from django.core.mail import EmailMultiAlternatives
 
 def generate_token(email):
     payload = {
-        "email" :email
+        "email" :email,
+        # 'exp':datetime.datetime.utcnow()+datetime.timedelta(days=1),
+        'iat':datetime.datetime.utcnow()
     }
     token = jwt.encode(payload, "asdfghjkhgfdsasdrtyu765rewsazxcvbnjkio908765432wsxcdfrt", algorithm="HS256")
     return token

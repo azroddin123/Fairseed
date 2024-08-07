@@ -1,3 +1,5 @@
+from time import localtime
+import openpyxl
 from .serializers import *
 from accounts.serializers import * 
 from .models import *
@@ -216,8 +218,27 @@ class UserApi2(GenericMethodsMixin,APIView):
 class CampaignAdminApi2(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignDocumentSerializer
-    create_serializer_class = CampaignSerializer
+    # create_serializer_class = CampaignSerializer
     lookup_field  = "id"
+    
+    def put(self, request, pk, *args, **kwargs):
+        try : 
+            with transaction.atomic():
+                    filter = {self.lookup_field: pk}
+                    object_instance = self.model.objects.get(**filter)
+                    print("---------------------",request.data,request.thisUser)
+                    request.data["user"]  = request.thisUser.id
+                    campaign_serializer = CampaignSerializer(object_instance,data=request.data,partial=True)
+                    if campaign_serializer.is_valid(raise_exception=True):
+                        campaign = campaign_serializer.save()
+                        print("---------------Document saved---------------------")
+                        uploaded_docs = request.FILES.getlist("documents")
+                        print("--------------------docs-------------",uploaded_docs)
+                        documents_to_create = [Documents(doc_file=item, campaign=campaign) for item in uploaded_docs]
+                        Documents.objects.bulk_create(documents_to_create)
+                        return Response({"error" : False, "message" : "Campaign Documents Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
+        except Exception as e :
+            return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -456,3 +477,37 @@ class ExportToCSV(APIView):
 
 class GenericSearchAPI(APIView):
     pass
+
+class ExportExcelView(APIView):
+    def get(self, request, *args, **kwargs):
+        # Create a workbook and a worksheet
+        workbook = openpyxl.Workbook()
+        worksheet = workbook.active
+        worksheet.title = 'Donor Data'
+
+        # Write the header
+        headers = ['campaign', 'user','donation_type','full_name','amount','email','city','country','mobile','pancard',
+                   'comment','payment_type','is_anonymous','status','is_approved','transaction_id','bank_name',
+                   'transaction_date','other_details','date']
+        worksheet.append(headers)
+
+        # Write data
+        queryset = Donor.objects.all()
+
+        for obj in queryset:
+            row = [obj.campaign.title, obj.user.username if obj.user else None, obj.donation_type,obj.full_name,obj.amount,
+                   obj.email, obj.city, obj.country, obj.mobile,
+                   obj.pancard, obj.comment, obj.payment_type, obj.is_anonymous,
+                   obj.status, obj.is_approved, obj.transaction_id, obj.bank_name,
+                   obj.transaction_date, obj.other_details, obj.date]
+            worksheet.append(row)
+        
+
+        # Create an HTTP response with the Excel file
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="donor_data.xlsx"'
+
+        # Save the workbook to the response
+        workbook.save(response)
+
+        return response

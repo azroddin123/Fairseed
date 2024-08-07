@@ -57,6 +57,7 @@ urlpatterns = [
     
     path('donors',DonorsApi.as_view()),
     path('donors/<str:pk>',DonorsApi.as_view()),
+    path('export-donordata/nt/',ExportExcelView.as_view()),
     
     path('documents',DocumentAPI.as_view()),
     path('documents/<str:pk>',DocumentAPI.as_view()),

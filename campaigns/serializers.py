@@ -13,6 +13,7 @@ class CampaignCategorySerializer(ModelSerializer):
 
 class CampaignSerializer(ModelSerializer):
     category_name = serializers.SerializerMethodField(read_only=True)
+    c_id=serializers.IntegerField(read_only=True)
     class Meta :
         model  = Campaign
         fields = "__all__"
@@ -65,6 +66,7 @@ class CampaignAdminSerializer(ModelSerializer):
     donor_count       = serializers.SerializerMethodField(read_only=True)
     withdrawal_status = serializers.SerializerMethodField(read_only=True)
     documents         = DocumentSerializer1(many=True, read_only=True)
+    c_id=serializers.IntegerField(read_only=True)
     class Meta :
         model  = Campaign
         fields = ('id','title','campaign_image','story','summary','goal_amount','zakat_eligible','location','fund_raised','end_date','days_left','status',"is_reported","is_successful","is_featured","user","category",'donor_count','rasing_for','documents','withdrawal_status','c_id','notes')
@@ -86,7 +88,7 @@ class RHSerializer(ModelSerializer):
         
 class CampaignDocumentSerializer(ModelSerializer):
     user        = UserAdminSerializer(read_only=True)
-    documents   = DocumentSerializer1(many=True, read_only=True)
+    documents   = DocumentSerializer1(many=True)
     donor_count = serializers.SerializerMethodField(read_only=True)
     category    = CampaignCategorySerializer(read_only=True)
     revision_history = RHSerializer(many=True, read_only=True)
@@ -101,11 +103,11 @@ class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
     category    = serializers.SerializerMethodField(read_only=True)
     donor       = DonorSerializer1(source="donors",many=True,read_only=True)
-    
+    documents         = DocumentSerializer1(many=True, read_only=True)
     donor_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
         model   = Campaign
-        fields  = ('id','title','campaign_image','story','summary','goal_amount','fund_raised','end_date','location','days_left','status','zakat_eligible','user','category','donor','donor_count','c_id','notes')
+        fields  = ('id','title','campaign_image','story','documents','summary','goal_amount','fund_raised','end_date','location','days_left','status','zakat_eligible','user','category','donor','donor_count','c_id','notes')
     
     def get_user(self,obj):
         return obj.user.username

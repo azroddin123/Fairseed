@@ -32,6 +32,16 @@ CORS_ALLOW_HEADERS = [
 ]
 ALLOWED_HOSTS = ["*",]
 
+CORS_ALLOWED_ORIGINS = [
+
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:9000",    
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 AUTH_USER_MODEL = 'accounts.User'
 
 
@@ -57,6 +67,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_seed',
+    'django_celery_beat',
     'tinymce',
 
     ]
@@ -74,12 +85,6 @@ REST_FRAMEWORK = {
     'DEFAULT_LIMIT': 20,  # Set the default limit for limit-based pagination
 }
 
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=4),
-}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -165,7 +170,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os 
 # STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
-CORS_ORIGIN_ALLOW_ALL = True
+
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_HOST_USER = '33azharoddin@gmail.com'
@@ -185,11 +190,15 @@ EMAIL_USE_SSL = False
 
 
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+#configured for celery and celeery-beat
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler' 
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
+# CELERY_WORKER_CONCURRENCY = 4
 
 
 PROD_MERCHANT_ID = "FAIRSEEDONLINE"   

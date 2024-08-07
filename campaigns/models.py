@@ -27,7 +27,7 @@ class Campaigncategory(BaseModel):
 
 class Campaign(BaseModel):
     campaign_image    = models.ImageField(upload_to='campaign/campaign_images/',null=True,blank=True)
-    c_id              = models.PositiveIntegerField(blank=True,null=True)
+    c_id              = models.PositiveIntegerField(unique=True,blank=True,null=True)
     title             = models.CharField(max_length=124)
     category          = models.ForeignKey(Campaigncategory,on_delete=models.CASCADE)
     user              = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True,related_name="campaigns")
