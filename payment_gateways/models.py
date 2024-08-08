@@ -9,44 +9,28 @@ class PGSetting(BaseModel):
     # What will be the decimal format of the number 
     decimal_format    = models.CharField(max_length=124) 
 
-class PayPal(BaseModel):
-    percentage_fee   = models.CharField(max_length=124)
-    fee_cents        = models.CharField(max_length=124)
-    paypal_account   = models.CharField(max_length=124)
-    paypal_sandbox   = models.BooleanField(default=False)
-    is_enabled           = models.BooleanField(default=False)
-
-class Stripe(BaseModel):
-    fee_percent       = models.IntegerField()
-    fee_cents         = models.IntegerField()
-    stripe_public_key = models.CharField(max_length=124)
-    stripe_secret_key = models.CharField(max_length=124)
-    is_enabled            = models.BooleanField(default=False)
 
 class BankTransfer(BaseModel) :
     fee_percent  = models.IntegerField()
     bank_details = models.TextField()
-    is_enabled       = models.BooleanField(default=True)
-
-
-class RazorPay(BaseModel):
-    razorpay_key    = models.CharField(max_length=154)
-    razorpay_secret = models.CharField(max_length=154)
-    is_enabled          = models.BooleanField(default=False)
-    fee_percent     = models.IntegerField()
-    fee_cents       = models.IntegerField()
-
+    is_enabled   = models.BooleanField(default=True)
 
 class PhonePay(BaseModel):
     phonepay_key    = models.CharField(max_length=154)
     phonepay_secret = models.CharField(max_length=154)
     fee_percent     = models.IntegerField()
     fee_cents       = models.IntegerField()
-    is_enabled          = models.BooleanField(default=False)
+    is_enabled      = models.BooleanField(default=False)
 
+    def save(self,*args, **kwargs):
+    # check the record count if it is one then update the existing one otherwise save the record 
+        count = PhonePay.objects.count()
+        print(count)
+        if count == 0  :
+            return super(PhonePay,self).save(*args, **kwargs)
+        else :
+            obj = PhonePay.objects.all()
+            obj.delete()
+            return super(PhonePay,self).save(*args, **kwargs)
 
-class QRTransfer(BaseModel):
-    fee_percent     = models.IntegerField()
-    qr_path         = models.ImageField(upload_to="static/media_files/",blank=True,null=True)
-    is_enabled          = models.BooleanField(default=False)
 

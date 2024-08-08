@@ -5,13 +5,16 @@ from portals.choices import UserChoices,RoleChoices
 from portals.models import BaseModel
 import uuid
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from fairseed.task import send_email_fun
+from fairseed.settings import EMAIL_HOST_USER
+
 class UserRole(BaseModel):
-    role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True)
+    role_name  = models.CharField(choices=RoleChoices.choices,max_length=25,unique=True,)
     def __str__(self) -> str:
         return self.role_name
 
-# we are able to create superadmin 
-# when user role is admin at that time is_admin==True 
 class User(AbstractBaseUser):
     id         = models.UUIDField(default=uuid.uuid4,primary_key=True)
     email      = models.EmailField(
@@ -21,16 +24,16 @@ class User(AbstractBaseUser):
     )
     is_admin         = models.BooleanField(default=False)
     username         = models.CharField(max_length = 50)
+    profile_pic      = models.ImageField(upload_to="user/",null=True,blank=True)
     mobile_number    = models.CharField(max_length=20,unique=True,blank=True,null=True)
     city             = models.CharField(max_length = 50 ,blank=True, null=True)
-    country          = models.CharField(max_length=50, blank=True, null=True)
-    user_type        = models.CharField(choices=UserChoices.choices,max_length=25)
+    country          = models.CharField(max_length=50,default="India")
+    user_type        = models.CharField(choices=UserChoices.choices,max_length=25,default=UserChoices.INDIVIDUAL)
     accepted_policy  = models.BooleanField(default=False)
 
     created_on       = models.DateTimeField(auto_now_add=True,editable=False)
     updated_on       = models.DateTimeField(auto_now=True)
     is_active        = models.BooleanField(default=True)
-
     user_role        = models.ForeignKey(UserRole,on_delete=models.CASCADE,null=True,blank=True)
     
     objects    = UserManager()
@@ -54,5 +57,24 @@ class User(AbstractBaseUser):
         return self.is_admin
     
     def __str__(self) -> str:
-        return self.username
+        return self.email
     
+
+    def save(self, *args, **kwargs):
+        # Check if user_role is not set and assign the default role
+        if not self.user_role_id:
+            default_role = UserRole.objects.get(role_name='NORMAL')  
+            self.user_role = default_role
+        # Call the original save method
+        super().save(*args, **kwargs)
+
+    
+# @receiver(post_save, sender=User)
+# def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
+#     print("in celery")
+#     if created:
+#         subject = "Fairseed User Creation Mail"
+#         message = f"Your User '{instance.email}' has been created."
+#         if instance.email : 
+#             send_email_fun.delay(subject, message, EMAIL_HOST_USER, instance.email)
+        

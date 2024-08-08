@@ -1,22 +1,17 @@
 from django.db import models
-
-# Create your models here.
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from portals.models import BaseModel
-
 
 # from portals.singleton import SingletonModel,SingletonModelManager,ConcreteSingletonModel
 class GeneralSetting(BaseModel):
     namesite                    = models.CharField(max_length=32)
     welcome_text                = models.CharField(max_length=32)
-    welcome_subtitle            = models.CharField(max_length=32)
+    welcome_subtitle            = models.CharField(max_length=32,blank=True,null=True)
     description                 = models.CharField(max_length=124)
     email_admin                 = models.EmailField(max_length=254)
     tandc_url                   = models.CharField(max_length=254)
     privacy_policy_url          = models.CharField(max_length=254)
     email_no_reply              = models.CharField(max_length=124)
-
+    date_format                 = models.CharField(max_length=254,default="dd-mm-yyyy")
     new_registration_enabled    = models.BooleanField(default=True)
     auto_approve_enabled        = models.BooleanField(default=False)
     email_verification_enabled  = models.BooleanField(default=False)
@@ -24,6 +19,8 @@ class GeneralSetting(BaseModel):
     google_login_enabled        = models.BooleanField(default=False)
     captcha_enabled             = models.BooleanField(default=False)
     input_field_enabled         = models.BooleanField(default=False)
+    keywords                      = models.JSONField(default=list, blank=True, null=True)
+
     
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 
@@ -35,6 +32,8 @@ class GeneralSetting(BaseModel):
             obj = GeneralSetting.objects.all()
             obj.delete()
             return super(GeneralSetting,self).save(*args, **kwargs)
+    
+   
 
 class Keyword(BaseModel):
     gs   = models.ForeignKey(GeneralSetting,on_delete=models.CASCADE,blank=True,null=True)
@@ -47,8 +46,6 @@ class Limit(BaseModel):
     donation_min_amount     = models.PositiveIntegerField()
     donation_max_amount     = models.PositiveIntegerField()
     campaign_max_amount     = models.PositiveIntegerField()
-    max_donation_amount     = models.PositiveIntegerField()
-    
     
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 
@@ -66,7 +63,6 @@ class SocialProfile(BaseModel):
     facebook_url  = models.CharField(max_length=124)
     twitter_url   = models.CharField(max_length=124)
     instagram_url = models.CharField(max_length=124)
-
     def save(self,*args, **kwargs):
         # check the record count if it is one then update the existing one otherwise save the record 
         count = SocialProfile.objects.count()
@@ -79,18 +75,29 @@ class SocialProfile(BaseModel):
             return super(SocialProfile,self).save(*args, **kwargs)
   
 class LandingPage(BaseModel):
-    logo              = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    logo_footer       = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    favicon           = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_header      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_bottom      = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    avtar             = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
-    image_category    = models.ImageField(upload_to="static/media_files/",blank=True,null=True,)
+    logo              = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    logo_footer       = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    favicon           = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    image_header      = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    image_bottom      = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    avtar             = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
+    image_category    = models.ImageField(upload_to="landing_page/",blank=True,null=True,)
     default_link_color= models.CharField(max_length=45)
+    
+    def save(self,*args, **kwargs):
+    # check the record count if it is one then update the existing one otherwise save the record 
+        count = LandingPage.objects.count()
+        print(count)
+        if count == 0  :
+            return super(LandingPage,self).save(*args, **kwargs)
+        else :
+            obj = LandingPage.objects.all()
+            obj.delete()
+            return super(LandingPage,self).save(*args, **kwargs)
 
 class Pages(BaseModel):
     title       = models.CharField(max_length=50)
-    slug        = models.CharField(max_length=124)
+    slug        = models.CharField(unique=True,max_length=124)
     show_navbar = models.BooleanField(default=False)
     show_footer = models.BooleanField(default=True)
     show_page   = models.BooleanField(default=True)

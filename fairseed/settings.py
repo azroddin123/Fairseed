@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import pymysql
+pymysql.install_as_MySQLdb()
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,9 +27,20 @@ SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# CORS_ALLOW_HEADERS = [
-#     "*",
-# ]
+CORS_ALLOW_HEADERS = [
+    "*",
+]
+ALLOWED_HOSTS = ["*",]
+
+CORS_ALLOWED_ORIGINS = [
+
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:9000",    
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -36,7 +48,6 @@ AUTH_USER_MODEL = 'accounts.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,13 +62,14 @@ INSTALLED_APPS = [
     'campaigns',
     'payment_gateways',
     'portals',
-
     # Packages 
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'django_seed'
-    
+    'django_seed',
+    'django_celery_beat',
+    'tinymce',
+
     ]
 
 REST_FRAMEWORK = {
@@ -73,12 +85,6 @@ REST_FRAMEWORK = {
     'DEFAULT_LIMIT': 20,  # Set the default limit for limit-based pagination
 }
 
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=4),
-}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,7 +94,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'fairseed.middlewares.CustomAuthentication'
+    'portals.middlewares.CustomAuthentication'
+    
 ]
 ROOT_URLCONF = 'fairseed.urls'
 TEMPLATES = [
@@ -109,11 +116,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fairseed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'NAME': 'fairseed_db',
+		'USER': 'root',
+		'PASSWORD': 'password',
+		'HOST':'localhost',
+		'PORT':'3306',
+	}
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -135,28 +153,55 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 LANGUAGE_CODE = 'en-us'
 # settings.py
-
-TIME_ZONE = 'Asia/Kolkata'
-USE_TZ = True
-
-# TIME_ZONE = 'UTC'
 USE_I18N = True
 # USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR.joinpath("media/")
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR.joinpath('static/')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os 
-
 # STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
 
-ALLOWED_HOSTS = ['127.0.0.1','.vercel.app','.now.sh','*']
-CORS_ORIGIN_ALLOW_ALL = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = '33azharoddin@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tmhzemmcwirzimmc'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True 
+# EMAIL_USE_SSL = False
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'info@fairseed.org'
+EMAIL_HOST_PASSWORD = 'yuzddbbwnldaxxdk'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True 
+EMAIL_USE_SSL = False
+
+
+
+#configured for celery and celeery-beat
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler' 
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+# CELERY_WORKER_CONCURRENCY = 4
+
+
+PROD_MERCHANT_ID = "FAIRSEEDONLINE"   
+PROD_SALT_KEY    = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
+PROD_SALT_INDEX  = 1 
+REDIRECT_URL     ="https://fairseed.org"
