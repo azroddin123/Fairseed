@@ -32,16 +32,6 @@ CORS_ALLOW_HEADERS = [
 ]
 ALLOWED_HOSTS = ["*",]
 
-CORS_ALLOWED_ORIGINS = [
-
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:9000",    
-]
-
-CORS_ORIGIN_ALLOW_ALL = True
-
 AUTH_USER_MODEL = 'accounts.User'
 
 
@@ -68,6 +58,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_seed',
     'django_celery_beat',
+    'redis',
     'tinymce',
 
     ]
@@ -84,6 +75,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,  # Set the default number of items per page for page-based pagination
     'DEFAULT_LIMIT': 20,  # Set the default limit for limit-based pagination
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -120,6 +112,9 @@ WSGI_APPLICATION = 'fairseed.wsgi.application'
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
+#         'OPTIONS': {
+#             'timeout': 10,  # Wait up to 10 seconds for a lock
+#         },
 #     }
 # }
 
@@ -166,11 +161,12 @@ STATIC_ROOT = BASE_DIR.joinpath('static/')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 # 10 Mb limit
 
 import os 
 # STATICFILES_DIRS = os.path.join(BASE_DIR,'static')
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles_build','static')
-
+CORS_ORIGIN_ALLOW_ALL = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = "smtp.gmail.com"
 # EMAIL_HOST_USER = '33azharoddin@gmail.com'
@@ -190,7 +186,7 @@ EMAIL_USE_SSL = False
 
 
 
-#configured for celery and celeery-beat
+#configured for celery beat
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']

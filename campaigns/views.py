@@ -124,10 +124,10 @@ class FeaturedCauseApi(APIView):
 class CampaignSearchAPIView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-                query_conditions = Q(status='Completed') | Q(status='Active')
-                queryset = Campaign.objects.filter(query_conditions)
-                serializer = CampaignAdminSerializer(queryset, many=True)
-                return Response({"error": False, "rows": serializer.data}, status=status.HTTP_200_OK)
+            query_conditions = Q(status='Completed') | Q(status='Active')
+            queryset = Campaign.objects.filter(query_conditions)
+            serializer = CampaignSerializer(queryset, many=True)
+            return Response({"error": False, "rows": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e:
             print("Error:", e)  # Debugging
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

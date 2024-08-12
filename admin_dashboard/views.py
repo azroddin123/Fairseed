@@ -1,4 +1,3 @@
-from time import localtime
 import openpyxl
 from .serializers import *
 from accounts.serializers import * 
@@ -218,17 +217,18 @@ class UserApi2(GenericMethodsMixin,APIView):
 class CampaignAdminApi2(GenericMethodsMixin,APIView):
     model = Campaign
     serializer_class = CampaignDocumentSerializer
-    # create_serializer_class = CampaignSerializer
+    create_serializer_class = CampaignSerializer
     lookup_field  = "id"
-    
+
     def put(self, request, pk, *args, **kwargs):
         try : 
             with transaction.atomic():
                     filter = {self.lookup_field: pk}
                     object_instance = self.model.objects.get(**filter)
                     print("---------------------",request.data,request.thisUser)
-                    request.data["user"]  = request.thisUser.id
-                    campaign_serializer = CampaignSerializer(object_instance,data=request.data,partial=True)
+                    request_data = request.data.copy()
+                    request_data["user"]  = request.thisUser.id
+                    campaign_serializer = CampaignSerializer(object_instance,data=request_data,partial=True)
                     if campaign_serializer.is_valid(raise_exception=True):
                         campaign = campaign_serializer.save()
                         print("---------------Document saved---------------------")
@@ -239,7 +239,6 @@ class CampaignAdminApi2(GenericMethodsMixin,APIView):
                         return Response({"error" : False, "message" : "Campaign Documents Saved Successfully" , "data" : campaign_serializer.data, "id" : campaign.id},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True , "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class CampaignEditApproval(GenericMethodsMixin,APIView):
@@ -354,11 +353,13 @@ class CausEditApi(GenericMethodsMixin,APIView):
             print("request_data",request.data)
             with transaction.atomic():
                 cause_edit = CauseEdit.objects.get(id=pk,approval_status="Pending")
+                print("cause_edit",cause_edit)
                 if request.data['approve_campaign'] == "true" :
                     campaign = Campaign.objects.get(id=cause_edit.campaign.id)
                     serializer = CampaignSerializer(campaign,data=cause_edit.campaign_data,partial=True)
                     serializer.is_valid(raise_exception=True)
                     serializer.save()
+                    print("cause_edit",cause_edit)
                     campaign.campaign_image = cause_edit.campaign_image
                     campaign.save()
                     docs = []

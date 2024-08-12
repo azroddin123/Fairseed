@@ -21,7 +21,12 @@ class CustomAuthentication:
     
         if not token:
            return JsonResponse({"Error" :"Credentials Not Found ..Please Login"},status=status.HTTP_403_FORBIDDEN)
-        payload = jwt.decode(token,"asdfghjkhgfdsasdrtyu765rewsazxcvbnjkio908765432wsxcdfrt",algorithms=['HS256'])
+        try:
+            payload = jwt.decode(token, "asdfghjkhgfdsasdrtyu765rewsazxcvbnjkio908765432wsxcdfrt", algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({"Error": "Token has expired. Please login again."}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.InvalidTokenError:
+            return JsonResponse({"Error": "Invalid token. Please login again."}, status=status.HTTP_401_UNAUTHORIZED)
         # print(payload)
         user = User.objects.filter(email=payload["email"]).first()
         request.thisUser = user
