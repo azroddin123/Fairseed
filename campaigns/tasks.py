@@ -12,6 +12,7 @@ def update_campaign_statuses():
     objects_to_update = [campaign for campaign in campaigns if campaign.days_left <= 0]
     
     for obj in objects_to_update:
+        print("Im here")
         if obj.days_left == 0 and obj.status != 'Completed':
             obj.status = 'Completed'
             obj.save(update_fields=['status'])

@@ -10,7 +10,7 @@ urlpatterns = [
     path('donate-money',DonatePaymentApi.as_view()),
     path('donate-money2',DonateMoneyAPI.as_view()),
     path('check-status/<str:pk>',CheckPaymentStatusAPi.as_view()),
-
+    path('payment-callback/', payment_callback, name='payment_callback'),
     
 
 ]

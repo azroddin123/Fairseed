@@ -1,4 +1,12 @@
+from datetime import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 import uuid
 import requests
 # Create your views here.
@@ -18,6 +26,8 @@ from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayReques
 from django.db import transaction
 from portals.email_utility import send_email_async
 from django.conf import settings
+
+
 class DonatePaymentApi(APIView):
     def post(self,request):
         # check donation type of request 
@@ -27,6 +37,7 @@ class DonatePaymentApi(APIView):
                 print("===========================",request.data)
                 data = request.data
                 payment_type = request.data.get('payment_type')
+                print("========================>",payment_type)
                 if payment_type == "UPI" :
                     print("in if part")
                     # merchant_id = "PGTESTPAYUAT100"  
@@ -43,7 +54,7 @@ class DonatePaymentApi(APIView):
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
                     ui_redirect_url  = settings.REDIRECT_URL
-                    s2s_callback_url = settings.REDIRECT_URL
+                    s2s_callback_url = "http://0.0.0.0:8000/donors/payment-callback/"
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     try:
                         amount = int(request.data.get('amount', 0)) * 100
@@ -61,9 +72,11 @@ class DonatePaymentApi(APIView):
                     pay_page_response = phonepe_client.pay(pay_page_request)
                     pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
                     request.POST._mutable = True
+                    
                     data['transaction_id'] = unique_transaction_id
-                    data['status'] = "Approved"
-                    data["is_approved"] = True
+                    data['status'] = "Pending"  
+                    data["is_approved"] = False
+                    
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid(raise_exception=True):
                         donor = serializer.save()
@@ -169,7 +182,7 @@ class CheckPaymentStatusAPi(APIView):
             current_status = { 
                 "status" : transaction_status_response.code,
                 "message" : transaction_status_response.message,
-                "transaction_State" : transaction_status_response.data.state
+                "transaction_State" : transaction_state
 
             }
             return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
@@ -182,3 +195,39 @@ class DonorApi(GenericMethodsMixin,APIView):
     serializer_class = DonorSerializer
     lookup_field = "id"
 
+@csrf_exempt
+def payment_callback(request):
+    if request.method == 'POST':
+        # Log the entire request data for debugging
+        logger.info(f"Received callback data: {request.POST}")
+        print("Check ++++++++++")
+        try:
+            transaction_id = request.POST.get('transaction_id')
+            payment_status = request.POST.get('status')
+
+            logger.info(f"Transaction ID: {transaction_id}, Status: {payment_status}")
+
+            donor = Donor.objects.filter(transaction_id=transaction_id).first()
+
+            if donor:
+                if payment_status == 'Pending':  # Adjust based on actual values from payment gateway
+                    donor.status = 'Approved'
+                    donor.is_approved = True
+                    donor.save(update_fields=['status', 'is_approved'])
+
+                    # Optionally send a confirmation email
+                    if donor.email:
+                        subject = "Donation Confirmation"
+                        msg = f"Your donation of amount {donor.amount} has been completed successfully."
+                        send_email_async(subject, msg, [donor.email])
+                    print("Success")
+                    return JsonResponse({'success': True, 'message': 'Transaction completed successfully'}, status=200)
+                else:
+                    return JsonResponse({'success': False, 'message': 'Transaction failed or is pending'}, status=400)
+            else:
+                return JsonResponse({'success': False, 'message': 'Transaction ID not found'}, status=404)
+        except Exception as e:
+            logger.error(f"Error processing callback: {e}")
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
