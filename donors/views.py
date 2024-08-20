@@ -1,4 +1,5 @@
 from datetime import timezone
+import threading
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -54,7 +55,7 @@ class DonatePaymentApi(APIView):
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
                     ui_redirect_url  = settings.REDIRECT_URL
-                    s2s_callback_url = "https://dev.fairseed.org:8000/donors/payment-callback/"
+                    s2s_callback_url = settings.REDIRECT_URL
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     try:
                         amount = int(request.data.get('amount', 0)) * 100
@@ -71,6 +72,10 @@ class DonatePaymentApi(APIView):
                     )
                     pay_page_response = phonepe_client.pay(pay_page_request)
                     pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+                    
+                    # Start payment status checking timer
+                    threading.Timer(360, CheckPaymentStatusAPi, args=[unique_transaction_id]).start()
+                    
                     request.POST._mutable = True
                     
                     data['transaction_id'] = unique_transaction_id
@@ -183,7 +188,6 @@ class CheckPaymentStatusAPi(APIView):
                 "status" : transaction_status_response.code,
                 "message" : transaction_status_response.message,
                 "transaction_State" : transaction_state
-
             }
             return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
         except Exception as e:
@@ -197,6 +201,7 @@ class DonorApi(GenericMethodsMixin,APIView):
 
 @csrf_exempt
 def payment_callback(request):
+    print(request.data)
     if request.method == 'POST':
         # Log the entire request data for debugging
         logger.info(f"Received callback data: {request.POST}")
