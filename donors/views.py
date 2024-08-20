@@ -172,8 +172,7 @@ class DonateMoneyAPI(APIView):
                 
                 
 
-class CheckPaymentStatusAPi(APIView):
-    def get(self,request,pk=None,):
+def CheckPaymentStatusAPi(pk=None):
         try :
             merchant_id = settings.PROD_MERCHANT_ID
             salt_key    = settings.PROD_SALT_KEY   
@@ -189,9 +188,9 @@ class CheckPaymentStatusAPi(APIView):
                 "message" : transaction_status_response.message,
                 "transaction_State" : transaction_state
             }
-            return Response({"transaction_status" : current_status},status=status.HTTP_200_OK)
+            return current_status
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return str(e)
 
 
 class DonorApi(GenericMethodsMixin,APIView):
