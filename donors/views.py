@@ -197,7 +197,7 @@ def update_transaction(request,unique_transaction_id,amount):
     response=phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)
     
     print(response)
-    
+    request.POST._mutable = True
     if response.success==True:
         data['transaction_id'] = unique_transaction_id
         data['status'] = "Approved"  
