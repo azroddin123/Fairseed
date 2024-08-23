@@ -3,6 +3,7 @@ from .views import *
 from .phone_pay import *
 import uuid
 
+app_name = 'donors'
 
 urlpatterns = [
     path('donor-details',DonorApi.as_view()),
