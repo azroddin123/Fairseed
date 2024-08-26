@@ -158,10 +158,8 @@ class DonorsApi(GenericMethodsMixin,APIView):
         try : 
             donor = Donor.objects.get(id=pk)
             serializer  = DonorSerializer(donor,data=request.data,partial=True)
-            post_save.disconnect(update_campaign, sender=Donor)
             if serializer.is_valid():
                 serializer.save()
-                post_save.connect(update_campaign, sender=Donor)
                 return Response({"error" : False , "data" : serializer.data , "message" : "Donor Updated Successfully"},status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : True, "message" : str(e)},status=status.HTTP_400_BAD_REQUEST)

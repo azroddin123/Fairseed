@@ -26,7 +26,7 @@ class DonorSerializer1(ModelSerializer):
     date = serializers.SerializerMethodField()
     class Meta :
         model = Donor
-        fields = ('is_anonymous','full_name','amount',"date")
+        fields = ('status','is_anonymous','full_name','amount',"date")
     
     def get_date(self, obj):
         # Format the date here

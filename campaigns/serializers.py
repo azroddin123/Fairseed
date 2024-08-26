@@ -110,7 +110,7 @@ class CampaignDocumentSerializer(ModelSerializer):
 class CampaignDetailSerializer(ModelSerializer):
     user        = serializers.SerializerMethodField(read_only=True)
     category    = serializers.SerializerMethodField(read_only=True)
-    donor       = DonorSerializer1(source="donors",many=True,read_only=True)
+    donor = serializers.SerializerMethodField(read_only=True)
     documents         = DocumentSerializer1(many=True, read_only=True)
     donor_count = serializers.SerializerMethodField(read_only=True)
     class Meta :
@@ -122,6 +122,13 @@ class CampaignDetailSerializer(ModelSerializer):
     
     def get_category(self,obj):
         return obj.category.name
+    
+    def get_donor(self, obj):
+        # Filter donors based on the 'status' field
+        approved_donors = obj.donors.filter(status='Approved')
+        # Serialize the filtered donors
+        serializer = DonorSerializer1(approved_donors, many=True)
+        return serializer.data
     
     def get_donor_count(self, obj):
         return obj.donors.count()

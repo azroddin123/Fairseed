@@ -32,16 +32,37 @@ class Donor(BaseModel):
     date             = models.DateField(auto_now_add=True,null=True,blank=True)
 
 
-@receiver(post_save,sender=Donor)
-def update_campaign(sender, instance, **kwargs):
-        print("post_save")
-        campaign = instance.campaign
-        required_amount = campaign.goal_amount - campaign.fund_raised
-        if instance.amount > required_amount:
-            raise ValidationError({"error": True, "message": f"You can make a donation for this campaign up to {required_amount} Rs Only"})
-        campaign.fund_raised += instance.amount
-        campaign.save()
+@receiver(post_save, sender=Donor)
+def update_campaign(sender, instance,created, **kwargs):
+    print("",created)
+    print("post_save signal triggered")
+    if kwargs.get('created', False):
+        print("New donor created, skipping...")
+        return
+    
+    if instance.pk:
+        print("pk==================>", instance.pk)
+        try:
+            original_instance = Donor.objects.get(pk=instance.pk)
+            print("Original status:", original_instance.status)
+            print("New status:", instance.status)
+            if instance.status == "Approved":
+                campaign = instance.campaign
+                required_amount = campaign.goal_amount - campaign.fund_raised
+                print("Required amount:", required_amount)
+                print("amount",instance.amount)
+                if instance.amount > required_amount:
+                    print(f"Donation amount {instance.amount} exceeds required amount.")
+                    raise ValidationError({
+                        "error": True,
+                        "message": f"You can make a donation for this campaign up to {required_amount} Rs only."
+                    })
 
+                campaign.fund_raised += instance.amount
+                campaign.save()
+                print("Campaign updated successfully.")
+        except Donor.DoesNotExist:
+            print("Donor instance does not exist.")
         
 # @receiver(post_save, sender=Donor)
 # def send_email_on_model_creation_or_update(sender, instance, created, **kwargs):
