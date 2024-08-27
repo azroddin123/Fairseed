@@ -71,8 +71,17 @@ class DonatePaymentApi(APIView):
                     pay_page_response = phonepe_client.pay(pay_page_request)
                     pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
                     
+                    request.POST._mutable = True
                     # Start payment status checking timer
                     threading.Timer(60, update_transaction, args=[request,unique_transaction_id,amount]).start()
+                    
+                    data['transaction_id'] = unique_transaction_id
+                    data['status'] = "Pending"
+                    data["is_approved"] = False
+                    
+                    serializer = DonorSerializer2(data=request.data)
+                    if serializer.is_valid(raise_exception=True):
+                        donor = serializer.save()
                     
                     return Response({'pay_page_url': pay_page_url ,"transaction_id" : unique_transaction_id}, status=201)
                 else :
@@ -202,6 +211,7 @@ def update_transaction(request,unique_transaction_id,amount):
         data['transaction_id'] = unique_transaction_id
         data['status'] = "Approved"  
         data["is_approved"] = True
+        
         serializer = DonorSerializer2(data=request.data)
         if serializer.is_valid(raise_exception=True):
             donor = serializer.save()
@@ -210,7 +220,7 @@ def update_transaction(request,unique_transaction_id,amount):
                 msg = "Your Donation Has been done successfully of amount ".format(amount)
                 print(donor.email,"--------------",donor.amount)
                 send_email_async(subject,msg,[donor.email])
-        return JsonResponse({"data" : serializer.data,"transaction_id" : unique_transaction_id}, status=201)
+        return JsonResponse({"error":"False",'data':serializer.data})
     else:
         return JsonResponse({"error":"Transaction failed"})
     
