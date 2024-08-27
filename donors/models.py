@@ -32,7 +32,7 @@ class Donor(BaseModel):
     date             = models.DateField(auto_now_add=True,null=True,blank=True)
 
 
-@receiver(post_save, sender=Donor)
+@receiver(post_save, sender=Donor,weak=False)
 def update_campaign(sender, instance,created, **kwargs):
     print("",created)
     print("post_save signal triggered")
