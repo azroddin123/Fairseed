@@ -92,7 +92,7 @@ class DonatePaymentApi(APIView):
                     request.data['amount'] = amount
                     print("amount==============>",amount)
                     serializer = DonorSerializer2(data=request.data)
-                    if serializer.is_valid():
+                    if serializer.is_valid(raise_exception=True):
                         print("=================>IN serializer")
                         donor = serializer.save()
                         if donor.email: 
