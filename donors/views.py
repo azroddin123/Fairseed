@@ -90,8 +90,10 @@ class DonatePaymentApi(APIView):
                     amount = int(request.data.get('amount', 0))  # Ensure amount is parsed for non-UPI case
                     request.POST._mutable = True
                     request.data['amount'] = amount
+                    print("amount==============>",amount)
                     serializer = DonorSerializer2(data=request.data)
                     if serializer.is_valid():
+                        print("=================>IN serializer")
                         donor = serializer.save()
                         if donor.email: 
                             subject = "Donation Email"
