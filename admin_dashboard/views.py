@@ -351,15 +351,17 @@ class CausEditApi(GenericMethodsMixin,APIView):
             print("request_data",request.data)
             with transaction.atomic():
                 cause_edit = CauseEdit.objects.get(id=pk,approval_status="Pending")
-                print("cause_edit",cause_edit)
+                print("cause_edit",cause_edit.campaign_data)
                 if request.data['approve_campaign'] == "true" :
                     campaign = Campaign.objects.get(id=cause_edit.campaign.id)
                     serializer = CampaignSerializer(campaign,data=cause_edit.campaign_data,partial=True)
-                    serializer.is_valid(raise_exception=True)
-                    serializer.save()
-                    print("cause_edit",cause_edit)
-                    campaign.campaign_image = cause_edit.campaign_image
-                    campaign.save()
+                    if serializer.is_valid(raise_exception=True):
+                        serializer.save()
+                    print("cause_edit",cause_edit.campaign_image)
+                    if cause_edit.campaign_image is not None and cause_edit.campaign_image != '':
+                        print("in if part")
+                        campaign.campaign_image = cause_edit.campaign_image
+                        campaign.save()
                     docs = []
                     for doc_field_name in ["doc1", "doc2", "doc3"]:
                         doc_value = getattr(cause_edit, doc_field_name)
