@@ -161,7 +161,7 @@ class LandingPageApi(APIView):
         try : 
             data = {
             "total_campaign" : Campaign.objects.count(),
-            "total_donation" : Donor.objects.aggregate(Sum('amount'))['amount__sum'] or 0,
+            "total_donation" : Campaign.objects.aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
             "donor_count" : Donor.objects.count(),
             "successful_campaign" : Campaign.objects.filter(is_successful=True).count(),
             # this should be done when the amount is credited to student account.

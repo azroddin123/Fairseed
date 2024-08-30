@@ -15,9 +15,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 #Scheduling the task
 app.conf.beat_schedule={
-    'Update status daily':{
+    'daily Update status ':{
         'task':'campaigns.tasks.update_campaign_statuses',
-        'schedule':crontab(hour=17,minute=2),
+        'schedule':crontab(hour=20,minute=5),
     }
 }
 
