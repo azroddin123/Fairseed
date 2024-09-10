@@ -25,7 +25,7 @@ ADMIN_SITE_HEADER = 'FairSeed Admin'
 SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 CORS_ALLOW_HEADERS = [
     "*",
