@@ -25,7 +25,7 @@ ADMIN_SITE_HEADER = 'FairSeed Admin'
 SECRET_KEY = 'django-insecure-gw^-zlx%6zd$iso&-7iiixo1z66^%c_dvgaj3=4=&pwiawuaf%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CORS_ALLOW_HEADERS = [
     "*",
@@ -197,13 +197,13 @@ CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_WORKER_CONCURRENCY = 4
 
 
-# PROD_MERCHANT_ID = "FAIRSEEDONLINE"   
-# PROD_SALT_KEY    = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
-# PROD_SALT_INDEX  = 1 
-# REDIRECT_URL     ="https://fairseed.org"
-
-
-PROD_MERCHANT_ID = "PGTESTPAYUAT100"   
-PROD_SALT_KEY    = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"    
+PROD_MERCHANT_ID = "FAIRSEEDONLINE"   
+PROD_SALT_KEY    = "fe43ebc9-626b-4dc3-8d4f-fa28b20846b9"    
 PROD_SALT_INDEX  = 1 
-REDIRECT_URL     ="https://dev.fairseed.org"
+REDIRECT_URL     ="https://fairseed.org"
+
+
+# PROD_MERCHANT_ID = "PGTESTPAYUAT100"   
+# PROD_SALT_KEY    = "cc2f75ad-01c2-4417-92f8-32964ce8d12d"    
+# PROD_SALT_INDEX  = 1 
+# REDIRECT_URL     ="https://dev.fairseed.org"

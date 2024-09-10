@@ -80,7 +80,8 @@ class Campaign(BaseModel):
     
     def save(self, *args, **kwargs):
         # Check if the goal amount is reached
-        if self.fund_raised >= self.goal_amount:
+        condition=self.fund_raised >= self.goal_amount or self.days_left==0 and self.status!="Completed"
+        if condition:
             self.is_successful = True
             self.status="Completed"
         else:

@@ -46,13 +46,14 @@ class DonatePaymentApi(APIView):
                     merchant_id = settings.PROD_MERCHANT_ID
                     salt_key = settings.PROD_SALT_KEY   
                     salt_index = settings.PROD_SALT_INDEX
-                    # env = Env.PROD 
-                    env = Env.UAT 
+                    env = Env.PROD 
+                    # env = Env.UAT 
 
                     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
                     unique_transaction_id = str(uuid.uuid4())[:-2]
                     ui_redirect_url  = settings.REDIRECT_URL
-                    s2s_callback_url = request.build_absolute_uri(reverse('donors:payment_callback'))
+                    s2s_callback_url = settings.REDIRECT_URL
+                    # s2s_callback_url = request.build_absolute_uri(reverse('donors:payment_callback'))
                     print(s2s_callback_url)
                     # s2s_callback_url = "http://0.0.0.0:8000/donors/check-status/"+unique_transaction_id
                     try:
@@ -201,7 +202,7 @@ def update_transaction(request,unique_transaction_id,amount):
     merchant_id = settings.PROD_MERCHANT_ID
     salt_key = settings.PROD_SALT_KEY   
     salt_index = settings.PROD_SALT_INDEX 
-    env = Env.UAT 
+    env = Env.PROD 
     
     phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
     
