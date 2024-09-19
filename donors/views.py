@@ -196,36 +196,42 @@ class DonorApi(GenericMethodsMixin,APIView):
     lookup_field = "id"
 
 
-def update_transaction(request,unique_transaction_id,amount):
-    data=request.data
-    print(data)
-    merchant_id = settings.PROD_MERCHANT_ID
-    salt_key = settings.PROD_SALT_KEY   
-    salt_index = settings.PROD_SALT_INDEX 
-    env = Env.PROD 
-    
-    phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
-    
-    response=phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)
-    
-    print(response)
-    request.POST._mutable = True
-    if response.success==True:
-        data['transaction_id'] = unique_transaction_id
-        data['status'] = "Approved"  
-        data["is_approved"] = True
-        
-        serializer = DonorSerializer2(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            donor = serializer.save()
-            if donor.email : 
+def update_transaction(unique_transaction_id, amount):
+    try:
+        donor = Donor.objects.get(transaction_id=unique_transaction_id)
+
+        merchant_id = settings.PROD_MERCHANT_ID
+        salt_key = settings.PROD_SALT_KEY
+        salt_index = settings.PROD_SALT_INDEX
+        env = Env.PROD
+
+        phonepe_client = PhonePePaymentClient(merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env)
+        response = phonepe_client.check_status(merchant_transaction_id=unique_transaction_id)
+
+        print(response)
+
+        if response.data.state=="COMPLETED":
+            donor.status = "Approved"
+            donor.is_approved = True
+            donor.save()
+
+            if donor.email:
                 subject = "Donation Email"
-                msg = "Your Donation Has been done successfully of amount ".format(amount)
-                print(donor.email,"--------------",donor.amount)
-                send_email_async(subject,msg,[donor.email])
-        return JsonResponse({"error":"False",'data':serializer.data})
-    else:
-        return JsonResponse({"error":"Transaction failed"})
+                msg = "Your Donation has been approved successfully for the amount {}".format(amount)
+                send_email_async(subject, msg, [donor.email])
+
+            return JsonResponse({"error": "False", 'data': donor})
+        elif response.data.state=="PENDING":
+            return JsonResponse({"error": "False","message": "Transaction Pending"})
+        elif response.data.state=="FAILED":
+            donor.status = "Rejected"
+            donor.is_approved = False
+            donor.save()
+            return JsonResponse({"error":"False",'message':"Transaction Failed"})
+    except Donor.DoesNotExist:
+        return JsonResponse({"error": "Transaction not found"})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
     
 @csrf_exempt    
 def payment_callback(request):
