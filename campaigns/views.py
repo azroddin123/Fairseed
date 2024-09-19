@@ -124,8 +124,7 @@ class FeaturedCauseApi(APIView):
 class CampaignSearchAPIView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            query_conditions = Q(status='Completed') | Q(status='Active')
-            queryset = Campaign.objects.filter(query_conditions)
+            queryset = Campaign.objects.filter(status="Active")
             serializer = CampaignSerializer(queryset, many=True)
             return Response({"error": False, "rows": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e:
