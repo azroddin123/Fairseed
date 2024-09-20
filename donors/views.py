@@ -74,7 +74,7 @@ class DonatePaymentApi(APIView):
                     
                     request.POST._mutable = True
                     # Start payment status checking timer
-                    threading.Timer(60, update_transaction, args=[request,unique_transaction_id,amount]).start()
+                    threading.Timer(60, update_transaction, args=[unique_transaction_id,amount]).start()
                     
                     data['transaction_id'] = unique_transaction_id
                     data['status'] = "Pending"
