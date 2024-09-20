@@ -74,7 +74,14 @@ class DonatePaymentApi(APIView):
                     
                     request.POST._mutable = True
                     # Start payment status checking timer
-                    threading.Timer(60, update_transaction, args=[unique_transaction_id,amount]).start()
+                    t=60
+                    for i in range(6):
+                        threading.Timer(t, update_transaction, args=[unique_transaction_id,amount]).start()
+                        if i==0:
+                            t+=60
+                        else:
+                            t+=120
+                            
                     
                     data['transaction_id'] = unique_transaction_id
                     data['status'] = "Pending"
@@ -210,7 +217,7 @@ def update_transaction(unique_transaction_id, amount):
 
         print(response)
 
-        if response.data.state=="COMPLETED":
+        if response.data.state=="COMPLETED" and donor.status!="Approved":
             donor.status = "Approved"
             donor.is_approved = True
             donor.save()
