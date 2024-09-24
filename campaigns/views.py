@@ -148,7 +148,7 @@ class CampaignByCategoryApi(APIView):
 class CampaignDetailsApi(APIView):
     def get(self,request,pk,*args, **kwargs): 
         try :       
-            data = Campaign.objects.get(pk=pk)
+            data = Campaign.objects.get(c_id=pk)
             serializer = CampaignDetailSerializer(data)
             return Response({"error": False, "data" : serializer.data},status=status.HTTP_200_OK)
         except Exception as e :
@@ -161,7 +161,7 @@ class LandingPageApi(APIView):
             data = {
             "total_campaign" : Campaign.objects.count(),
             "total_donation" : Campaign.objects.aggregate(Sum('fund_raised'))['fund_raised__sum'] or 0,
-            "donor_count" : Donor.objects.count(),
+            "donor_count" : Donor.objects.filter(status="Approved").count(),
             "successful_campaign" : Campaign.objects.filter(is_successful=True).count(),
             # this should be done when the amount is credited to student account.
             "student_benefited" : Campaign.objects.filter(is_withdrawal=True).count()

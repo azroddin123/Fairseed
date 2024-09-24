@@ -24,7 +24,7 @@ urlpatterns = [
     path('category',CampaignFilterApi.as_view()),
     path('category', CampaignByCategoryApi.as_view()),
     path('category/<str:pk>',CampaignByCategoryApi2.as_view()),
-    path('campaign-details/<str:pk>', CampaignDetailsApi.as_view()),
+    path('campaign-details/<int:pk>', CampaignDetailsApi.as_view()),
     path('global-search',CampaignSearchAPIView.as_view()),
    
     # add campaign
