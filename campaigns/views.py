@@ -96,6 +96,11 @@ class FeaturedCauseApi(APIView):
         try :
             data = Campaign.objects.filter(status="Active")
             response = paginate_data(model=Campaign,serializer=CampaignAdminSerializer,request=request,data=data)
+            about_images=[
+                request.build_absolute_uri('/media/about/Fairseed1.png'),
+                request.build_absolute_uri('/media/about/Fairseed2.png')
+            ]
+            response['about_images']=about_images
             return Response(response,status=status.HTTP_200_OK)
         except Exception as e :
             return Response({"error" : str(e) },status=status.HTTP_400_BAD_REQUEST)
