@@ -224,7 +224,19 @@ def update_transaction(unique_transaction_id, amount):
 
             if donor.email:
                 subject = "Donation Email"
-                msg = "Your Donation has been approved successfully for the amount {}".format(amount)
+                msg = """
+                    Thankyou for your donation of Rs.{}
+
+                    You are empowering the needy through education.
+
+                    FairSeed is India's unique Education based crowdfunding platform.
+
+                    If all of us together reroutes minimum 10% of our annual charity towards educational upliftment, soon the positive change will appear.
+
+                    Regards
+
+                    Team FairSeed.org        
+                """.format(amount)
                 send_email_async(subject, msg, [donor.email])
 
             return JsonResponse({"error": "False", 'data': donor})
