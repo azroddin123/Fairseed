@@ -226,17 +226,16 @@ def update_transaction(unique_transaction_id, amount):
             if donor.email:
                 subject = "Donation Email"
                 msg = """
-                    Thankyou for your donation of Rs.{}
+                <p>Thank you for your donation of Rs.{}</p>
 
-                    You are empowering the needy through education.
+                <p>You are empowering the needy through education.</p>
 
-                    FairSeed is India's unique Education based crowdfunding platform.
+                <p>FairSeed is India's unique education-based crowdfunding platform.</p>
 
-                    If all of us together reroutes minimum 10% of our annual charity towards educational upliftment, soon the positive change will appear.
+                <p>If all of us together reroute a minimum of 10% of our annual charity towards educational upliftment, soon the positive change will appear.</p>
 
-                    Regards
-
-                    Team FairSeed.org        
+                <p>Regards,<br>
+                Team <a href="https://www.fairseed.org">FairSeed.org</a></p>
                 """.format(amount)
                 send_email_async(subject, msg, [donor.email])
 
