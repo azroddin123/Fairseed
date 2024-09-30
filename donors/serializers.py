@@ -14,6 +14,7 @@ class DonorSerializer2(ModelSerializer):
 
 class DonorSerializer(ModelSerializer):
     campaign_title = serializers.SerializerMethodField()
+    c_id=serializers.SerializerMethodField()
     class Meta:
         model = Donor
         fields = "__all__"
@@ -21,6 +22,9 @@ class DonorSerializer(ModelSerializer):
     def get_campaign_title(self, obj):
         return obj.campaign.title
         # return obj.campaign.campaign_name if obj.campaign else None
+
+    def get_c_id(self,obj):
+        return obj.campaign.c_id if obj.campapaign else None
 
 class DonorSerializer1(ModelSerializer):
     date = serializers.SerializerMethodField()
