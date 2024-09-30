@@ -24,7 +24,7 @@ class DonorSerializer(ModelSerializer):
         # return obj.campaign.campaign_name if obj.campaign else None
 
     def get_c_id(self,obj):
-        return obj.campaign.c_id if obj.campapaign else None
+        return obj.campaign.c_id if obj.campaign else None
 
 class DonorSerializer1(ModelSerializer):
     date = serializers.SerializerMethodField()
