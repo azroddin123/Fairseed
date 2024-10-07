@@ -125,7 +125,7 @@ class CampaignDetailSerializer(ModelSerializer):
     
     def get_donor(self, obj):
         # Filter donors based on the 'status' field
-        approved_donors = obj.donors.filter(status='Approved')
+        approved_donors = obj.donors.filter(status='Approved').order_by('-date')
         # Serialize the filtered donors
         serializer = DonorSerializer1(approved_donors, many=True)
         return serializer.data
