@@ -124,14 +124,12 @@ class CampaignDetailSerializer(ModelSerializer):
         return obj.category.name
     
     def get_donor(self, obj):
-        # Filter donors based on the 'status' field
         approved_donors = obj.donors.filter(status='Approved').order_by('-date')
-        # Serialize the filtered donors
         serializer = DonorSerializer1(approved_donors, many=True)
         return serializer.data
     
     def get_donor_count(self, obj):
-        return obj.donors.count()
+        return obj.donors.filter(status="Approved").count()
     
     
 class BankKYCSerializer(ModelSerializer):
