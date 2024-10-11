@@ -194,9 +194,9 @@ class CampaignTabsAPi(APIView):
             data = []
             print(filter_key =="most_supported")
             if filter_key  == "most_supported":
-                data = Campaign.objects.annotate(donor_count=Count('donors',filter=Q(donors__status='approved'))).order_by('-donor_count').filter(status="Active")
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active")
             elif filter_key  == "needs_love": 
-                data = Campaign.objects.annotate(donor_count=Count('donors',filter=Q(donors__status='approved'))).order_by('donor_count').filter(status="Active")
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active")
             elif filter_key  == "expiring_soon": 
                 data = Campaign.objects.filter(status="Active").order_by('end_date')
             elif filter_key  == "newly_added": 
@@ -229,9 +229,9 @@ class CampaignTabsAPi2(APIView):
             cat_id=Campaigncategory.objects.get(name=category)
             data = []
             if filter_key  == "most_supported":
-                data = Campaign.objects.annotate(donor_count=Count('donors',filter=Q(donors__status='approved'))).order_by('-donor_count').filter(status="Active",category=cat_id)
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('-donor_count').filter(status="Active",category=cat_id)
             elif filter_key  == "needs_love": 
-                data = Campaign.objects.annotate(donor_count=Count('donors',filter=Q(donors__status='approved'))).order_by('donor_count').filter(status="Active",category=cat_id)
+                data = Campaign.objects.annotate(donor_count=Count('donors')).order_by('donor_count').filter(status="Active",category=cat_id)
             elif filter_key  == "expiring_soon": 
                 data = Campaign.objects.filter(status="Active",category=cat_id).order_by('-end_date')
             elif filter_key  == "newly_added": 
