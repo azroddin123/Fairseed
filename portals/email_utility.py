@@ -3,15 +3,17 @@ import threading
 from django.core.mail import EmailMessage
 from django.conf import settings
 
+
 def send_email(subject, message, recipient_list):
-        email = EmailMessage(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            recipient_list,
-        )
-        email.content_subtype = "html"  # Set content type to HTML
-        email.send(fail_silently=False)
+    email = EmailMessage(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        recipient_list,
+    )
+    email.content_subtype = "html"
+    email.send(fail_silently=False)
+
 
 class EmailThread(threading.Thread):
     def __init__(self, subject, message, recipient_list):
@@ -22,6 +24,7 @@ class EmailThread(threading.Thread):
 
     def run(self):
         send_email(self.subject, self.message, self.recipient_list)
+
 
 def send_email_async(subject, message, recipient_list):
     EmailThread(subject, message, recipient_list).start()
