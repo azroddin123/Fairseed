@@ -299,6 +299,10 @@ class CampaignTabsAPi(APIView):
                     .order_by("difference_percentage")
                     .filter(status="Active")
                 )
+            elif filter_key == "completed":
+                data = Campaign.objects.filter(status="Completed").order_by(
+                    "created_on"
+                )
             else:
                 data = Campaign.objects.filter(status="Active")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
