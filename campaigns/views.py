@@ -315,6 +315,7 @@ class CampaignTabsAPi2(APIView):
     def get(self, request, *args, **kwargs):
         try:
             filter_key = request.GET.get("filter")
+            print(filter_key, "<====================")
             category = request.GET.get("name")
             cat_id = Campaigncategory.objects.get(name=category)
             data = []
@@ -360,7 +361,6 @@ class CampaignTabsAPi2(APIView):
                 ).order_by("created_on")
             else:
                 data = Campaign.objects.filter(status="Active", category=cat_id)
-            print(filter_key, "====================")
             response = paginate_data(Campaign, CampaignAdminSerializer, request, data)
             response["filter_key"] = filter_key
             return Response(response, status=status.HTTP_200_OK)
