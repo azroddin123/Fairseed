@@ -282,7 +282,7 @@ class CampaignTabsAPi(APIView):
             elif filter_key == "expiring_soon":
                 data = Campaign.objects.filter(status="Active").order_by("end_date")
             elif filter_key == "newly_added":
-                data = Campaign.objects.filter(status="Active").order_by("created_on")
+                data = Campaign.objects.filter(status="Active").order_by("-created_on")
             elif filter_key == "trending":
                 data = (
                     Campaign.objects.annotate(
