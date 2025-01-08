@@ -47,8 +47,8 @@ class DonatePaymentApi(APIView):
                     merchant_id = settings.PROD_MERCHANT_ID
                     salt_key = settings.PROD_SALT_KEY
                     salt_index = int(settings.PROD_SALT_INDEX)
-                    # env = Env.PROD
-                    env = Env.UAT
+                    env = Env.PROD
+                    # env = Env.UAT
 
                     phonepe_client = PhonePePaymentClient(
                         merchant_id=merchant_id,
