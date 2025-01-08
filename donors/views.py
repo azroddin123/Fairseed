@@ -46,9 +46,9 @@ class DonatePaymentApi(APIView):
 
                     merchant_id = settings.PROD_MERCHANT_ID
                     salt_key = settings.PROD_SALT_KEY
-                    salt_index = settings.PROD_SALT_INDEX
-                    env = Env.PROD
-                    # env = Env.UAT
+                    salt_index = int(settings.PROD_SALT_INDEX)
+                    # env = Env.PROD
+                    env = Env.UAT
 
                     phonepe_client = PhonePePaymentClient(
                         merchant_id=merchant_id,
@@ -74,7 +74,12 @@ class DonatePaymentApi(APIView):
                     campaign = get_object_or_404(Campaign, id=campaign_id)
                     if campaign.fund_raised + amount > campaign.goal_amount:
                         return Response(
-                            {"error": True, "message": "Goal amount exceeded"},
+                            {
+                                "error": True,
+                                "message": "You can donate only upto {}".format(
+                                    campaign.goal_amount - campaign.fund_raised
+                                ),
+                            },
                             status=status.HTTP_400_BAD_REQUEST,
                         )
                     id_assigned_to_user_by_merchant = settings.PROD_MERCHANT_ID
@@ -130,7 +135,12 @@ class DonatePaymentApi(APIView):
                     campaign = get_object_or_404(Campaign, id=campaign_id)
                     if campaign.fund_raised + amount > campaign.goal_amount:
                         return Response(
-                            {"error": True, "message": "Goal amount exceeded"},
+                            {
+                                "error": True,
+                                "message": "You can donate only upto {}".format(
+                                    campaign.goal_amount - campaign.fund_raised
+                                ),
+                            },
                             status=status.HTTP_400_BAD_REQUEST,
                         )
                     serializer = DonorSerializer2(data=request.data)
