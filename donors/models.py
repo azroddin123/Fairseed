@@ -87,6 +87,8 @@ class Withdrawal(BaseModel):
         default=WithdrawalChoices.PENDING,
     )
     transfer_details = models.TextField(blank=True, null=True)
+    amount = models.PositiveBigIntegerField()
+    withdrawal_date = models.DateField()
 
 
 # username fund_Raised ,goal_amount,beniiciary name.
