@@ -436,7 +436,7 @@ class DocumentAPI(GenericMethodsMixin, APIView):
     lookup_field = "id"
 
 
-class WithdrawalApi(GenericMethodsMixin):
+class WithdrawalApi(GenericMethodsMixin, APIView):
     model = Withdrawal
     serializer_class = WithDrawalSerializer
     lookup_field = "id"
