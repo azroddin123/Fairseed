@@ -296,7 +296,7 @@ def update_transaction(unique_transaction_id, amount):
 
         merchant_id = settings.PROD_MERCHANT_ID
         salt_key = settings.PROD_SALT_KEY
-        salt_index = settings.PROD_SALT_INDEX
+        salt_index = int(settings.PROD_SALT_INDEX)
         env = Env.PROD
         # env = Env.UAT
 
